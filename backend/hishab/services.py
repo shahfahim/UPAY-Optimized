@@ -54,6 +54,9 @@ class Hishab(HubMixin):
         self.repo, self.store, self.models, self.settings = repo, store, models, settings
         self.bandit = Bandit.from_dict(models.bandit_priors) if models.bandit_priors else None
         self.rng = np.random.default_rng()
+        from hishab.llm.client import RateLimiter
+        self.limiter = RateLimiter(limit=10, window=60.0)
+        self.llm_client = None  # injected in tests; real client is created on demand when the LLM is enabled
 
     # --- context ---------------------------------------------------------------------------------------
     def ctx(self, uid: str) -> UserCtx:
@@ -230,6 +233,12 @@ class Hishab(HubMixin):
             raise ValueError("ভুল ধরন")
         self.store.record_response(uid, kind, item_id, bool(accepted))
         return {"ok": True}
+
+    # --- chat ----------------------------------------------------------------------------------------------
+    def chat(self, uid: str, message: str) -> dict:
+        from hishab.llm.client import answer
+        self.ctx(uid)  # 404 for unknown users
+        return jsonable(answer(uid, message, self, self.settings, client=self.llm_client, limiter=self.limiter))
 
     # --- demo controls ------------------------------------------------------------------------------------
     def time_travel(self, days: int) -> dict:

@@ -94,4 +94,4 @@ class SendIn(BaseModel):
 
 
 class ChatIn(BaseModel):
-    message: str = Field(min_length=1)
+    message: str = Field(min_length=1, max_length=2000)  # the 500-char rule is enforced with a Bangla message

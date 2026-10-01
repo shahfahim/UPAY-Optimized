@@ -44,6 +44,12 @@ def create_app(settings: Settings | None = None, svc=None) -> FastAPI:
     async def _funds(_: Request, exc: InsufficientFunds):
         return JSONResponse(status_code=400, content={"detail": str(exc)})
 
+    from hishab.llm.client import RateLimited
+
+    @app.exception_handler(RateLimited)
+    async def _rate(_: Request, exc: RateLimited):
+        return JSONResponse(status_code=429, content={"detail": str(exc)})
+
     @app.exception_handler(PermissionError)
     async def _perm(_: Request, exc: PermissionError):
         return JSONResponse(status_code=401, content={"detail": str(exc)})
