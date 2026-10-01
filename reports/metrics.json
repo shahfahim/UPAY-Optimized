@@ -1,0 +1,27 @@
+{
+  "E2": {
+    "n_forecasts": 1195,
+    "mae_day14": 1670.0,
+    "baseline_last_month_mae_day14": 2202.3,
+    "baseline_trailing_avg_mae_day14": 3369.6,
+    "p10_p90_coverage_day14": 0.748,
+    "mae_day30": 2530.5,
+    "baseline_last_month_mae_day30": 3067.9,
+    "baseline_trailing_avg_mae_day30": 3067.9,
+    "p10_p90_coverage_day30": 0.808
+  },
+  "E3": {
+    "n_obs": 1693,
+    "positive_rate": 0.414,
+    "pr_auc": 0.874,
+    "roc_auc": 0.909,
+    "brier": 0.1206,
+    "precision_at_alert": 0.682,
+    "recall_at_alert": 0.917,
+    "median_lead_days": 3.0,
+    "median_lead_days_new_shortfalls": 6.0,
+    "baseline_rule_pr_auc": 0.544,
+    "baseline_rule_precision": 0.586,
+    "baseline_rule_recall": 0.757
+  }
+}

@@ -96,3 +96,11 @@ def build_ctx(user_id: str, repo: DataRepo, store: Store, settings: Settings) ->
     base_hist = hist
     state = store.get_state(user_id, lambda: _default_state(user, base_hist))
     return UserCtx(user=user, tx=tx, today=today, balance=round(balance, 2), state=state)
+
+
+def ctx_from_history(user: dict, tx_user: pd.DataFrame, as_of: date) -> UserCtx:
+    """Build a UserCtx straight from raw synthetic data (used by evaluation and replay, no store)."""
+    tx = tx_user[pd.to_datetime(tx_user["ts"]).dt.date <= as_of].sort_values("ts", kind="stable")
+    tx = tx.reset_index(drop=True)
+    balance = float(tx["balance_after"].iloc[-1]) if not tx.empty else 0.0
+    return UserCtx(user=user, tx=tx, today=as_of, balance=round(balance, 2), state=_default_state(user, tx))
