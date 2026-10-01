@@ -87,12 +87,41 @@ Every persona's names, places and amounts are synthetic and clearly marked as su
 
 ## 3. Product scope
 
-### 3.1 Screens (mobile-first web app, Bangla primary, English toggle)
+### 3.0 Positioning: a feature inside the upay app, not a separate app
 
-Bottom navigation: **হোম · পাঠাও/পে · সঞ্চয় · জিজ্ঞেস**. The Impact page is a separate route (`/impact`), linked from a header menu.
+Hishab is pitched as **an AI feature + API for the existing upay app**. The prototype is a mobile-first web app that recreates a **simplified upay-style wallet shell** and shows exactly where Hishab plugs in. The message to judges: *"upay-এর app প্রায় না বদলে, AI দিয়ে প্রতিটা customer-কে আর্থিকভাবে শক্তিশালী করা।"*
 
-**F1. Home**
-- Balance; greeting; demo-user switcher (header menu).
+**Shell (S0)** mirrors the current upay app structure:
+- Yellow header and bottom navigation **হোম · অ্যাকাউন্ট · QR · হিস্টরি · আরো**.
+- QR, অ্যাকাউন্ট and আরো are static placeholders except where noted.
+- The header shows the **customer's avatar** (synthetic initials) instead of a logo.
+- A permanent ribbon reads **"Prototype — upay-এর অফিসিয়াল app নয়"**.
+- **Branding and data rules:**
+  - No real upay logo or copied icon artwork; similar colours with generic icons only.
+  - No real personal data anywhere (all users synthetic).
+  - Reference screenshots of the real app are not committed to the repo.
+
+**Integration points (where Hishab appears in the upay app):**
+
+| # | Location in upay app | What Hishab adds | Why it wins attention |
+|---|---|---|---|
+| I1 | Top quick-action grid, **empty slot next to এনপিএসবি** | **হিসাব ✨** icon with a live status badge: green, amber or red dot, plus "১৭ দিন" when amber or red. Opens the Hishab hub (F1) | Highest-visibility row, currently empty; a changing badge is noticed where static icons are ignored |
+| I2 | Home, directly under the header (first screen, no scroll) | **Risk card**, shown only when risk is amber or red: "টাকা আর ১৭ দিন চলবে · বেতন ২১ দিন পরে". No amounts (respects upay's hidden-balance pattern) | Personal, changing message vs identical banners; never adds clutter when all is well |
+| I3 | **ব্যালেন্স** button (tap to reveal) | Under the revealed balance: "আজ নিরাপদ খরচ ৳২১০" | Every user taps balance daily; this is the money-thinking moment |
+| I4 | Home, replacing the long **উপায় পেমেন্ট** tile section | **"তোমার জন্য" row** (E15): the user's 4 most likely payments now, plus **"সব পেমেন্ট →"** opening the full partner list | Declutters home and brings অন্যান্য সার্ভিস up; partner tiles stay one tap away |
+| I5 | **সেন্ড মানি, এনপিএসবি, ফান্ড ট্রান্সফার** flows | Smart Route (E7) + AI category (E6) | Advice at the exact moment of a transfer |
+| I6 | **ক্যাশ আউট** flow | Cash-out nudge with fee saved + "তবুও cash-out" | Directly reduces cash dependency |
+| I7 | **মেক পেমেন্ট, পে বিল** flows | AI category chip | Budget tracking without manual effort |
+| I8 | **সঞ্চয়** service | Hishab pockets, goals, paisa saving, Eid planner (F4) as a "আমার পকেট" area **alongside** upay's existing savings products | Uses an existing entry point; final placement is adjusted once the contents of upay's current সঞ্চয় screen are confirmed |
+
+Report appendix "Additional UX suggestions": the avatar in the header and collapsing the payment tiles. These are presented as suggestions with rationale, not as requirements on upay.
+
+### 3.1 Hishab screens (mobile-first, Bangla primary, English toggle)
+
+The Hishab hub (F1) opens from I1 or I2 and has its own in-hub tab strip: **ওভারভিউ · Budget · Calendar · শেখো · জিজ্ঞেস**. Savings (F4) lives under upay's সঞ্চয় (I8). Send/Pay intelligence (F5) lives inside upay's flows (I5–I7). The Impact page is a separate route (`/impact`), linked from the আরো menu.
+
+**F1. Hishab hub — ওভারভিউ**
+- Demo-user switcher (আরো menu).
 - **Forecast chart:** 30-day projected balance with P10–P90 band, zero/threshold line, predicted shortfall marker.
 - **Risk card:** green, amber or red; headline *"{date}-এ প্রায় ৳{amount} কম পড়তে পারে"* plus likelihood in words and %; a **"কেন?"** expander lists the top 3 drivers in plain Bangla.
 - **আজ নিরাপদ খরচ** (safe-to-spend today) number.
@@ -121,7 +150,7 @@ Bottom navigation: **হোম · পাঠাও/পে · সঞ্চয় �
 - **Paisa saving (পয়সা-সঞ্চয়)** toggle; see the rule in §5.3. Shows the total saved and an "auto-paused due to risk" state.
 - **Eid planner card:** days to the next Eid, last Eid's spend, expected bonus, recommended weekly saving, and a one-tap "ঈদ pocket-এ লক্ষ্য বসাও".
 
-**F5. Send / Pay** (simulated money movement; banner "Demo — কোনো আসল টাকা যাবে না")
+**F5. Send / Pay intelligence inside upay flows** (I5–I7; simulated money movement; banner "Demo — কোনো আসল টাকা যাবে না")
 - Recipient (from synthetic contacts or a merchant), amount, and **category chip pre-filled by AI** (top-3 alternatives selectable). The user's confirmation is stored.
 - **Smart Route panel:** the best route is highlighted with its fee and time versus the alternatives. "সব পথ দেখো" opens the **Money Map**: a node graph (User → upay wallet → NPSB → other MFS wallet / bank account; wallet → bank card; wallet → merchant; wallet → agent cash-out). Tapping any path opens that path's simulated send flow.
 - **Contextual nudge on cash-out:** if the cash-out looks like it will be spent at a merchant or forwarded to another wallet, suggest the digital alternative and the fee saved, with a "তবুও cash-out" option.
@@ -193,6 +222,7 @@ All engine modules are plain Python in `backend/hishab/engine/`, are stateless (
 | E11 | Safe-to-spend | Deterministic formula on E1 + E2 (§5.2) | ৳ per day | n/a | n/a |
 | E12 | Health indicators and habit miner | Indicators: emergency days = pocket total ÷ avg daily essential spend; cash dependency = cash-out ÷ income (30 d); shortfall-free months (last 3). Habits: rule templates over features (post-salary depletion speed, cash-out count/fees, weekday spikes, category z-score > 2 vs own 3-month history) ranked by ৳ impact | 3 indicators + month-over-month delta; top 3–5 habits; monthly report facts | n/a | Habit detector P/R vs injected habits |
 | E13 | Literacy personalizer | Lesson library (`rules/lessons.yaml`, 10–12 Bangla micro-lessons with `{placeholders}`) + trigger rules on E12 features; selection via E9 Thompson sampling per (persona, lesson) | ≤1 lesson card on Home, ranked list in F8, filled with the user's numbers | Random or generic lesson | Offline replay: simulated behaviour change after lesson vs generic/random |
+| E15 | "তোমার জন্য" payment shortcuts | Score per payment type/biller = due-soon boost from E1 recurring schedule (e.g. recharge or electricity bill expected within 5 days) + 30-day frequency + recency; top 4 | 4 shortcuts with a reason ("বিল আসছে ৩ দিনে") | Global most-popular 4 | Hit rate: next payment is in the top 4 (holdout) |
 | E14 | Readiness signals | Five transparent rule-based signals (thresholds in `rules/readiness.yaml`) computed from E1/E12 features; improvement path via E2 projection of the recommended habit. **Never uses** persona, gender, area or age as inputs | Signal states + reasons + improvement projection | n/a | Fairness: signal-state distribution by group; unit tests on thresholds |
 
 ### 4.1 Feature set (shared; `engine/features.py`)
@@ -394,6 +424,7 @@ Synthetic data → features → models (E1–E14, excluding E4/E10) → business
 | GET | `/users/{id}/home` | balance, forecast band, risk + drivers, safe_today, actions (top 3) |
 | POST | `/users/{id}/actions/simulate` | forecast + risk with an action applied (no persistence) |
 | POST | `/users/{id}/actions/{action_id}/respond` | records accept/dismiss → bandit update |
+| GET | `/users/{id}/shell` | header data, avatar initials, I1 badge state, I2 card (or null), I3 safe-to-spend, I4 "তোমার জন্য" shortcuts |
 | GET | `/users/{id}/health` | 3 indicators + deltas + 6-month trends, habits, monthly report |
 | GET | `/users/{id}/lessons` | ranked personalised lessons (top 1 also in `/home`) |
 | POST | `/users/{id}/lessons/{lesson_id}/respond` | records বুঝেছি / কাজে লাগবে না → bandit update |
@@ -498,6 +529,7 @@ Results are reported per user-month and extrapolated to "per 100,000 users", **c
   - E9 Beta updates.
   - E11 is never negative.
   - Paisa sweep arithmetic.
+  - E15 puts a recurring bill due in 3 days into the top 4.
   - E12 indicators on a hand-built fixture, and habit detection of injected habits.
   - E13 lesson triggers fire only on their conditions, and placeholders are always filled.
   - E14 thresholds; E14 output never contains a numeric score or loan language; E14 inputs exclude protected attributes (asserted on the feature list).
@@ -538,11 +570,11 @@ Results are reported per user-month and extrapolated to "per 100,000 users", **c
 | 19–21 | E6 category, E9 bandit + replay | metrics.md complete |
 | 21–24 | E12 health + habits, E13 lessons (library + triggers), E14 readiness signals | Engine tests pass; impact_snapshot.json |
 | 24–29 | FastAPI routes + SQLite + API tests, Dockerfile, **first deploy** | Live URL serves `/api/health` and a stub UI |
-| 29–43 | React UI: Home (incl. health snapshot + lesson card), Health Coach, Calendar, Budget, Savings, Send/Pay + Smart Route + Money Map, Impact | Full flow clickable on the live URL |
-| 43–48 | Chat + tools + fallback + Bangla voice | Chat answers suggested questions; fallback verified |
-| 48–53 | Polish, bug fixes, fairness views, final deploy | Demo checklist passes on the live URL |
-| 53–62 | README (10 sections), project report, demo video | All submission files ready |
-| 62–72 | Buffer (~8–9 h usable after rest), final verification, submit | Submitted before deadline |
+| 29–44 | React UI: upay-style shell (S0) + integration points I1–I8 incl. E15 shortcuts, Hishab hub (overview, Budget, Calendar, শেখো), Health Coach, Savings, Send/Pay/Cash-out flows + Smart Route + Money Map, Impact | Full flow clickable on the live URL |
+| 44–49 | Chat + tools + fallback + Bangla voice | Chat answers suggested questions; fallback verified |
+| 49–54 | Polish, bug fixes, fairness views, final deploy | Demo checklist passes on the live URL |
+| 54–63 | README (10 sections + "how upay integrates" section), project report, demo video | All submission files ready |
+| 63–72 | Buffer (~7 h usable after rest), final verification, submit | Submitted before deadline |
 
 **Time warning:** solo builds overrun. The cut order in §14.2 is mandatory to follow if any phase overruns by more than 2 hours.
 
@@ -550,10 +582,10 @@ Results are reported per user-month and extrapolated to "per 100,000 users", **c
 1. E14 "কী করলে উন্নতি হবে" projection reduced to static habit text (signals and disclaimer stay).
 2. E13 lesson library reduced to 6 lessons; lesson-effectiveness view dropped.
 3. Impact page reduced to headline indicators + model metrics + fairness table.
-4. E6 ML replaced by counterparty-memory + rules.
+4. E6 ML replaced by counterparty-memory + rules; E15 reduced to 30-day frequency only.
 5. Chat reduced to template fallback; voice Chrome-only.
 
-**Never cut:** E2 forecast, E3 risk, E5 actions, E7 Smart Route, E8 Eid planner, E9 learning nudges, E12 health snapshot, E14 signals + disclaimer, live deployment.
+**Never cut:** upay shell integration points I1–I3, E2 forecast, E3 risk, E5 actions, E7 Smart Route, E8 Eid planner, E9 learning nudges, E12 health snapshot, E14 signals + disclaimer, live deployment.
 
 ### 14.3 README checklist (rulebook §6.2)
 1. Project overview
@@ -578,7 +610,7 @@ Results are reported per user-month and extrapolated to "per 100,000 users", **c
 8. Limitations and next steps
 
 ### 14.5 Demo video (3–5 min) outline
-1. Rina's problem (20 s).
+1. Rina's problem (20 s), then "this lives inside upay": I1 icon with badge, I2 risk card, I3 safe-to-spend (15 s).
 2. Home: forecast, risk, "কেন?", tap an action to see the what-if (50 s).
 2b. Health Coach: indicators, habits, a personalised lesson, readiness signals with disclaimer (30 s).
 3. Send home with Smart Route and the cash-out nudge (40 s).
@@ -609,6 +641,7 @@ Results are reported per user-month and extrapolated to "per 100,000 users", **c
 - The rich Home design (forecast chart + action cards) is approved; the simplified variant was rejected.
 - **Added unique features:** learning nudges (bandit), Bangla voice, Eid planner.
 - **Added for retention:** safe-to-spend and Smart Route framed as a universal wallet. Retention is a supporting business argument, not the headline.
+- **Positioning:** Hishab is an AI feature + API inside the upay app (integration points I1–I8), shown in a simplified upay-style shell with a prototype ribbon. Placement was chosen from screenshots of the current upay app: icon in the empty slot next to এনপিএসবি, a risk-only home card, safe-to-spend under the balance, and a "তোমার জন্য" payment row (E15). Header avatar and payment-tile collapse are UX suggestions.
 - **Removed as off-track:** churn-risk model (Track 02) and agent cash-out forecast (Track 05). The analyst tab became a Track 03 **Impact** page. Both removed items are kept as on-site candidates (§13).
 - **Paisa saving** = sweep of the balance's fractional part after each transaction (§5.3).
 - **Full Track 03 coverage:** Health Coach (E12), Literacy Personalizer (E13), and Responsible Credit Readiness as transparent, non-scored, user-only signals (E14) — all three in full scope.
