@@ -21,7 +21,7 @@ Hishab যা করে:
 6. **আর্থিক স্বাস্থ্য coach:** জরুরি তহবিল কত দিনের, cash-নির্ভরতা কত, ঘাটতিমুক্ত মাস কয়টা; অভ্যাস চিহ্নিত করা; মাসিক হিসাব রিপোর্ট।
 7. **ব্যক্তিগত শেখা:** user-এর নিজের আচরণ আর সংখ্যা দিয়ে ছোট বাংলা পাঠ, যা শেখে কোন পাঠ কাজে দেয়।
 8. **নিয়মিততার signal (দায়িত্বশীল credit readiness):** কোনো score বা loan সিদ্ধান্ত নয়। শুধু user নিজে দেখে কোন অভ্যাস ভবিষ্যৎ যোগ্যতায় প্রভাব ফেলতে পারে, আর কী করলে উন্নতি হবে।
-9. **upay Analyst tab:** ঘাটতির ঝুঁকি, churn-এর ঝুঁকি, এজেন্টদের cash-out চাহিদার পূর্বাভাস, model-এর মান, আর fairness।
+9. **Impact page:** শুধু Track 03-এর ফলাফল দেখায়। এখানে থাকে আর্থিক স্বাধীনতার সূচক, ঘাটতি আর fee কতটা কমল, wallet-এ কত টাকা রইল, প্রতিটা model বনাম baseline, আর fairness। এখানে churn model বা এজেন্ট পূর্বাভাস নেই, কারণ ওগুলো Track 02 আর 05-এর।
 
 Track 03-এর ৮টা project opportunity-ই cover হয়: health coach, savings planner, spending companion, cash-flow forecasting, goal copilot, inclusive assistant, literacy personalizer, credit readiness।
 
@@ -48,10 +48,10 @@ AI-এর মূল কাজ করে ML model (LightGBM, SHAP, bandit, graph 
 | Criterion (weight) | What earns it in Hishab |
 |---|---|
 | Problem relevance (20%) | Covers all 8 Track 03 project opportunities (§3.3) and directly answers the guideline's own examples ("Why do I always run short before month-end?", "save ৳30,000 in six months"); Bangladesh-specific (garment payroll, Eid, remittance home, cash-out habit) |
-| AI/ML depth (20%) | Forecasting with uncertainty, calibrated risk classifier + SHAP, churn model, category classifier, counterfactual action optimizer, Thompson-sampling bandit, graph route optimizer; all beat stated baselines |
-| Business/customer impact (20%) | Customer: shortfall days avoided, fees saved. upay: money retained in wallet, churn risk reduced, agent liquidity planning. Simulated impact in Analyst tab + post-hackathon A/B design |
+| AI/ML depth (20%) | Forecasting with uncertainty, calibrated risk classifier + SHAP, category classifier, habit miner, behaviour-triggered lessons, counterfactual action optimizer, Thompson-sampling bandit, graph route optimizer; all beat stated baselines |
+| Business/customer impact (20%) | Customer: financial-independence indicators, shortfall days avoided, fees saved. upay: salary retained in wallet, simulated active rate. Simulated impact on the Impact page + post-hackathon A/B design |
 | Prototype quality (15%) | Live end-to-end app, mobile-first, Bangla UI, voice input, always-on deployment |
-| Innovation (10%) | Learning nudges, Smart Route/universal wallet, Eid planner, one engine serving customer + agent + upay |
+| Innovation (10%) | Learning nudges and lessons, Smart Route/universal wallet, Eid planner, paisa saving with risk-aware auto-pause, Bangla voice |
 | Scalability & integration (10%) | Clean API boundary, config-driven rules, model registry, "what changes with real data" plan |
 | Responsible AI & security (5%) | Guardrails, explainability, fairness slices, labelled AI text, no autonomous money movement, prompt-injection-safe tools |
 
@@ -89,7 +89,7 @@ Every persona's names, places and amounts are synthetic and clearly marked as su
 
 ### 3.1 Screens (mobile-first web app, Bangla primary, English toggle)
 
-Bottom navigation: **হোম · পাঠাও/পে · সঞ্চয় · জিজ্ঞেস**. The analyst tab is a separate route (`/analyst`) for upay staff, linked from a header menu.
+Bottom navigation: **হোম · পাঠাও/পে · সঞ্চয় · জিজ্ঞেস**. The Impact page is a separate route (`/impact`), linked from a header menu.
 
 **F1. Home**
 - Balance; greeting; demo-user switcher (header menu).
@@ -149,18 +149,15 @@ Bottom navigation: **হোম · পাঠাও/পে · সঞ্চয় �
   - **কী করলে উন্নতি হবে:** for each non-green signal, the specific habit and an E2-based projection, e.g. "প্রতি মাসে ৳৫০০ রাখলে ৩ মাসে 'জরুরি তহবিল' সবুজ হবে".
   - No numeric score, no ranking, no loan offers or links.
 
-**F7. upay Analyst** (`/analyst`, English UI)
-- KPI tiles: % users at shortfall risk (14 d), avg predicted shortfall, avoidable cash-out fees / month, money retained if actions accepted (simulated).
-- **Impact simulation:** baseline vs with-Hishab for shortfall days, fees and salary retained in wallet. Labelled "simulated; assumptions in docs".
-- **Churn risk:** distribution, top global drivers (SHAP), table of at-risk users with drivers and the recommended next-best action.
-- **Agent cash-out forecast:** by area for the next 14 days (table and bar chart), with peak day and ratio vs normal.
-- **Learning nudges:** acceptance-rate learning curve (bandit vs static ranking) from offline replay, for actions and for lessons.
-- **Financial independence:** cohort distribution of the three health indicators, plus simulated change with Hishab. This is the headline Track 03 outcome metric.
-- **Lesson effectiveness:** simulated behaviour change after lessons (e.g. cash-out share next month, treated vs not shown).
-- **Readiness-signal fairness:** signal distribution by persona, gender and area, with a note that signals never use these attributes as inputs.
-- **Model quality:** metrics vs baselines (from `reports/metrics.json`).
-- **Fairness:** key metrics sliced by persona, gender and area.
-- **"What changes with real upay data"** panel (§11.4).
+**F7. Impact** (`/impact`, English UI, linked from the header menu) — evidence page for judges and upay, scoped strictly to Track 03 outcomes. All numbers come from `artifacts/impact_snapshot.json` and are labelled "simulated on synthetic data; assumptions in docs".
+1. **Financial independence (headline):** cohort distribution of the three health indicators (emergency days, cash dependency, shortfall-free months), baseline vs with Hishab.
+2. **Customer benefit:** shortfall days per user-month, cash-out fees saved, Eid-period shortfalls avoided.
+3. **upay benefit (supporting):** share of salary still in the wallet at day +10, simulated 30/90-day active rate, from the generator's inactivity mechanism (§6.3), not a separate model.
+4. **AI proof:** each model vs its baseline (from `reports/metrics.json`), plus learning-nudge and lesson acceptance curves (bandit vs static vs random) and simulated behaviour change after lessons.
+5. **Responsible AI:** key metrics sliced by persona, gender and area (flag gaps > 10 pp); readiness-signal distribution by group, with a note that signals never use these attributes as inputs.
+6. **"What changes with real upay data"** panel (§11.4).
+
+**Removed as off-track** (Track 02 / Track 05) and kept only as on-site candidates (§13): churn-risk model (former E4) and agent cash-out forecast (former E10).
 
 ### 3.2 Out of scope (72 h)
 Real money movement or integration with real MFS or NPSB; push notifications; lending or credit **decisions**, credit scores or loan offers (E14 is educational signals only); scam detection (kept as an on-site candidate); user accounts and authentication (a demo-user switcher instead); native mobile app.
@@ -188,13 +185,11 @@ All engine modules are plain Python in `backend/hishab/engine/`, are stateless (
 | E1 | Recurring detector | Statistical: group by counterparty/type; day-of-month clustering and amount stability (CV) | List of recurring events {type, counterparty, expected day, expected amount, confidence} | n/a (precision/recall vs injected ground truth) | P/R of injected recurring events |
 | E2 | Cash-flow forecaster | LightGBM regressor on daily non-recurring outflow (and inflow for irregular earners) + E1 recurring events; 200 bootstrap residual paths → P10/P50/P90 balance | 30-day balance band, expected events | (a) same-as-last-month, (b) trailing-30-day average | MAE of day-14 and day-30 balance; band coverage (P10–P90 ≈ 80%) |
 | E3 | Shortfall-risk model | LightGBM binary classifier, isotonic calibration; SHAP drivers | P(shortfall within 14 d), top drivers, predicted date and amount (from E2 P50) | Rule: balance ÷ avg daily spend < days to next income | PR-AUC, ROC-AUC, precision@alert, median warning lead time, calibration (Brier) |
-| E4 | Churn-risk model | LightGBM binary classifier + SHAP | P(inactive next 30 d), drivers, mapped next-best action | Rule: days since last transaction > 14 | PR-AUC, ROC-AUC, recall@top-10% |
 | E5 | Action optimizer | Candidate actions from `actions.yaml` → apply transform to future flows → re-run E2/E3 → score | Ranked actions with Δrisk, ৳ saved | Static fixed ordering | Avg Δshortfall-prob of top action; see E9 for acceptance |
 | E6 | Category suggester | Per-user counterparty memory (confirmed labels) → else LightGBM multiclass (counterparty type, amount bucket, hour, weekday, persona) | Top-3 categories with confidence | Majority-class per counterparty type | Top-1 / top-3 accuracy |
 | E7 | Route optimizer | Weighted graph from `fees.yaml`; Dijkstra on fee (tie-break: time); habit detection of recurring post-salary cash-outs | Ranked routes with fee and time; detected costly habits with annual saving | User's habitual path | ৳ saved per transfer (deterministic) |
 | E8 | Goal and Eid planner | Monthly-surplus distribution (bootstrap last 6 months, adjusted by E2) → feasibility; Eid need from last Eid's 30-day pre-Eid spend minus expected bonus | Monthly/weekly amount, feasibility %, enabling actions | n/a | Backtest: predicted vs actual pre-Eid spend MAE |
 | E9 | Learning nudges | Thompson sampling, Beta(α, β) per (persona, action type), updated per user on accept/dismiss; priors from synthetic acceptance | Acceptance probability used in E5 ranking | Static ranking; random | Offline replay: cumulative acceptance rate vs static/random |
-| E10 | Agent cash-out forecast | Aggregate per-user predicted cash-outs (E2 flows × cash-out share, salary-day pattern) by area and day | 14-day cash-out volume per area, peak day, ratio vs normal | Same weekday last month | Area-level MAPE on holdout |
 | E11 | Safe-to-spend | Deterministic formula on E1 + E2 (§5.2) | ৳ per day | n/a | n/a |
 | E12 | Health indicators and habit miner | Indicators: emergency days = pocket total ÷ avg daily essential spend; cash dependency = cash-out ÷ income (30 d); shortfall-free months (last 3). Habits: rule templates over features (post-salary depletion speed, cash-out count/fees, weekday spikes, category z-score > 2 vs own 3-month history) ranked by ৳ impact | 3 indicators + month-over-month delta; top 3–5 habits; monthly report facts | n/a | Habit detector P/R vs injected habits |
 | E13 | Literacy personalizer | Lesson library (`rules/lessons.yaml`, 10–12 Bangla micro-lessons with `{placeholders}`) + trigger rules on E12 features; selection via E9 Thompson sampling per (persona, lesson) | ≤1 lesson card on Home, ranked list in F8, filled with the user's numbers | Random or generic lesson | Offline replay: simulated behaviour change after lesson vs generic/random |
@@ -208,7 +203,7 @@ Per user and observation date:
 - **Transfers and savings:** remittance share; other-wallet send share; pocket balances.
 - **Calendar:** days to next Eid; month-end flag.
 - **Profile:** persona, area, tenure.
-- **Engagement:** sessions in the last 7/30 days and their trend (churn only).
+(IDs E4 and E10 are intentionally unused: churn and agent forecasting were removed as off-track.)
 - **Forecast-derived** (E3 only): min P50 projected balance over 14 d, P10 min.
 
 ### 4.2 Action catalogue (`rules/actions.yaml`)
@@ -241,7 +236,7 @@ Each action has `id`, `applies_if` (rule on features), `params` (computed), `tra
 - **Readiness signals (E14):**
   - No numeric score.
   - No loan offers, links or "you qualify" language.
-  - Never used by any upay-facing decision path, in code or in the API. The analyst API exposes only aggregate distributions for fairness checking.
+  - Never used by any upay-facing decision path, in code or in the API. The Impact page exposes only aggregate distributions for fairness checking.
   - The disclaimer is always shown.
   - Inputs exclude protected or proxy attributes (persona, gender, area, age).
 - **Lessons (E13):** educational only, never promote paid products; at most 1 lesson card on Home at a time.
@@ -283,10 +278,9 @@ safe_today  = max(0, (balance − committed − cushion − essential_buffer) / 
 ### 6.2 Tables (parquet in `backend/data/`, gitignored except the small serving subset)
 - `users`: user_id, synthetic_name, persona, gender, age_band, area, tenure_days, family_wallet_type (`upay|other_mfs|bank|cash`), paisa_saving_default.
 - `transactions`: tx_id, user_id, ts, type (`salary_in, bonus_in, cash_in, cash_out, send_money, receive_money, merchant_pay, bill_pay, mobile_recharge, pocket_in, pocket_out`), amount (2 dp), fee, counterparty_id, counterparty_type (`employer, person, merchant, agent, biller`), counterparty_channel (`upay, other_mfs, bank`), category (`food_grocery, rent, family_support, transport, mobile, health, education, utilities, shopping, festival, other`), area.
-- `sessions`: user_id, date, session_count (for churn).
-- `labels`: per (user, observation_date): `shortfall_14d`, `churn_30d`, `pre_eid_spend`.
+- `sessions`: user_id, date, session_count (for the simulated active-rate metric).
+- `labels`: per (user, observation_date): `shortfall_14d`, `inactive_30d` (impact simulation only, no model), `pre_eid_spend`.
 - `action_acceptance_truth`: latent acceptance propensity per (persona, action type), used to simulate bandit feedback.
-- `agents`: agent_id, area.
 
 ### 6.3 Injected patterns (each documented in `docs/synthetic-data.md`)
 - **Salary:** garment day 5–9 (assumption: wages paid in the first working days); persona-specific amount ranges (synthetic).
@@ -303,14 +297,14 @@ safe_today  = max(0, (balance − committed − cushion − essential_buffer) / 
   - Higher remittance before Eid.
 - **Irregular earners:** daily income with weather or seasonal dips.
 - **Shortfall:** arises naturally when the balance falls below ৳200 before the next income. Essential spends that would fail are deferred and flagged.
-- **Churn mechanism (assumed causal story):** higher churn probability with
+- **Inactivity mechanism (assumed causal story, used only for the simulated active-rate metric):** higher probability of going inactive with
   - fast post-salary depletion,
   - a high cash-out share,
   - a high other-wallet send share,
   - zero pocket balance,
   - declining sessions.
 
-  Churned users stop transacting.
+  Inactive users stop transacting.
 - **Noise:** amount jitter, missed or late events, and 5% random category noise, so models are not trivially perfect.
 
 ### 6.4 Splits (leakage-safe)
@@ -324,7 +318,7 @@ safe_today  = max(0, (balance − committed − cushion − essential_buffer) / 
 - **State:** `Beta(α, β)` per (persona, action_type) as a global prior, plus per-user counts in SQLite.
 - **On show:** sample θ ~ Beta per candidate and use it as `p_accept` in the ranking.
 - **On response:** accept → α += 1, dismiss → β += 1 (user level). Global priors are refreshed by the offline script.
-- **Offline replay** (`scripts/evaluate.py`): simulate 60 days of nudges against `action_acceptance_truth` for test users. Compare cumulative acceptance and Δshortfall for bandit vs static vs random, and plot the curve in Analyst.
+- **Offline replay** (`scripts/evaluate.py`): simulate 60 days of nudges against `action_acceptance_truth` for test users. Compare cumulative acceptance and Δshortfall for bandit vs static vs random, and plot the curve on the Impact page.
 
 ---
 
@@ -368,15 +362,15 @@ safe_today  = max(0, (balance − committed − cushion − essential_buffer) / 
 │  ├─ hishab/
 │  │  ├─ config.py            # env + paths + DEMO_TODAY
 │  │  ├─ data/                # generator.py, personas.yaml, loader.py
-│  │  ├─ engine/              # features, recurring, forecast, risk, churn, category,
-│  │  │                       # actions, bandit, route, goals, eid, safe_spend, agents,
+│  │  ├─ engine/              # features, recurring, forecast, risk, category,
+│  │  │                       # actions, bandit, route, goals, eid, safe_spend,
 │  │  │                       # health, lessons, readiness
 │  │  ├─ rules/               # actions.yaml, guardrails.yaml, fees.yaml, eid_dates.yaml,
 │  │  │                       # lessons.yaml, readiness.yaml
 │  │  ├─ llm/                 # client.py, tools.py, prompts.py, fallback.py
 │  │  ├─ store/               # sqlite.py (user state: pockets, toggles, responses, labels)
 │  │  └─ api/                 # main.py, routes/*.py, schemas.py
-│  ├─ artifacts/              # trained models + analyst_snapshot.json (committed, small)
+│  ├─ artifacts/              # trained models + impact_snapshot.json (committed, small)
 │  ├─ data/                   # serving parquet subset (committed), full data gitignored
 │  ├─ tests/
 │  └─ requirements.txt
@@ -390,7 +384,7 @@ safe_today  = max(0, (balance − committed − cushion − essential_buffer) / 
 ```
 
 ### 9.2 Data flow
-Synthetic data → features → models (E1–E10) → business rules and guardrails → API → UI and LLM explanation → user accept/dismiss → SQLite → bandit update (feedback loop).
+Synthetic data → features → models (E1–E14, excluding E4/E10) → business rules and guardrails → API → UI and LLM explanation → user accept/dismiss → SQLite → bandit update (feedback loop).
 
 ### 9.3 API (FastAPI, JSON, `/api` prefix)
 | Method | Path | Returns |
@@ -417,14 +411,14 @@ Synthetic data → features → models (E1–E10) → business rules and guardra
 | POST | `/users/{id}/send` | simulated send/pay (applies paisa sweep, records category) |
 | POST | `/users/{id}/chat` | LLM answer (or fallback) + used tools |
 | POST | `/demo/reset` | reset SQLite state to seed |
-| GET | `/analyst/overview` | KPIs, impact sim, churn, agents, bandit curve, metrics, fairness |
+| GET | `/impact` | financial-independence indicators, customer and upay impact sim, model metrics, bandit/lesson curves, fairness |
 
 Pydantic schemas live in `api/schemas.py`, and the frontend types mirror them.
 
 ### 9.4 State and performance
 - Engine data (serving parquet + models) is loaded once at startup into memory.
 - User state lives in SQLite at `/tmp/hishab.db` (ephemeral on the host). It is seeded on startup and resettable via `/demo/reset`.
-- `/analyst/overview` serves the precomputed `artifacts/analyst_snapshot.json` built by `scripts/evaluate.py`.
+- `/impact` serves the precomputed `artifacts/impact_snapshot.json` built by `scripts/evaluate.py`.
 - Target is < 400 ms p50 for `/home` on the host.
 
 ### 9.5 Frontend
@@ -446,10 +440,10 @@ Pydantic schemas live in `api/schemas.py`, and the frontend types mirror them.
 | Principle | Implementation |
 |---|---|
 | Privacy | Synthetic data only; voice processed in the browser; no PII; no real accounts |
-| Explainability | SHAP drivers for risk and churn; every action shows its expected effect; "কেন?" everywhere; tool trace in chat |
-| Fairness | Metrics sliced by persona, gender and area in the Analyst tab; flag gaps > 10 pp |
+| Explainability | SHAP drivers for shortfall risk; reasons on every readiness signal and habit; every action shows its expected effect; "কেন?" everywhere; tool trace in chat |
+| Fairness | Metrics sliced by persona, gender and area on the Impact page; flag gaps > 10 pp |
 | Security | API key server-side only; read-only, user-scoped LLM tools; input limits; rate limiting; no secrets in the repo (`.env.example` only) |
-| Human oversight | All actions are user-initiated; analyst outputs are recommendations for staff, never automated account changes |
+| Human oversight | All actions are user-initiated; the system never changes accounts or moves money on its own |
 | Transparency | ✨ label on AI-generated text; predictions vs assumptions vs generated text visibly separated; fee and Eid assumptions labelled |
 | No harmful automation | No lending decisions, no blocked withdrawals, no manipulative nudges (§5.1) |
 
@@ -462,16 +456,15 @@ Pydantic schemas live in `api/schemas.py`, and the frontend types mirror them.
 - **Success bar:**
   - E2 beats both baselines on MAE.
   - E3 PR-AUC beats the rule baseline, with median lead time ≥ 5 days.
-  - E4 beats the recency rule.
   - E6 top-3 accuracy is ≥ 90%.
   - The E9 bandit beats static ranking in the replay.
 
   If a model doesn't beat its baseline, we report that honestly and keep the baseline in the product.
 
-### 11.2 Impact simulation (Analyst)
+### 11.2 Impact simulation (Impact page)
 On test users over the test months:
 1. **Baseline:** actual synthetic outcomes.
-2. **With Hishab:** apply top actions with acceptance drawn from `action_acceptance_truth`, then recompute shortfall days, fees paid, salary share retained in wallet at day +10, and churn probability (E4 on modified features).
+2. **With Hishab:** apply top actions with acceptance drawn from `action_acceptance_truth`, then recompute shortfall days, fees paid, salary share retained in wallet at day +10, the three financial-independence indicators (E12), and simulated active rate (generator inactivity mechanism re-applied to modified behaviour).
 
 Results are reported per user-month and extrapolated to "per 100,000 users", **clearly labelled as model-based simulation on synthetic data.**
 
@@ -484,7 +477,7 @@ Results are reported per user-month and extrapolated to "per 100,000 users", **c
 - **Usability:** a small usability study with real users (task completion without help, taps per task).
 
 ### 11.4 What changes with real data
-- Retrain E2–E6 on real distributions and recalibrate E3 and E4.
+- Retrain E2, E3 and E6 on real distributions and recalibrate E3; re-derive E12–E14 thresholds from real cohorts.
 - Replace placeholder fees with real tariffs.
 - Plug E7 into real NPSB and bank routing.
 - Use real payroll schedules from employer disbursement data.
@@ -497,7 +490,7 @@ Results are reported per user-month and extrapolated to "per 100,000 users", **c
 - **Engine unit tests (pytest).** Each test runs on a tiny generated fixture:
   - E1 finds the injected salary day (±1) and the rent.
   - E2 output shape and monotonic quantiles (P10 ≤ P50 ≤ P90).
-  - E3/E4 probabilities lie in [0, 1].
+  - E3 probabilities lie in [0, 1].
   - E5 never returns guardrail-violating actions.
   - E5 `pause_paisa_saving` appears when risk is high.
   - E7 picks the cheapest path on a hand-built fee table.
@@ -524,7 +517,8 @@ Results are reported per user-month and extrapolated to "per 100,000 users", **c
 - **Likely asks, pre-thought:**
   - Scam/suspicious-recipient warning (Isolation Forest on recipient novelty + amount + time).
   - Notification simulation.
-  - Agent-facing view.
+  - Churn-risk model (Track 02 style): LightGBM + SHAP on the existing features and the generator's inactivity labels.
+  - Agent cash-out forecast (Track 05 style): aggregate E2 cash-out predictions by area and day.
   - English/Bangla parity.
   - Accessibility tweaks.
   - A new persona.
@@ -538,27 +532,26 @@ Results are reported per user-month and extrapolated to "per 100,000 users", **c
 ### 14.1 72-hour schedule (from T+0; includes sleep)
 | Hours | Work | Exit criterion |
 |---|---|---|
-| 0–5 | Repo, CI skeleton, config, synthetic generator (incl. Eid, areas, churn, acceptance truth, injected habits, bill timeliness) | `generate_data` produces tables; generator tests pass |
+| 0–5 | Repo, CI skeleton, config, synthetic generator (incl. Eid, areas, inactivity mechanism, acceptance truth, injected habits, bill timeliness) | `generate_data` produces tables; generator tests pass |
 | 5–13 | Features, E1, E2, E3 + baselines + evaluate script | metrics.md shows E2/E3 vs baselines |
 | 13–19 | E5 actions + guardrails, E11 safe-to-spend, E7 route, E8 goals + Eid | Engine tests pass |
-| 19–23 | E4 churn, E6 category, E9 bandit + replay, E10 agents | metrics.md complete |
-| 23–26 | E12 health + habits, E13 lessons (library + triggers), E14 readiness signals | Engine tests pass; analyst_snapshot.json |
-| 26–31 | FastAPI routes + SQLite + API tests, Dockerfile, **first deploy** | Live URL serves `/api/health` and a stub UI |
-| 31–46 | React UI: Home (incl. health snapshot + lesson card), Health Coach, Calendar, Budget, Savings, Send/Pay + Smart Route + Money Map, Analyst | Full flow clickable on the live URL |
-| 46–51 | Chat + tools + fallback + Bangla voice | Chat answers suggested questions; fallback verified |
-| 51–56 | Polish, bug fixes, fairness views, final deploy | Demo checklist passes on the live URL |
-| 56–65 | README (10 sections), project report, demo video | All submission files ready |
-| 65–72 | Buffer (~4 h usable after rest), final verification, submit | Submitted before deadline |
+| 19–21 | E6 category, E9 bandit + replay | metrics.md complete |
+| 21–24 | E12 health + habits, E13 lessons (library + triggers), E14 readiness signals | Engine tests pass; impact_snapshot.json |
+| 24–29 | FastAPI routes + SQLite + API tests, Dockerfile, **first deploy** | Live URL serves `/api/health` and a stub UI |
+| 29–43 | React UI: Home (incl. health snapshot + lesson card), Health Coach, Calendar, Budget, Savings, Send/Pay + Smart Route + Money Map, Impact | Full flow clickable on the live URL |
+| 43–48 | Chat + tools + fallback + Bangla voice | Chat answers suggested questions; fallback verified |
+| 48–53 | Polish, bug fixes, fairness views, final deploy | Demo checklist passes on the live URL |
+| 53–62 | README (10 sections), project report, demo video | All submission files ready |
+| 62–72 | Buffer (~8–9 h usable after rest), final verification, submit | Submitted before deadline |
 
-**Time warning:** with all features in, the buffer is thin for a solo builder. The cut order in §14.2 is mandatory to follow if any phase overruns by more than 2 hours.
+**Time warning:** solo builds overrun. The cut order in §14.2 is mandatory to follow if any phase overruns by more than 2 hours.
 
 ### 14.2 Cut order if behind schedule
-1. E10 agent forecast reduced to a table only.
-2. E14 "কী করলে উন্নতি হবে" projection reduced to static habit text (signals and disclaimer stay).
-3. Churn UI reduced to KPI + top drivers.
-4. E13 lesson library reduced to 6 lessons; lesson-effectiveness view dropped.
-5. E6 ML replaced by counterparty-memory + rules.
-6. Chat reduced to template fallback; voice Chrome-only.
+1. E14 "কী করলে উন্নতি হবে" projection reduced to static habit text (signals and disclaimer stay).
+2. E13 lesson library reduced to 6 lessons; lesson-effectiveness view dropped.
+3. Impact page reduced to headline indicators + model metrics + fairness table.
+4. E6 ML replaced by counterparty-memory + rules.
+5. Chat reduced to template fallback; voice Chrome-only.
 
 **Never cut:** E2 forecast, E3 risk, E5 actions, E7 Smart Route, E8 Eid planner, E9 learning nudges, E12 health snapshot, E14 signals + disclaimer, live deployment.
 
@@ -591,7 +584,7 @@ Results are reported per user-month and extrapolated to "per 100,000 users", **c
 3. Send home with Smart Route and the cash-out nudge (40 s).
 4. Savings: Eid planner and paisa saving (30 s).
 5. Bangla voice question (30 s).
-6. Analyst: impact, churn, agent forecast, metrics vs baselines, fairness (50 s).
+6. Impact page: financial independence, customer and upay benefit, metrics vs baselines, fairness (50 s).
 7. Responsible AI + what's next (20 s).
 
 ### 14.6 Commit policy
@@ -614,7 +607,8 @@ Results are reported per user-month and extrapolated to "per 100,000 users", **c
 ## 16. Decisions recorded
 - **Track:** 03. **Lead persona:** garment worker. **Stack:** FastAPI + React in one container. **LLM:** Claude.
 - The rich Home design (forecast chart + action cards) is approved; the simplified variant was rejected.
-- **Added unique features:** learning nudges (bandit), Bangla voice, Eid planner, agent cash-out forecast.
-- **Added for retention:** churn model, safe-to-spend, and Smart Route framed as a universal wallet. Retention is a supporting business argument, not the headline.
+- **Added unique features:** learning nudges (bandit), Bangla voice, Eid planner.
+- **Added for retention:** safe-to-spend and Smart Route framed as a universal wallet. Retention is a supporting business argument, not the headline.
+- **Removed as off-track:** churn-risk model (Track 02) and agent cash-out forecast (Track 05). The analyst tab became a Track 03 **Impact** page. Both removed items are kept as on-site candidates (§13).
 - **Paisa saving** = sweep of the balance's fractional part after each transaction (§5.3).
 - **Full Track 03 coverage:** Health Coach (E12), Literacy Personalizer (E13), and Responsible Credit Readiness as transparent, non-scored, user-only signals (E14) — all three in full scope.
