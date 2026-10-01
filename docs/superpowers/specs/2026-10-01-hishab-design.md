@@ -335,8 +335,9 @@ Per user and observation date:
 - **Transfers and savings:** remittance share; other-wallet send share; pocket balances.
 - **Calendar:** days to next Eid; month-end flag.
 - **Profile:** persona, area, tenure.
-(IDs E4 and E10 are intentionally unused: churn and agent forecasting were removed as off-track.)
 - **Forecast-derived** (E3 only): min P50 projected balance over 14 d, P10 min.
+
+(IDs E4 and E10 are intentionally unused: churn and agent forecasting were removed as off-track.)
 
 ### 4.2 Action catalogue (`rules/actions.yaml`)
 Each action has `id`, `applies_if` (rule on features), `params` (computed), `transform` (how it modifies future flows), Bangla and English templates, and `sensitive: false|true`.
@@ -519,7 +520,7 @@ safe_today  = max(0, (balance − committed − cushion − essential_buffer) / 
 │  │  │                       # notifications, shortcuts
 │  │  ├─ rules/               # actions.yaml, guardrails.yaml, fees.yaml, eid_dates.yaml,
 │  │  │                       # lessons.yaml, readiness.yaml, levels.yaml,
-│  │  │                       # emergency.yaml, notifications.yaml
+│  │  │                       # emergency.yaml, notifications.yaml, dps.yaml
 │  │  ├─ llm/                 # client.py, tools.py, prompts.py, fallback.py
 │  │  ├─ store/               # sqlite.py (user state: pockets, toggles, responses, labels)
 │  │  └─ api/                 # main.py, routes/*.py, schemas.py
@@ -699,8 +700,6 @@ Results are reported per user-month and extrapolated to "per 100,000 users", **c
 ## 14. Delivery plan
 
 ### 14.1 72-hour schedule (from T+0; includes sleep)
-| Hours | Work | Exit criterion |
-|---|---|---|
 Hours are counted from the start of implementation. The plan must be re-anchored to the real T+72 deadline before coding starts (open item §16).
 
 | Hours | Work | Exit criterion |
