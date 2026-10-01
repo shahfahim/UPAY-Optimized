@@ -1,0 +1,33 @@
+# Savings levels (spec F4 / E16). Levels never gate any upay product.
+milestones: [5, 10, 15]
+level1_days: 30
+allowed_missed_days: 3
+level2:
+  shortfall_free_months: 3
+  emergency_days: 15
+level3:
+  on_time_installments: 3
+levels:
+  - level: 0
+    name_bn: "শুরু"
+    name_en: "Start"
+    unlocks_bn: ["পকেট", "পয়সা-সঞ্চয়"]
+  - level: 1
+    name_bn: "সঞ্চয়ী"
+    name_en: "Saver"
+    unlocks_bn: ["DPS-এর জন্য প্রস্তুত", "Smart DPS পরামর্শ", "বড় পকেট লক্ষ্য"]
+  - level: 2
+    name_bn: "স্থির"
+    name_en: "Steady"
+    unlocks_bn: ["Smart DPS-এর উচ্চ ধাপের পরামর্শ", "জরুরি টাকায় DPS-ভিত্তিক বিকল্প দেখা"]
+  - level: 3
+    name_bn: "দক্ষ"
+    name_en: "Skilled"
+    unlocks_bn: ["একসাথে কয়েকটা লক্ষ্য", "উন্নত পাঠ"]
+milestone_badges_bn:
+  5: "৫ দিনের সঞ্চয়"
+  10: "১০ দিনের সঞ্চয়"
+  15: "১৫ দিনের সঞ্চয়"
+note_bn: "লেভেল কোনো সেবা বন্ধ করে না — এটা শুধু পরামর্শ।"
+# upay may attach its own rewards here later; Hishab promises none.
+rewards: []

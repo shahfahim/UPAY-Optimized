@@ -1,0 +1,5 @@
+# Emergency money helper (spec E17). The loan cap is a fixed BANK rule (placeholder value),
+# never computed by AI and never above the DPS balance. The bank makes the decision.
+max_loan_pct_of_dps_balance: 0.80   # placeholder
+repayment_months: 6
+decision_note_bn: "চূড়ান্ত সিদ্ধান্ত ব্যাংক নেবে"

@@ -1,0 +1,5 @@
+# Smart DPS (spec E16). Options mirror a DPS opening screen; values are demo assumptions.
+monthly_options: [500, 1000, 1500, 2000, 3000, 5000]
+tenure_months: [12, 24, 36, 60]
+naive_fraction: 0.10       # baseline rule: 10% of monthly income
+check_months: 3            # risk is re-scored over this many months of installments

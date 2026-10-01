@@ -1,0 +1,32 @@
+# Personalised micro-lessons (spec E13). Triggers are evaluated in engine/lessons.py.
+lessons:
+  - id: cashout_cost
+    trigger: "cash_dependency >= 0.3"
+    title_bn: "Cash-out-এ আসলে কত খরচ হয়?"
+    body_bn: "গত মাসে তুমি cash-out-এ প্রায় ৳{cashout_fees_month} fee দিয়েছ — বছরে যা প্রায় ৳{cashout_fees_year}। দোকানে সরাসরি wallet দিয়ে দিলে এই খরচ লাগে না।"
+    action_id: digital_pay_instead_of_cashout
+  - id: emergency_fund
+    trigger: "emergency_days < 15"
+    title_bn: "জরুরি তহবিল কেন দরকার?"
+    body_bn: "এখন তোমার জমানো টাকায় প্রায় {emergency_days} দিনের খরচ চলবে। ১৫ দিনের খরচ জমা থাকলে হঠাৎ অসুখ বা দেরিতে বেতনেও চিন্তা কম থাকে।"
+    action_id: save_on_payday
+  - id: eid_planning
+    trigger: "eid_days_left <= 120"
+    title_bn: "উৎসবের খরচ আগে থেকে ভাগ করে রাখো"
+    body_bn: "ঈদ আর {eid_days_left} দিন পরে। এখন থেকে সপ্তাহে ৳{eid_weekly} রাখলে ঈদের মাসে টাকা ধার করতে হবে না।"
+    action_id: eid_weekly_saving
+  - id: npsb_basics
+    trigger: "costly_remittance"
+    title_bn: "NPSB কী, আর এতে কীভাবে টাকা বাঁচে?"
+    body_bn: "NPSB দিয়ে upay থেকে সরাসরি অন্য wallet বা ব্যাংকে টাকা পাঠানো যায়। তোমার মতো পাঠালে বছরে প্রায় ৳{npsb_saving} বাঁচতে পারে।"
+    action_id: cheaper_route
+  - id: budget_why
+    trigger: "overspend_category"
+    title_bn: "Budget কেন কাজে লাগে?"
+    body_bn: "এই মাসে {top_category_bn} খরচ তোমার স্বাভাবিকের চেয়ে বেশি। Budget বসালে খরচ সীমার কাছে গেলেই জানতে পারবে।"
+    action_id: trim_discretionary
+  - id: paisa_saving
+    trigger: "paisa_off"
+    title_bn: "পয়সা থেকেই সঞ্চয়ের শুরু"
+    body_bn: "প্রতিটা লেনদেনের পর balance-এর পয়সার অংশ আলাদা পকেটে যায়। টাকার পরিমাণ ছোট, কিন্তু প্রতিদিন সঞ্চয়ের অভ্যাস তৈরি হয়।"
+    action_id: null

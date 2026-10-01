@@ -1,0 +1,51 @@
+# Action catalogue (spec §4.2). Conditions and transforms live in engine/actions.py;
+# this file holds ids and user-facing copy. Placeholders are filled from action params.
+actions:
+  - id: save_on_payday
+    sensitive: false
+    title_bn: "বেতনের দিন ৳{amount} জরুরি পকেটে রাখো"
+    title_en: "Put ৳{amount} in your emergency pocket on payday"
+    why_bn: "বেতনের দিনেই আলাদা রাখলে মাসের শেষে টানাটানি কমে।"
+    why_en: "Setting money aside on payday eases the month-end squeeze."
+  - id: split_remittance
+    sensitive: false
+    title_bn: "বাড়িতে টাকা দুই ভাগে পাঠাও (বেতনের দিন আর ১৫ তারিখ)"
+    title_en: "Send money home in two parts (payday and the 15th)"
+    why_bn: "পরিমাণ একই থাকবে, শুধু সময় ভাগ হবে — মাসের মাঝে হাতে টাকা থাকবে।"
+    why_en: "Same amount, split timing — you keep cash for mid-month."
+  - id: digital_pay_instead_of_cashout
+    sensitive: false
+    title_bn: "দোকানে wallet দিয়ে পেমেন্ট করো, মাসে ৳{fee} বাঁচবে"
+    title_en: "Pay shops from the wallet and save ৳{fee} a month"
+    why_bn: "Cash-out করে দোকানে দিলে fee লাগে; wallet দিয়ে দিলে লাগে না।"
+    why_en: "Cashing out to pay a shop costs a fee; paying from the wallet doesn't."
+  - id: cheaper_route
+    sensitive: false
+    title_bn: "বাড়িতে NPSB দিয়ে পাঠাও, বছরে ৳{fee} বাঁচবে"
+    title_en: "Send home via NPSB and save ৳{fee} a year"
+    why_bn: "Cash-out করে পাঠানোর চেয়ে NPSB পথে খরচ কম।"
+    why_en: "The NPSB route costs less than cashing out and sending."
+  - id: pause_paisa_saving
+    sensitive: false
+    title_bn: "পয়সা-সঞ্চয় বেতন আসা পর্যন্ত থামিয়ে রাখো"
+    title_en: "Pause paisa saving until your salary arrives"
+    why_bn: "এখন ঝুঁকি বেশি, তাই ছোট সঞ্চয়ও আপাতত হাতে রাখা ভালো।"
+    why_en: "Risk is high now, so keep even small savings at hand for a while."
+  - id: trim_discretionary
+    sensitive: false
+    title_bn: "{category_bn} খরচ ১০% কমাও, মাসে প্রায় ৳{amount} থাকবে"
+    title_en: "Trim {category_en} spending by 10% to keep about ৳{amount} a month"
+    why_bn: "এই মাসে {category_bn} খরচ তোমার স্বাভাবিকের চেয়ে বেশি।"
+    why_en: "{category_en} spending is above your usual this month."
+  - id: dps_ready
+    sensitive: false
+    title_bn: "তুমি DPS-এর জন্য প্রস্তুত — নিরাপদ মাসিক জমা ৳{amount}"
+    title_en: "You're ready for a DPS — safe monthly deposit ৳{amount}"
+    why_bn: "তোমার সঞ্চয়ের অভ্যাস আর হিসাব দেখে এই পরিমাণ নিরাপদ।"
+    why_en: "Based on your saving habit and cash flow, this amount is safe."
+  - id: eid_weekly_saving
+    sensitive: false
+    title_bn: "ঈদের জন্য সপ্তাহে ৳{amount} রাখো"
+    title_en: "Save ৳{amount} a week for Eid"
+    why_bn: "ঈদ আর {days} দিন পরে; এখন থেকে ভাগ করে রাখলে চাপ কমবে।"
+    why_en: "Eid is {days} days away; saving in parts now eases the pressure."

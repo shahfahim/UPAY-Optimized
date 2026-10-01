@@ -1,0 +1,19 @@
+# Business rules and guardrails (spec §4.2, §5.1). Kept separate from ML.
+risk_levels:
+  amber: 0.30   # green < 0.30 <= amber < 0.60 <= red
+  red: 0.60
+essential_buffer: 200        # ৳, used by safe-to-spend (spec §5.2)
+shortfall_threshold: 200     # ৳, end-of-day main balance below this = shortfall day
+essentials: [rent, family_support, health, education]
+max_action_cards: 3
+max_nudges_per_flow: 1
+max_amount: 1000000          # ৳10,00,000 upper bound for any user-entered amount
+forbidden_phrases:
+  - অনুমোদিত
+  - ঋণ পাবেন
+  - ঋণ পাবে
+  - তুমি যোগ্য
+  - approved
+  - you qualify
+  - loan offer
+  - credit score

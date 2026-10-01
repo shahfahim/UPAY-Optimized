@@ -1,0 +1,31 @@
+# Notification center (spec F9). In-app only.
+caps:
+  reengage_per_week: 1
+  total_per_week: 3
+triggers:
+  risk_red:
+    text_bn: "সাবধান: টাকা আর প্রায় {days} দিন চলবে। একটা সহজ পরিকল্পনা দেখো।"
+    text_en: "Heads up: your money may last about {days} more days. See a simple plan."
+    link: /app/hishab
+  bill_due:
+    days: 3
+    text_bn: "{name} বিল {days} দিনের মধ্যে দিতে হবে।"
+    text_en: "{name} bill is due in {days} days."
+    link: /app/home
+  salary_plan:
+    text_bn: "বেতন এসেছে। এই মাসের পরিকল্পনা দেখো।"
+    text_en: "Salary arrived. See this month's plan."
+    link: /app/hishab
+  level_milestone:
+    text_bn: "অভিনন্দন! তুমি '{badge}' অর্জন করেছ।"
+    text_en: "Well done! You earned '{badge}'."
+    link: /app/savings/levels
+  pocket_80:
+    text_bn: "তোমার {pocket_bn} পকেট {pct}% পূর্ণ — আর ৳{left} বাকি।"
+    text_en: "Your {pocket_en} pocket is {pct}% full — ৳{left} to go."
+    link: /app/savings
+  reengage:
+    days: [7, 14, 30]
+    text_bn: "{name}, {hook_bn}"
+    text_en: "{name}, {hook_en}"
+    link: /app/hishab

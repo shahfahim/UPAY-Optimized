@@ -1,0 +1,21 @@
+# Transfer routes and fees (spec §5.4).
+# EVERY NUMBER HERE IS A PLACEHOLDER ASSUMPTION for the demo, not a real tariff.
+placeholder: true
+nodes: [upay_wallet, npsb, other_mfs_wallet, bank_account, bank_card, merchant, agent_cash]
+labels_bn:
+  upay_wallet: "upay wallet"
+  npsb: "NPSB"
+  other_mfs_wallet: "অন্য MFS wallet"
+  bank_account: "ব্যাংক অ্যাকাউন্ট"
+  bank_card: "ব্যাংক কার্ড"
+  merchant: "দোকান"
+  agent_cash: "এজেন্ট (ক্যাশ)"
+edges:
+  - {from: upay_wallet, to: npsb, fixed: 0, pct: 0.5, min: 5, max: 50, minutes: 2}         # placeholder
+  - {from: npsb, to: other_mfs_wallet, fixed: 0, pct: 0, min: 0, max: 0, minutes: 1}       # placeholder
+  - {from: npsb, to: bank_account, fixed: 0, pct: 0, min: 0, max: 0, minutes: 5}           # placeholder
+  - {from: upay_wallet, to: bank_card, fixed: 10, pct: 0, min: 10, max: 10, minutes: 10}   # placeholder
+  - {from: upay_wallet, to: merchant, fixed: 0, pct: 0, min: 0, max: 0, minutes: 1}        # placeholder
+  - {from: upay_wallet, to: agent_cash, fixed: 0, pct: 1.85, min: 0, max: 100000, minutes: 15}  # placeholder cash-out
+  - {from: agent_cash, to: other_mfs_wallet, fixed: 0, pct: 0, min: 0, max: 0, minutes: 30}     # placeholder agent cash-in
+  - {from: upay_wallet, to: upay_wallet, fixed: 0, pct: 0, min: 0, max: 0, minutes: 1}     # placeholder

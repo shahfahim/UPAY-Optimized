@@ -1,0 +1,44 @@
+# Responsible credit readiness signals (spec E14). Educational only: no score, no decisions.
+# Inputs never include persona, gender, area or age.
+disclaimer_bn: "এটা শুধু তোমার নিজের বোঝার জন্য। এটা কোনো ঋণের সিদ্ধান্ত বা score নয়, upay এটা দিয়ে কোনো সিদ্ধান্ত নেয় না।"
+signals:
+  - id: income_regularity
+    metric: income_cv              # coefficient of variation of monthly income, last 6 months
+    higher_is_better: false
+    green: 0.15
+    amber: 0.35
+    name_bn: "আয় নিয়মিত"
+    reason_bn: "গত ৬ মাসে তোমার আয়ের ওঠানামা {value_pct}%।"
+    improve_bn: "আয় অনিয়মিত হলে ভালো মাসে কিছু আলাদা রাখলে খারাপ মাস সামলানো সহজ হয়।"
+  - id: emergency_buffer
+    metric: emergency_days
+    higher_is_better: true
+    green: 15
+    amber: 5
+    name_bn: "জরুরি তহবিল"
+    reason_bn: "জমানো টাকায় প্রায় {value} দিনের খরচ চলবে।"
+    improve_bn: "প্রতি মাসে ৳{monthly} রাখলে প্রায় {months} মাসে এটা সবুজ হবে।"
+  - id: on_time_bills
+    metric: on_time_share
+    higher_is_better: true
+    green: 0.9
+    amber: 0.7
+    name_bn: "বিল সময়মতো"
+    reason_bn: "নিয়মিত বিল ও recharge-এর {value_pct}% সময়মতো দেওয়া হয়েছে।"
+    improve_bn: "বিল আসার আগেই 'সাম্প্রতিক পেমেন্ট' থেকে এক tap-এ দিয়ে দাও।"
+  - id: shortfall_frequency
+    metric: shortfall_months_3
+    higher_is_better: false
+    green: 0
+    amber: 1
+    name_bn: "টানাটানি কম"
+    reason_bn: "গত ৩ মাসের মধ্যে {value} মাসে টাকা কম পড়েছে।"
+    improve_bn: "বেতনের দিন জরুরি পকেটে কিছু রাখলে মাসের শেষের টানাটানি কমে।"
+  - id: saving_consistency
+    metric: saving_months_3
+    higher_is_better: true
+    green: 3
+    amber: 1
+    name_bn: "নিয়মিত সঞ্চয়"
+    reason_bn: "গত ৩ মাসের মধ্যে {value} মাসে সঞ্চয় করেছ।"
+    improve_bn: "পয়সা-সঞ্চয় চালু রাখলে প্রতি মাসেই কিছু না কিছু জমবে।"

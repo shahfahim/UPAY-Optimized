@@ -1,0 +1,11 @@
+# Approximate Eid dates (spec §5.5). Actual dates depend on moon sighting.
+approximate: true
+eids:
+  - {name: Eid-ul-Fitr, name_bn: "ঈদুল ফিতর", date: 2025-03-31}
+  - {name: Eid-ul-Adha, name_bn: "ঈদুল আজহা", date: 2025-06-07}
+  - {name: Eid-ul-Fitr, name_bn: "ঈদুল ফিতর", date: 2026-03-20}
+  - {name: Eid-ul-Adha, name_bn: "ঈদুল আজহা", date: 2026-05-27}
+  - {name: Eid-ul-Fitr, name_bn: "ঈদুল ফিতর", date: 2027-03-10}
+  - {name: Eid-ul-Adha, name_bn: "ঈদুল আজহা", date: 2027-05-17}
+# Assumption: garment workers receive a festival bonus of about half a month's salary before each Eid.
+garment_bonus_fraction: 0.5
