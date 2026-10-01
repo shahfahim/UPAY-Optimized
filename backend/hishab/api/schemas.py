@@ -91,6 +91,7 @@ class SendIn(BaseModel):
     counterparty_name: str | None = None
     destination: str | None = None
     category: str | None = None
+    route: list[str] | None = Field(default=None, max_length=8)  # nodes of the path picked on the money map
 
 
 class ChatIn(BaseModel):

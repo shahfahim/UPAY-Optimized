@@ -46,3 +46,20 @@ def test_category_confirm_validation(client):
                                                                  "category": "spaceships"}).status_code == 422
     assert client.post("/api/users/U0001/category/confirm", json={"counterparty_id": "M-001",
                                                                  "category": "shopping"}).status_code == 200
+
+
+def test_send_uses_selected_route_fee(client):
+    """A route picked on the money map is the one charged — not silently the cheapest."""
+    routes = client.post("/api/users/U0001/route", json={"amount": 500, "destination": "other_mfs_wallet"}).json()["routes"]
+    via_agent = next(r for r in routes if "agent_cash" in r["nodes"])
+    r = client.post("/api/users/U0001/send", json={"type": "npsb", "amount": 500, "destination": "other_mfs_wallet",
+                                                   "route": via_agent["nodes"]})
+    assert r.status_code == 200 and r.json()["fee"] == via_agent["fee"]
+    r = client.post("/api/users/U0001/send", json={"type": "npsb", "amount": 500, "destination": "other_mfs_wallet"})
+    assert r.json()["fee"] == routes[0]["fee"]
+
+
+def test_send_rejects_unknown_route(client):
+    r = client.post("/api/users/U0001/send", json={"type": "npsb", "amount": 500, "destination": "other_mfs_wallet",
+                                                   "route": ["upay_wallet", "bank_card"]})
+    assert r.status_code == 422

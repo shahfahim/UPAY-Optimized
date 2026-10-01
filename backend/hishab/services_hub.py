@@ -288,7 +288,13 @@ class HubMixin:
         if typ == "cash_out":
             fee, cp_type = _routes(amount, "agent_cash")[0].fee, "agent"
         elif typ in ("npsb", "fund_transfer"):
-            fee = _routes(amount, dest)[0].fee
+            options = _routes(amount, dest)
+            picked = body.get("route")
+            if picked:  # the user chose a path on the money map: charge that path, never silently another
+                options = [r for r in options if r.nodes == list(picked)]
+                if not options:
+                    raise ValueError("পথ সঠিক নয়")
+            fee = options[0].fee
             channel = "bank" if dest == "bank_account" else "other_mfs"
             tx_type, cp_type = "send_money", "person"
         elif typ == "send_money":

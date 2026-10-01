@@ -78,7 +78,7 @@ export const api = {
   route: (uid: string, amount: number, destination: string) =>
     req<RouteResult>('POST', `${u(uid)}/route`, { amount, destination }),
   send: (uid: string, body: { type: SendType; amount: number; counterparty_id?: string; counterparty_name?: string;
-    destination?: string; category?: string }) => req<SendResult>('POST', `${u(uid)}/send`, body),
+    destination?: string; category?: string; route?: string[] }) => req<SendResult>('POST', `${u(uid)}/send`, body),
 
   transactions: (uid: string, limit = 60) => req<TxList>('GET', `${u(uid)}/transactions?limit=${limit}`),
   chat: (uid: string, message: string) => req<ChatAnswer>('POST', `${u(uid)}/chat`, { message }),

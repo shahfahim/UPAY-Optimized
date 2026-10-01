@@ -19,6 +19,11 @@ import Calendar from './pages/hub/Calendar'
 import HubLayout from './pages/hub/HubLayout'
 import Learn from './pages/hub/Learn'
 import Overview from './pages/hub/Overview'
+import CashOut from './pages/flows/CashOut'
+import FundTransfer from './pages/flows/FundTransfer'
+import Npsb from './pages/flows/Npsb'
+import Pay from './pages/flows/Pay'
+import SendMoney from './pages/flows/SendMoney'
 import Dps from './pages/savings/Dps'
 import Emergency from './pages/savings/Emergency'
 import Levels from './pages/savings/Levels'
@@ -70,6 +75,11 @@ export default function App() {
         <Route path="savings/levels" element={<Levels />} />
         <Route path="savings/emergency" element={<Emergency />} />
         <Route path="savings/dps" element={<Dps />} />
+        <Route path="send" element={<SendMoney />} />
+        <Route path="cashout" element={<CashOut />} />
+        <Route path="npsb" element={<Npsb />} />
+        <Route path="transfer" element={<FundTransfer />} />
+        <Route path="pay" element={<Pay />} />
         <Route path="*" element={<Soon />} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
