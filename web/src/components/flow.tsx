@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { api } from '../api/client'
 import type { CategoryOption, CostlyHabit, Route } from '../api/types'
 import { useLang } from '../i18n'
+import { chooseCategory } from '../lib/category'
 import { parseAmount } from '../lib/format'
 import { Icon } from './Icon'
 import { AiBadge, Sheet } from './ui'
@@ -54,6 +55,9 @@ export function CategoryChips({ uid, counterpartyId, counterpartyType, amount, v
   const { L } = useLang()
   const [opts, setOpts] = useState<CategoryOption[]>([])
   const [more, setMore] = useState(false)
+  const [userChose, setUserChose] = useState(false)
+  useEffect(() => setUserChose(false), [counterpartyId])
+  const pick = (c: string) => { setUserChose(true); onChange(c) }
   useEffect(() => {
     let live = true
     const t = window.setTimeout(() => {
@@ -61,7 +65,8 @@ export function CategoryChips({ uid, counterpartyId, counterpartyType, amount, v
         .then((o) => {
           if (!live) return
           setOpts(o.slice(0, 3))
-          if (o[0]) onChange(o[0].category)
+          const next = chooseCategory(value, userChose, o.map((x) => x.category))
+          if (next && next !== value) onChange(next)
         })
         .catch(() => live && setOpts([]))
     }, 250)
@@ -74,7 +79,7 @@ export function CategoryChips({ uid, counterpartyId, counterpartyType, amount, v
       <p className="flex items-center gap-2 text-sm font-semibold">{L('খরচের ধরন', 'Category')}<AiBadge /></p>
       <div className="mt-1.5 flex flex-wrap gap-2">
         {opts.map((o, i) => (
-          <button key={o.category} type="button" onClick={() => onChange(o.category)} aria-pressed={value === o.category}
+          <button key={o.category} type="button" onClick={() => pick(o.category)} aria-pressed={value === o.category}
             className={`rounded-full border px-3 py-1.5 text-sm ${value === o.category ? 'border-upay-blue bg-upay-blue text-white' : 'border-line bg-white'}`}>
             {L(...(CATEGORY_BN[o.category] ?? [o.category_bn, o.category]))}
             {i === 0 && <span className="ml-1 text-[10px] opacity-80">{L('সম্ভাব্য', 'likely')}</span>}
@@ -87,7 +92,7 @@ export function CategoryChips({ uid, counterpartyId, counterpartyType, amount, v
       {more && (
         <div className="mt-2 flex flex-wrap gap-1.5">
           {Object.keys(CATEGORY_BN).filter((c) => !shown.includes(c)).map((c) => (
-            <button key={c} type="button" onClick={() => { onChange(c); setMore(false) }}
+            <button key={c} type="button" onClick={() => { pick(c); setMore(false) }}
               className="rounded-full bg-surface px-2.5 py-1 text-xs">{L(...CATEGORY_BN[c])}</button>
           ))}
         </div>
