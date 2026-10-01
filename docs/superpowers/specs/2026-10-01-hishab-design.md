@@ -18,7 +18,12 @@ Hishab যা করে:
 3. **সঞ্চয়:** savings pocket, লক্ষ্য, পয়সা-সঞ্চয়, আর ঈদ পরিকল্পনাকারী।
 4. **Smart Route (universal wallet):** যেকোনো wallet বা ব্যাংকে টাকা পাঠানোর সবচেয়ে সস্তা পথ দেখায়, আর cash-out fee বাঁচায়।
 5. **বাংলায় লিখে বা মুখে প্রশ্ন করা যায়।** উত্তর আসে AI engine-এর আসল সংখ্যা থেকে।
-6. **upay Analyst tab:** ঘাটতির ঝুঁকি, churn-এর ঝুঁকি, এজেন্টদের cash-out চাহিদার পূর্বাভাস, model-এর মান, আর fairness।
+6. **আর্থিক স্বাস্থ্য coach:** জরুরি তহবিল কত দিনের, cash-নির্ভরতা কত, ঘাটতিমুক্ত মাস কয়টা; অভ্যাস চিহ্নিত করা; মাসিক হিসাব রিপোর্ট।
+7. **ব্যক্তিগত শেখা:** user-এর নিজের আচরণ আর সংখ্যা দিয়ে ছোট বাংলা পাঠ, যা শেখে কোন পাঠ কাজে দেয়।
+8. **নিয়মিততার signal (দায়িত্বশীল credit readiness):** কোনো score বা loan সিদ্ধান্ত নয়। শুধু user নিজে দেখে কোন অভ্যাস ভবিষ্যৎ যোগ্যতায় প্রভাব ফেলতে পারে, আর কী করলে উন্নতি হবে।
+9. **upay Analyst tab:** ঘাটতির ঝুঁকি, churn-এর ঝুঁকি, এজেন্টদের cash-out চাহিদার পূর্বাভাস, model-এর মান, আর fairness।
+
+Track 03-এর ৮টা project opportunity-ই cover হয়: health coach, savings planner, spending companion, cash-flow forecasting, goal copilot, inclusive assistant, literacy personalizer, credit readiness।
 
 AI-এর মূল কাজ করে ML model (LightGBM, SHAP, bandit, graph optimization)। LLM (Claude) শুধু ব্যাখ্যা দেয়। কোনো সংখ্যা বানায় না, কোনো সিদ্ধান্ত নেয় না।
 
@@ -42,7 +47,7 @@ AI-এর মূল কাজ করে ML model (LightGBM, SHAP, bandit, graph 
 
 | Criterion (weight) | What earns it in Hishab |
 |---|---|
-| Problem relevance (20%) | Directly answers the guideline's own examples ("Why do I always run short before month-end?", "save ৳30,000 in six months"); Bangladesh-specific (garment payroll, Eid, remittance home, cash-out habit) |
+| Problem relevance (20%) | Covers all 8 Track 03 project opportunities (§3.3) and directly answers the guideline's own examples ("Why do I always run short before month-end?", "save ৳30,000 in six months"); Bangladesh-specific (garment payroll, Eid, remittance home, cash-out habit) |
 | AI/ML depth (20%) | Forecasting with uncertainty, calibrated risk classifier + SHAP, churn model, category classifier, counterfactual action optimizer, Thompson-sampling bandit, graph route optimizer; all beat stated baselines |
 | Business/customer impact (20%) | Customer: shortfall days avoided, fees saved. upay: money retained in wallet, churn risk reduced, agent liquidity planning. Simulated impact in Analyst tab + post-hackathon A/B design |
 | Prototype quality (15%) | Live end-to-end app, mobile-first, Bangla UI, voice input, always-on deployment |
@@ -91,6 +96,13 @@ Bottom navigation: **হোম · পাঠাও/পে · সঞ্চয় �
 - **Forecast chart:** 30-day projected balance with P10–P90 band, zero/threshold line, predicted shortfall marker.
 - **Risk card:** green, amber or red; headline *"{date}-এ প্রায় ৳{amount} কম পড়তে পারে"* plus likelihood in words and %; a **"কেন?"** expander lists the top 3 drivers in plain Bangla.
 - **আজ নিরাপদ খরচ** (safe-to-spend today) number.
+- **আর্থিক স্বাস্থ্য snapshot** (E12): three indicators, each with last month's value and an up/down arrow.
+  - **জরুরি তহবিল:** "জমানো টাকায় ৯ দিনের খরচ চলবে".
+  - **Cash-নির্ভরতা:** "বেতনের ৬২% cash-out হয়".
+  - **ঘাটতিমুক্ত মাস:** "গত ৩ মাসে ২ মাস".
+
+  Tapping it opens the **Health Coach** page (F8).
+- **শেখার card** (E13): at most one personalised micro-lesson, dismissible.
 - **Action cards** (max 3), each with: text, expected effect ("ঝুঁকি ৭২% → ৩১%", "৳৯৫ বাঁচবে"), **রাজি / বাদ / কেন?**. Tapping a card previews the what-if line on the chart.
 - Links to Calendar and Budget.
 
@@ -119,18 +131,51 @@ Bottom navigation: **হোম · পাঠাও/পে · সঞ্চয় �
 - Answers come from engine tools (§8). LLM text is labelled with ✨. An expandable "যে তথ্য দেখে উত্তর" section shows which tool results were used.
 - Suggested question chips: "মাসের শেষে টাকা কম পড়ে কেন?", "৬ মাসে ৳৩০,০০০ জমাতে পারব?", "cash-out কীভাবে কমাব?", "এই লেনদেনগুলো বুঝিয়ে বলো"।
 
+**F8. Health Coach (আর্থিক স্বাস্থ্য)** — opened from the Home snapshot
+- The three indicators with a 6-month mini trend each.
+- **তোমার অভ্যাস** (E12): 3–5 detected habits in plain Bangla, each with its ৳ effect. Examples:
+  - "বেতনের ৩ দিনের মধ্যে ৬০% টাকা বেরিয়ে যায়"
+  - "মাসে ৪ বার cash-out — fee ৳৩১০"
+  - "শুক্রবারে বাজার খরচ বেশি"
+- **মাসিক হিসাব রিপোর্ট:** what went well, one thing to change, fees saved, and shortfall avoided or not. Numbers come from the engine; wording comes from a template, or the LLM when available (✨).
+- **শেখো (Learn) section** (E13): personalised lesson list. Each lesson embeds the user's own numbers, has a **বুঝেছি / কাজে লাগবে না** response, and links to a related action.
+- **নিয়মিততার signal (Credit readiness)** (E14) — a separate card at the bottom, with a fixed disclaimer: *"এটা শুধু তোমার নিজের বোঝার জন্য। এটা কোনো ঋণের সিদ্ধান্ত বা score নয়, upay এটা দিয়ে কোনো সিদ্ধান্ত নেয় না।"*
+  - Five transparent signals, each green, amber or red, with a one-line reason:
+    1. Income regularity.
+    2. Emergency buffer.
+    3. On-time bills and recharges.
+    4. Shortfall frequency.
+    5. Saving consistency.
+  - **কী করলে উন্নতি হবে:** for each non-green signal, the specific habit and an E2-based projection, e.g. "প্রতি মাসে ৳৫০০ রাখলে ৩ মাসে 'জরুরি তহবিল' সবুজ হবে".
+  - No numeric score, no ranking, no loan offers or links.
+
 **F7. upay Analyst** (`/analyst`, English UI)
 - KPI tiles: % users at shortfall risk (14 d), avg predicted shortfall, avoidable cash-out fees / month, money retained if actions accepted (simulated).
 - **Impact simulation:** baseline vs with-Hishab for shortfall days, fees and salary retained in wallet. Labelled "simulated; assumptions in docs".
 - **Churn risk:** distribution, top global drivers (SHAP), table of at-risk users with drivers and the recommended next-best action.
 - **Agent cash-out forecast:** by area for the next 14 days (table and bar chart), with peak day and ratio vs normal.
-- **Learning nudges:** acceptance-rate learning curve (bandit vs static ranking) from offline replay.
+- **Learning nudges:** acceptance-rate learning curve (bandit vs static ranking) from offline replay, for actions and for lessons.
+- **Financial independence:** cohort distribution of the three health indicators, plus simulated change with Hishab. This is the headline Track 03 outcome metric.
+- **Lesson effectiveness:** simulated behaviour change after lessons (e.g. cash-out share next month, treated vs not shown).
+- **Readiness-signal fairness:** signal distribution by persona, gender and area, with a note that signals never use these attributes as inputs.
 - **Model quality:** metrics vs baselines (from `reports/metrics.json`).
 - **Fairness:** key metrics sliced by persona, gender and area.
 - **"What changes with real upay data"** panel (§11.4).
 
 ### 3.2 Out of scope (72 h)
-Real money movement or integration with real MFS or NPSB; push notifications; lending or credit decisions; scam detection (kept as an on-site candidate); user accounts and authentication (a demo-user switcher instead); native mobile app.
+Real money movement or integration with real MFS or NPSB; push notifications; lending or credit **decisions**, credit scores or loan offers (E14 is educational signals only); scam detection (kept as an on-site candidate); user accounts and authentication (a demo-user switcher instead); native mobile app.
+
+### 3.3 Track 03 coverage
+| Track 03 opportunity | Where in Hishab |
+|---|---|
+| AI Financial Health Coach | F8 health snapshot, habits, monthly report (E12) + "কেন?" drivers + chat |
+| Personal Savings Planner | F4 goal planner (E8) |
+| Smart Spending Companion | E5 actions (`trim_discretionary`, `digital_pay_instead_of_cashout`), cash-out nudge, E12 unusual-spend habits |
+| Cash-Flow Forecasting | E2 + E3, Home chart, Calendar |
+| Financial Goal Copilot | Pockets (emergency, Eid, family, education, custom) + Eid planner |
+| Inclusive Financial Assistant | Bangla-first UI, Bangla voice, simple language |
+| Financial Literacy Personalizer | E13 behaviour-triggered lessons with the user's own numbers, bandit-adapted |
+| Responsible Credit Readiness | E14 transparent consistency signals + improvement projections, no decisions |
 
 ---
 
@@ -151,6 +196,9 @@ All engine modules are plain Python in `backend/hishab/engine/`, are stateless (
 | E9 | Learning nudges | Thompson sampling, Beta(α, β) per (persona, action type), updated per user on accept/dismiss; priors from synthetic acceptance | Acceptance probability used in E5 ranking | Static ranking; random | Offline replay: cumulative acceptance rate vs static/random |
 | E10 | Agent cash-out forecast | Aggregate per-user predicted cash-outs (E2 flows × cash-out share, salary-day pattern) by area and day | 14-day cash-out volume per area, peak day, ratio vs normal | Same weekday last month | Area-level MAPE on holdout |
 | E11 | Safe-to-spend | Deterministic formula on E1 + E2 (§5.2) | ৳ per day | n/a | n/a |
+| E12 | Health indicators and habit miner | Indicators: emergency days = pocket total ÷ avg daily essential spend; cash dependency = cash-out ÷ income (30 d); shortfall-free months (last 3). Habits: rule templates over features (post-salary depletion speed, cash-out count/fees, weekday spikes, category z-score > 2 vs own 3-month history) ranked by ৳ impact | 3 indicators + month-over-month delta; top 3–5 habits; monthly report facts | n/a | Habit detector P/R vs injected habits |
+| E13 | Literacy personalizer | Lesson library (`rules/lessons.yaml`, 10–12 Bangla micro-lessons with `{placeholders}`) + trigger rules on E12 features; selection via E9 Thompson sampling per (persona, lesson) | ≤1 lesson card on Home, ranked list in F8, filled with the user's numbers | Random or generic lesson | Offline replay: simulated behaviour change after lesson vs generic/random |
+| E14 | Readiness signals | Five transparent rule-based signals (thresholds in `rules/readiness.yaml`) computed from E1/E12 features; improvement path via E2 projection of the recommended habit. **Never uses** persona, gender, area or age as inputs | Signal states + reasons + improvement projection | n/a | Fairness: signal-state distribution by group; unit tests on thresholds |
 
 ### 4.1 Feature set (shared; `engine/features.py`)
 Per user and observation date:
@@ -190,6 +238,13 @@ Each action has `id`, `applies_if` (rule on features), `params` (computed), `tra
 - Never suggest cutting essential or sensitive categories: family support amount, health, education, rent. Timing changes (split) are allowed; reductions are not.
 - Never block or discourage withdrawals from pockets. "তবুও cash-out" is always available.
 - No autonomous money movement. Every action requires an explicit user tap, and the demo only simulates it.
+- **Readiness signals (E14):**
+  - No numeric score.
+  - No loan offers, links or "you qualify" language.
+  - Never used by any upay-facing decision path, in code or in the API. The analyst API exposes only aggregate distributions for fairness checking.
+  - The disclaimer is always shown.
+  - Inputs exclude protected or proxy attributes (persona, gender, area, age).
+- **Lessons (E13):** educational only, never promote paid products; at most 1 lesson card on Home at a time.
 - At most 3 action cards at once, and at most 1 contextual nudge per send/pay flow.
 
 ### 5.2 Safe-to-spend (E11)
@@ -285,6 +340,9 @@ safe_today  = max(0, (balance − committed − cushion − essential_buffer) / 
   - `get_budget_status`
   - `find_route`
   - `get_transactions_summary(period)`
+  - `get_health`
+  - `get_readiness`
+  - `get_lessons`
 - **System prompt rules:**
   - Answer only from tool results.
   - Never invent numbers.
@@ -311,8 +369,10 @@ safe_today  = max(0, (balance − committed − cushion − essential_buffer) / 
 │  │  ├─ config.py            # env + paths + DEMO_TODAY
 │  │  ├─ data/                # generator.py, personas.yaml, loader.py
 │  │  ├─ engine/              # features, recurring, forecast, risk, churn, category,
-│  │  │                       # actions, bandit, route, goals, eid, safe_spend, agents
-│  │  ├─ rules/               # actions.yaml, guardrails.yaml, fees.yaml, eid_dates.yaml
+│  │  │                       # actions, bandit, route, goals, eid, safe_spend, agents,
+│  │  │                       # health, lessons, readiness
+│  │  ├─ rules/               # actions.yaml, guardrails.yaml, fees.yaml, eid_dates.yaml,
+│  │  │                       # lessons.yaml, readiness.yaml
 │  │  ├─ llm/                 # client.py, tools.py, prompts.py, fallback.py
 │  │  ├─ store/               # sqlite.py (user state: pockets, toggles, responses, labels)
 │  │  └─ api/                 # main.py, routes/*.py, schemas.py
@@ -340,6 +400,10 @@ Synthetic data → features → models (E1–E10) → business rules and guardra
 | GET | `/users/{id}/home` | balance, forecast band, risk + drivers, safe_today, actions (top 3) |
 | POST | `/users/{id}/actions/simulate` | forecast + risk with an action applied (no persistence) |
 | POST | `/users/{id}/actions/{action_id}/respond` | records accept/dismiss → bandit update |
+| GET | `/users/{id}/health` | 3 indicators + deltas + 6-month trends, habits, monthly report |
+| GET | `/users/{id}/lessons` | ranked personalised lessons (top 1 also in `/home`) |
+| POST | `/users/{id}/lessons/{lesson_id}/respond` | records বুঝেছি / কাজে লাগবে না → bandit update |
+| GET | `/users/{id}/readiness` | 5 signals + reasons + improvement projections + disclaimer |
 | GET | `/users/{id}/calendar?month=YYYY-MM` | per-day past totals/events + future predictions and risk colour |
 | GET | `/users/{id}/budget?period=day\|week\|month` | per-category budget (auto/manual) vs spent |
 | PUT | `/users/{id}/budget` | set mode / manual amounts |
@@ -441,6 +505,9 @@ Results are reported per user-month and extrapolated to "per 100,000 users", **c
   - E9 Beta updates.
   - E11 is never negative.
   - Paisa sweep arithmetic.
+  - E12 indicators on a hand-built fixture, and habit detection of injected habits.
+  - E13 lesson triggers fire only on their conditions, and placeholders are always filled.
+  - E14 thresholds; E14 output never contains a numeric score or loan language; E14 inputs exclude protected attributes (asserted on the feature list).
 - **API tests:** FastAPI `TestClient` for every route (happy path + 404 user + validation error). The chat route is tested with the LLM disabled (fallback path).
 - **Generator tests:** reproducible with a seed; no negative balances; label prevalence within expected ranges.
 - **Frontend:** `npm run build` and a type-check in CI, plus a manual demo checklist (`docs/demo-checklist.md`).
@@ -471,24 +538,29 @@ Results are reported per user-month and extrapolated to "per 100,000 users", **c
 ### 14.1 72-hour schedule (from T+0; includes sleep)
 | Hours | Work | Exit criterion |
 |---|---|---|
-| 0–5 | Repo, CI skeleton, config, synthetic generator (incl. Eid, areas, churn, acceptance truth) | `generate_data` produces tables; generator tests pass |
-| 5–14 | Features, E1, E2, E3 + baselines + evaluate script | metrics.md shows E2/E3 vs baselines |
-| 14–20 | E5 actions + guardrails, E11 safe-to-spend, E7 route, E8 goals + Eid | Engine tests pass |
-| 20–24 | E4 churn, E6 category, E9 bandit + replay, E10 agents | metrics.md complete; analyst_snapshot.json |
-| 24–30 | FastAPI routes + SQLite + API tests, Dockerfile, **first deploy** | Live URL serves `/api/health` and a stub UI |
-| 30–44 | React UI: Home, Calendar, Budget, Savings, Send/Pay + Smart Route + Money Map, Analyst | Full flow clickable on the live URL |
-| 44–50 | Chat + tools + fallback + Bangla voice | Chat answers suggested questions; fallback verified |
-| 50–56 | Polish, bug fixes, fairness view, final deploy | Demo checklist passes on the live URL |
-| 56–66 | README (10 sections), project report, demo video | All submission files ready |
-| 66–72 | Buffer, final verification, submit | Submitted before deadline |
+| 0–5 | Repo, CI skeleton, config, synthetic generator (incl. Eid, areas, churn, acceptance truth, injected habits, bill timeliness) | `generate_data` produces tables; generator tests pass |
+| 5–13 | Features, E1, E2, E3 + baselines + evaluate script | metrics.md shows E2/E3 vs baselines |
+| 13–19 | E5 actions + guardrails, E11 safe-to-spend, E7 route, E8 goals + Eid | Engine tests pass |
+| 19–23 | E4 churn, E6 category, E9 bandit + replay, E10 agents | metrics.md complete |
+| 23–26 | E12 health + habits, E13 lessons (library + triggers), E14 readiness signals | Engine tests pass; analyst_snapshot.json |
+| 26–31 | FastAPI routes + SQLite + API tests, Dockerfile, **first deploy** | Live URL serves `/api/health` and a stub UI |
+| 31–46 | React UI: Home (incl. health snapshot + lesson card), Health Coach, Calendar, Budget, Savings, Send/Pay + Smart Route + Money Map, Analyst | Full flow clickable on the live URL |
+| 46–51 | Chat + tools + fallback + Bangla voice | Chat answers suggested questions; fallback verified |
+| 51–56 | Polish, bug fixes, fairness views, final deploy | Demo checklist passes on the live URL |
+| 56–65 | README (10 sections), project report, demo video | All submission files ready |
+| 65–72 | Buffer (~4 h usable after rest), final verification, submit | Submitted before deadline |
+
+**Time warning:** with all features in, the buffer is thin for a solo builder. The cut order in §14.2 is mandatory to follow if any phase overruns by more than 2 hours.
 
 ### 14.2 Cut order if behind schedule
 1. E10 agent forecast reduced to a table only.
-2. Churn UI reduced to KPI + top drivers.
-3. E6 ML replaced by counterparty-memory + rules.
-4. Chat reduced to template fallback; voice Chrome-only.
+2. E14 "কী করলে উন্নতি হবে" projection reduced to static habit text (signals and disclaimer stay).
+3. Churn UI reduced to KPI + top drivers.
+4. E13 lesson library reduced to 6 lessons; lesson-effectiveness view dropped.
+5. E6 ML replaced by counterparty-memory + rules.
+6. Chat reduced to template fallback; voice Chrome-only.
 
-**Never cut:** E2 forecast, E3 risk, E5 actions, E7 Smart Route, E8 Eid planner, E9 learning nudges, live deployment.
+**Never cut:** E2 forecast, E3 risk, E5 actions, E7 Smart Route, E8 Eid planner, E9 learning nudges, E12 health snapshot, E14 signals + disclaimer, live deployment.
 
 ### 14.3 README checklist (rulebook §6.2)
 1. Project overview
@@ -514,7 +586,8 @@ Results are reported per user-month and extrapolated to "per 100,000 users", **c
 
 ### 14.5 Demo video (3–5 min) outline
 1. Rina's problem (20 s).
-2. Home: forecast, risk, "কেন?", tap an action to see the what-if (60 s).
+2. Home: forecast, risk, "কেন?", tap an action to see the what-if (50 s).
+2b. Health Coach: indicators, habits, a personalised lesson, readiness signals with disclaimer (30 s).
 3. Send home with Smart Route and the cash-out nudge (40 s).
 4. Savings: Eid planner and paisa saving (30 s).
 5. Bangla voice question (30 s).
@@ -535,6 +608,7 @@ Results are reported per user-month and extrapolated to "per 100,000 users", **c
 | LLM outage, cost or rate limits | Haiku model, rate limiting, template fallback |
 | Bangla speech recognition unsupported in a judge's browser | Feature-detect, typed fallback, demo video shows voice in Chrome |
 | Host downtime | Render backup deploy; README lists both |
+| Readiness signals read as a credit score | No number, fixed disclaimer, no loan language, protected attributes excluded, fairness view; say "educational signals" in the pitch |
 | Placeholder fees challenged by judges | Labelled assumptions in config; show how real tariffs plug in |
 
 ## 16. Decisions recorded
@@ -543,3 +617,4 @@ Results are reported per user-month and extrapolated to "per 100,000 users", **c
 - **Added unique features:** learning nudges (bandit), Bangla voice, Eid planner, agent cash-out forecast.
 - **Added for retention:** churn model, safe-to-spend, and Smart Route framed as a universal wallet. Retention is a supporting business argument, not the headline.
 - **Paisa saving** = sweep of the balance's fractional part after each transaction (§5.3).
+- **Full Track 03 coverage:** Health Coach (E12), Literacy Personalizer (E13), and Responsible Credit Readiness as transparent, non-scored, user-only signals (E14) — all three in full scope.
