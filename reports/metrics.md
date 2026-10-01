@@ -6,9 +6,9 @@ Synthetic data; test = 15% held-out users, observation dates Aug–Sep 2026. Gen
 
 | Metric | Model | Same as last month | Trailing 30-day avg |
 |---|---|---|---|
-| MAE balance day 14 (৳) | 1670.0 | 2202.3 | 3369.6 |
-| MAE balance day 30 (৳) | 2530.5 | 3067.9 | 3067.9 |
-| P10–P90 coverage day 14 / 30 | 0.748 / 0.808 | – | – |
+| MAE balance day 14 (৳) | 1668.1 | 2202.3 | 3369.6 |
+| MAE balance day 30 (৳) | 2541.2 | 3067.9 | 3067.9 |
+| P10–P90 coverage day 14 / 30 | 0.746 / 0.805 | – | – |
 
 Forecasts evaluated: 1195
 
@@ -16,11 +16,11 @@ Forecasts evaluated: 1195
 
 | Metric | Model | Rule baseline |
 |---|---|---|
-| PR-AUC | 0.874 | 0.544 |
-| Precision at alert (amber+) | 0.682 | 0.586 |
-| Recall at alert | 0.917 | 0.757 |
-| ROC-AUC | 0.909 | – |
-| Brier | 0.1206 | – |
+| PR-AUC | 0.872 | 0.544 |
+| Precision at alert (amber+) | 0.68 | 0.586 |
+| Recall at alert | 0.914 | 0.757 |
+| ROC-AUC | 0.908 | – |
+| Brier | 0.1218 | – |
 | Median warning lead time, all alerted positives (days) | 3.0 | – |
 | Median warning lead time, new shortfalls only (days) | 6.0 | – |
 

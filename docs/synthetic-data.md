@@ -24,7 +24,7 @@ parameters: `backend/hishab/data/personas.yaml`.
 
 | User | Who | Behaviour |
 |---|---|---|
-| **U0001 — রিনা আক্তার** | Garment worker, Gazipur | Salary ৳12,500 on the 7th. 35% sent home by cash-out (family has no wallet). Rent ৳3,000 on the 5th. Spends slightly more than she earns and doesn't cut back when money runs low. Low noise and no random health shocks, so her story is stable: about ৳2,000–2,500 left on 18 Sep, shortfall from about the 25th |
+| **U0001 — রিনা আক্তার** | Garment worker, Gazipur | Salary ৳12,500 on the 7th. 35% sent home by cash-out (family has no wallet). Rent ৳3,000 on the 5th. Spends slightly more than she earns, spends heavily at Eid (festival spending 1.25 × monthly income, more than her bonus covers), and doesn't cut back when money runs low. Low noise and no random health shocks, so her story is stable: about ৳2,000–2,500 left on 18 Sep, shortfall from about the 25th |
 | U0002 | Daily-wage earner | Irregular income |
 | U0003 | Shop owner | Mixed personal/business money |
 | U0004 | Student | Allowance-based |

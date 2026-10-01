@@ -43,7 +43,7 @@ SHOWCASE = {
     "U0001": {"persona": "garment_worker", "name": "রিনা আক্তার", "gender": "female", "area": "Gazipur",
               "salary": 12500.0, "salary_day": 7, "remit_frac": 0.35, "family_wallet": "cash",
               "rent": 3000.0, "rent_day": 5, "spend_ratio": 1.08, "digital_share": 0.08,
-              "saver": False, "dps": 0, "festival_frac": 0.7, "utilities": 450.0, "opening": 1500.0,
+              "saver": False, "dps": 0, "festival_frac": 1.25, "utilities": 450.0, "opening": 1500.0,
               "tightens": False, "noise": 0.12, "cash_k": 5, "shock_prob": 0.0},
     "U0002": {"persona": "daily_wage", "name": "জসিম উদ্দিন", "gender": "male", "area": "Mirpur"},
     "U0003": {"persona": "shop_owner", "name": "শাহনাজ পারভীন", "gender": "female", "area": "Uttara"},
