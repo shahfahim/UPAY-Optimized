@@ -1,0 +1,23 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+*.egg-info/
+
+# Node
+web/node_modules/
+web/dist/
+
+# Secrets
+.env
+
+# Data and local state
+backend/data/full/
+*.db
+
+# Reference media of the real app (never commit)
+docs/reference/
+
+# Plan-execution scratch workspace
+.superpowers/
