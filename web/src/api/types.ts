@@ -252,3 +252,13 @@ export type Impact = {
   models: Record<string, Record<string, number | string | null>>
   assumptions_note: string
 }
+
+export type TxItem = {
+  ts: string; type: string; name: string; amount: number; direction: number; fee: number
+  category: string; category_bn: string; balance_after: number
+}
+export type TxList = {
+  items: TxItem[]
+  summary: { income_total: number; spend_total: number; cash_out_count: number; cash_out_fees: number
+    by_category: { category: string; category_bn: string; amount: number }[] }
+}

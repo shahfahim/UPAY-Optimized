@@ -325,6 +325,23 @@ class HubMixin:
         self.store.save_state(uid, ctx.state)
         return {"balance": new_bal, "swept": swept, "fee": fee, "category": category, "nudge": nudge}
 
+    # --- history ------------------------------------------------------------------------------------------
+    def transactions(self, uid, limit=50):
+        from hishab.llm.tools import _tx_summary
+        try:
+            limit = int(limit)
+        except (TypeError, ValueError):
+            raise ValueError("সংখ্যা সঠিক নয়")
+        if not 1 <= limit <= 200:
+            raise ValueError("১ থেকে ২০০-এর মধ্যে দিন")
+        ctx = self.ctx(uid)
+        t = ctx.tx[ctx.tx["type"] != "dps_installment_missed"].sort_values("ts", ascending=False).head(limit)
+        items = [{"ts": pd.Timestamp(r.ts).isoformat(), "type": r.type, "name": r.counterparty_name,
+                  "amount": float(r.amount), "direction": int(r.direction), "fee": float(r.fee),
+                  "category": r.category, "category_bn": CATEGORY_BN.get(r.category, r.category),
+                  "balance_after": float(r.balance_after)} for r in t.itertuples(index=False)]
+        return {"items": items, "summary": _tx_summary(uid, self, "month")}
+
     # --- impact -------------------------------------------------------------------------------------------
     def impact(self):
         path = self.settings.artifacts_dir / "impact_snapshot.json"

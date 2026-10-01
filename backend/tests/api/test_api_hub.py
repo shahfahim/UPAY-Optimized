@@ -39,3 +39,13 @@ def test_budget_auto_and_manual(client):
     assert man["mode"] == "manual" and food["budget"] == 700
     assert client.put("/api/users/U0001/budget", json={"mode": "manual", "manual": {"food_grocery": -5}}).status_code == 422
     assert client.get("/api/users/U0001/budget", params={"period": "year"}).status_code == 422
+
+
+def test_transactions_route(client):
+    r = client.get("/api/users/U0001/transactions", params={"limit": 20}).json()
+    assert len(r["items"]) == 20
+    first = r["items"][0]
+    assert {"ts", "type", "name", "amount", "direction", "fee", "category", "category_bn"} <= set(first)
+    assert r["items"][0]["ts"] >= r["items"][-1]["ts"]  # newest first
+    assert r["summary"]["by_category"] and r["summary"]["income_total"] > 0
+    assert client.get("/api/users/U0001/transactions", params={"limit": 0}).status_code == 422

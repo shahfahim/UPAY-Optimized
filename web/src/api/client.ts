@@ -1,7 +1,7 @@
 import type {
   ActionCard, Budget, Calendar, CategoryOption, ChatAnswer, DemoUser, DpsAdvice, EmergencyResult, GoalPlan,
   HealthReport, Home, Impact, Lesson, LevelStatus, Notification, Readiness, RouteResult, SendResult, SendType,
-  Savings, Shell, Simulation,
+  Savings, Shell, Simulation, TxList,
 } from './types'
 
 export class ApiError extends Error {
@@ -80,6 +80,7 @@ export const api = {
   send: (uid: string, body: { type: SendType; amount: number; counterparty_id?: string; counterparty_name?: string;
     destination?: string; category?: string }) => req<SendResult>('POST', `${u(uid)}/send`, body),
 
+  transactions: (uid: string, limit = 60) => req<TxList>('GET', `${u(uid)}/transactions?limit=${limit}`),
   chat: (uid: string, message: string) => req<ChatAnswer>('POST', `${u(uid)}/chat`, { message }),
   impact: () => req<Impact>('GET', '/impact'),
   timeTravel: (days: 7 | 14 | 30) => req<{ today: string }>('POST', '/demo/time-travel', { days }),

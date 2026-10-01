@@ -1,11 +1,18 @@
 import type { ReactNode } from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
+import AppShell from './components/AppShell'
 import { PrototypeRibbon } from './components/ui'
 import { getSession } from './lib/session'
+import Account from './pages/Account'
 import Login from './pages/auth/Login'
 import Register from './pages/auth/Register'
 import Splash from './pages/auth/Splash'
 import Welcome from './pages/auth/Welcome'
+import History from './pages/History'
+import Home from './pages/Home'
+import More from './pages/More'
+import Notifications from './pages/Notifications'
+import Payments from './pages/Payments'
 
 function RequireSession({ children }: { children: ReactNode }) {
   return getSession() ? <>{children}</> : <Navigate to="/login" replace />
@@ -20,6 +27,10 @@ function Frame({ children }: { children: ReactNode }) {
   )
 }
 
+function Soon() {
+  return <p className="m-6 rounded-2xl bg-white p-6 text-center text-sm text-muted">…</p>
+}
+
 export default function App() {
   return (
     <Routes>
@@ -27,7 +38,16 @@ export default function App() {
       <Route path="/welcome" element={<Frame><Welcome /></Frame>} />
       <Route path="/login" element={<Frame><Login /></Frame>} />
       <Route path="/register" element={<Frame><Register /></Frame>} />
-      <Route path="/app/*" element={<RequireSession><Frame><div className="p-6">Hishab</div></Frame></RequireSession>} />
+      <Route path="/app" element={<RequireSession><AppShell /></RequireSession>}>
+        <Route index element={<Navigate to="home" replace />} />
+        <Route path="home" element={<Home />} />
+        <Route path="account" element={<Account />} />
+        <Route path="history" element={<History />} />
+        <Route path="notifications" element={<Notifications />} />
+        <Route path="more" element={<More />} />
+        <Route path="payments" element={<Payments />} />
+        <Route path="*" element={<Soon />} />
+      </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   )

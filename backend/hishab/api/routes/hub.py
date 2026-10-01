@@ -43,3 +43,8 @@ def budget(uid: str, period: str, request: Request):
 @router.put("/users/{uid}/budget")
 def set_budget(uid: str, body: BudgetIn, request: Request):
     return request.app.state.svc.set_budget(uid, body.mode, body.manual)
+
+
+@router.get("/users/{uid}/transactions")
+def transactions(uid: str, request: Request, limit: int = 50):
+    return request.app.state.svc.transactions(uid, limit)
