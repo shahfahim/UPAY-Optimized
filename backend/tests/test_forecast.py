@@ -1,19 +1,10 @@
 from datetime import date, timedelta
-from types import SimpleNamespace
 
 import pandas as pd
 import pytest
 
 from hishab.engine import forecast as F
 from hishab.engine.context import build_ctx
-
-
-@pytest.fixture(scope="module")
-def tiny_models(small_data):
-    daily = F.training_daily(small_data, date(2025, 11, 1), date(2026, 8, 31))
-    fc = F.Forecaster().fit(daily)
-    resid = fc.residuals(daily)
-    return SimpleNamespace(forecaster=fc, residuals=resid)
 
 
 def test_band_shape_and_order(repo, store, settings, tiny_models):

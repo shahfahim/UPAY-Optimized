@@ -51,3 +51,18 @@ def store(tmp_path):
 def settings():
     get_settings.cache_clear()
     return replace(get_settings(), llm_enabled=False)
+
+
+@pytest.fixture(scope="session")
+def tiny_models(small_data):
+    """Forecaster + risk model trained quickly on the 20-user fixture."""
+    from datetime import date
+
+    from hishab.engine import forecast as F
+    from hishab.engine.models import Models
+    from hishab.engine.risk import train_risk
+
+    daily = F.training_daily(small_data, date(2025, 11, 1), date(2026, 8, 31))
+    fc = F.Forecaster().fit(daily)
+    risk = train_risk(small_data, val_from=date(2026, 7, 1), until=date(2026, 9, 1))
+    return Models(forecaster=fc, risk=risk, residuals=fc.residuals(daily), bandit_priors=None)
