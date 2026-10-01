@@ -13,6 +13,12 @@ import Home from './pages/Home'
 import More from './pages/More'
 import Notifications from './pages/Notifications'
 import Payments from './pages/Payments'
+import Health from './pages/Health'
+import Budget from './pages/hub/Budget'
+import Calendar from './pages/hub/Calendar'
+import HubLayout from './pages/hub/HubLayout'
+import Learn from './pages/hub/Learn'
+import Overview from './pages/hub/Overview'
 
 function RequireSession({ children }: { children: ReactNode }) {
   return getSession() ? <>{children}</> : <Navigate to="/login" replace />
@@ -46,6 +52,14 @@ export default function App() {
         <Route path="notifications" element={<Notifications />} />
         <Route path="more" element={<More />} />
         <Route path="payments" element={<Payments />} />
+        <Route path="hishab" element={<HubLayout />}>
+          <Route index element={<Overview />} />
+          <Route path="budget" element={<Budget />} />
+          <Route path="calendar" element={<Calendar />} />
+          <Route path="learn" element={<Learn />} />
+          <Route path="ask" element={<Soon />} />
+        </Route>
+        <Route path="hishab/health" element={<Health />} />
         <Route path="*" element={<Soon />} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />

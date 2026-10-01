@@ -55,3 +55,11 @@ export function fmtDate(iso: string, lang: Lang): string {
   const day = lang === 'bn' ? toBnDigits(d.getDate()) : String(d.getDate())
   return `${day} ${months[d.getMonth()]}`
 }
+
+/** Bangla genitive for a date label: "২৯ সেপ্টেম্বর" -> "২৯ সেপ্টেম্বরের". Non-Bangla text is returned unchanged. */
+export function bnPossessive(s: string): string {
+  if (!/[ঀ-৿]$/.test(s)) return s
+  if (s.endsWith('র')) return `${s}ের`
+  if (s.endsWith('ি') || s.endsWith('ে') || s.endsWith('া')) return `${s}র`
+  return `${s}-এর`
+}

@@ -119,7 +119,7 @@ def mine_habits(ctx, k: int = 5) -> list[HabitInsight]:
         top = int(by_dow.idxmax())
         if avg > 0 and by_dow.max() > 1.5 * avg:
             excess = (float(by_dow.max()) - avg) / 2.0  # per month (60-day window)
-            out.append(HabitInsight("weekday_spike", f"{_DAYS_BN[top]}-এ খরচ বেশি হয়", f"You spend more on {_DAYS_EN[top]}s",
+            out.append(HabitInsight("weekday_spike", f"{_DAYS_BN[top]}ে খরচ বেশি হয়", f"You spend more on {_DAYS_EN[top]}s",
                                     round(excess, 0)))
 
     spend = ctx.tx[(ctx.tx["direction"] == -1) & ctx.tx["type"].isin(_SPEND_TYPES)]

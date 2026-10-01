@@ -244,6 +244,8 @@ class Hishab(HubMixin):
     def time_travel(self, days: int) -> dict:
         if days not in (7, 14, 30):
             raise ValueError("শুধু ৭, ১৪ বা ৩০ দিন এগোনো যায়")
+        if self.store.clock_offset() + days > 60:
+            raise ValueError("demo-তে মোট ৬০ দিনের বেশি এগোনো যায় না — আগে Demo reset করুন")
         self.store.set_clock_offset(self.store.clock_offset() + days)
         return {"today": (self.settings.demo_today + timedelta(days=self.store.clock_offset())).isoformat(),
                 "offset_days": self.store.clock_offset()}

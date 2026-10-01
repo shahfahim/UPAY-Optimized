@@ -61,6 +61,7 @@ def test_time_travel_caps_and_reset(client):
         assert len([n for n in items if n["type"] == "reengage"]) <= 1
     assert any(n["type"] == "reengage" for n in notes)
     assert client.post("/api/demo/time-travel", json={"days": 5}).status_code == 422
+    assert client.post("/api/demo/time-travel", json={"days": 7}).status_code == 422  # 58 + 7 > 60-day cap
     client.post("/api/demo/reset")
     assert client.get("/api/users/U0001/notifications").json() == []
     assert client.get("/api/users/U0001/shell").json()["today"] == "2026-09-18"

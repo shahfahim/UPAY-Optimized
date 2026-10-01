@@ -32,3 +32,13 @@ describe('toBnDigits', () => {
     expect(toBnDigits('2026-09')).toBe('২০২৬-০৯')
   })
 })
+
+describe('bnPossessive', () => {
+  it('adds the right genitive ending', async () => {
+    const { bnPossessive } = await import('./format')
+    expect(bnPossessive('২৯ সেপ্টেম্বর')).toBe('২৯ সেপ্টেম্বরের')
+    expect(bnPossessive('৩ জানুয়ারি')).toBe('৩ জানুয়ারির')
+    expect(bnPossessive('৫ মে')).toBe('৫ মের')
+    expect(bnPossessive('Sep 29')).toBe('Sep 29')
+  })
+})
