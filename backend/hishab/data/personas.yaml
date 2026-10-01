@@ -1,0 +1,68 @@
+# Synthetic persona parameters (spec §2.1, §6.3). All values are assumptions for a demo.
+# Ranges are [low, high] and drawn uniformly per user.
+personas:
+  garment_worker:
+    share: 0.45
+    female_share: 0.6
+    areas: [Gazipur, Savar, Ashulia, Narayanganj, Tongi, Chattogram EPZ]
+    income: {kind: salary, amount: [10000, 18000], day: [5, 9]}
+    rent: {prob: 0.85, amount: [2000, 4000], day: [1, 10]}
+    remittance: {prob: 0.85, frac: [0.25, 0.45]}
+    family_wallet: {cash: 0.45, other_mfs: 0.35, upay: 0.10, bank: 0.10}
+    spend_ratio: [0.88, 1.08]
+    digital_share: [0.05, 0.40]
+    utilities: {prob: 0.5, amount: [300, 900]}
+    recharge: {per_month: [2, 4], amount: [50, 300]}
+    saver_prob: 0.25
+    dps_prob: 0.10
+    festival_frac: [0.4, 0.8]
+    bonus: true
+  daily_wage:
+    share: 0.20
+    female_share: 0.2
+    areas: [Mirpur, Jatrabari, Tongi, Narayanganj, Rangpur, Khulna]
+    income: {kind: daily, amount: [400, 900], work_prob: 0.8, monsoon_factor: 0.75}
+    rent: {prob: 0.7, amount: [1500, 3500], day: [1, 10]}
+    remittance: {prob: 0.5, frac: [0.10, 0.30]}
+    family_wallet: {cash: 0.55, other_mfs: 0.30, upay: 0.10, bank: 0.05}
+    spend_ratio: [0.90, 1.06]
+    digital_share: [0.05, 0.25]
+    utilities: {prob: 0.3, amount: [200, 600]}
+    recharge: {per_month: [3, 6], amount: [30, 150]}
+    saver_prob: 0.10
+    dps_prob: 0.05
+    festival_frac: [0.3, 0.6]
+    bonus: false
+  shop_owner:
+    share: 0.20
+    female_share: 0.25
+    areas: [Mirpur, Uttara, Chattogram, Sylhet, Rajshahi, Gazipur]
+    income: {kind: shop, amount: [800, 3000], open_prob: 0.85, restock_frac: [0.35, 0.55]}
+    rent: {prob: 0.9, amount: [4000, 9000], day: [1, 10]}
+    remittance: {prob: 0.3, frac: [0.05, 0.15]}
+    family_wallet: {cash: 0.30, other_mfs: 0.40, upay: 0.15, bank: 0.15}
+    spend_ratio: [0.85, 1.02]
+    digital_share: [0.20, 0.55]
+    utilities: {prob: 0.8, amount: [600, 2000]}
+    recharge: {per_month: [3, 5], amount: [100, 400]}
+    saver_prob: 0.30
+    dps_prob: 0.18
+    festival_frac: [0.3, 0.6]
+    bonus: false
+  student:
+    share: 0.15
+    female_share: 0.45
+    areas: [Dhanmondi, Mohammadpur, Mirpur, Savar, Chattogram, Rajshahi]
+    income: {kind: allowance, amount: [4000, 9000], day: [1, 5], parttime_prob: 0.05, parttime_amount: [300, 800]}
+    rent: {prob: 0.6, amount: [1500, 3000], day: [1, 10]}
+    remittance: {prob: 0.0, frac: [0.0, 0.0]}
+    family_wallet: {cash: 0.25, other_mfs: 0.45, upay: 0.15, bank: 0.15}
+    spend_ratio: [0.85, 1.05]
+    digital_share: [0.30, 0.70]
+    utilities: {prob: 0.1, amount: [200, 500]}
+    recharge: {per_month: [3, 6], amount: [50, 200]}
+    tuition: {prob_month: 0.3, amount: [1000, 4000]}
+    saver_prob: 0.20
+    dps_prob: 0.05
+    festival_frac: [0.2, 0.5]
+    bonus: false
