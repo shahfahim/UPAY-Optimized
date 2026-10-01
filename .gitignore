@@ -21,3 +21,4 @@ docs/reference/
 
 # Plan-execution scratch workspace
 .superpowers/
+.pytest_tmp/
