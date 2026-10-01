@@ -93,7 +93,7 @@ Hishab is pitched as **an AI feature + API for the existing upay app**. The prot
 
 **Shell (S0)** follows the current upay app, refined into a minimal, consistent design:
 
-- **Splash (S1).** Replicates the motion of the real app opening, using our own neutral mark ("হিসাব"/generic mark), never the upay logo:
+- **Splash (S1).** Replicates the motion of the real app opening, using the text mark "হিসাব · upay prototype" instead of the upay logo file:
   1. Full yellow screen (≈400 ms).
   2. Fade to white while the mark fades in.
   3. A blue circular stroke draws around the mark (SVG stroke-dashoffset, ≈900 ms).
@@ -127,10 +127,14 @@ Hishab is pitched as **an AI feature + API for the existing upay app**. The prot
 
   All other entries open a bottom sheet: "এই ফিচার demo-তে চালু নেই".
 - A permanent ribbon reads **"Prototype — upay-এর অফিসিয়াল app নয়"**.
-- **Branding and data rules:**
-  - No real upay logo or copied icon artwork; similar colours with generic icons only.
+- **AI badge:** wherever this spec shows ✨, the UI renders a small rounded **"AI"** pill badge instead of an emoji, so ordinary users can tell what is AI-generated. Styling: accent fill, white bold text, 4-pt radius, 11–12 px.
+- **Branding and data rules** (decided with the team: this is a functional prototype for upay to adopt, so it mirrors upay closely):
+  - Layout, colours, structure, icon arrangement, typography feel and opening motion mirror the current upay app as closely as practical.
+  - **The real upay logo file is not used.** The splash and header use a text mark "হিসাব · upay prototype".
+  - **Login safety:** the login screen shows "Demo — আসল PIN দেবেন না". Only seeded demo users and demo PINs are accepted. Registration creates synthetic users only. Entered PINs are never logged.
   - No real personal data anywhere (all users synthetic).
   - Reference screenshots and videos of the real app are not committed to the repo.
+- **Repository:** https://github.com/shahfahim/UPAY-Optimized (public). All work is committed and pushed in small steps.
 
 **Home layout (top to bottom):**
 1. Header with message strip.
