@@ -6,25 +6,73 @@ Synthetic data; test = 15% held-out users, observation dates Aug–Sep 2026. Gen
 
 | Metric | Model | Same as last month | Trailing 30-day avg |
 |---|---|---|---|
-| MAE balance day 14 (৳) | 1668.1 | 2202.3 | 3369.6 |
-| MAE balance day 30 (৳) | 2541.2 | 3067.9 | 3067.9 |
-| P10–P90 coverage day 14 / 30 | 0.746 / 0.805 | – | – |
+| MAE balance day 14 (৳) | 1639.9 | 2083.9 | 3577.3 |
+| MAE balance day 30 (৳) | 2569.0 | 3055.7 | 3055.7 |
+| P10–P90 coverage day 14 / 30 | 0.767 / 0.809 | – | – |
 
-Forecasts evaluated: 1195
+Forecasts evaluated: 1285
 
 ## E3 shortfall-risk model
 
 | Metric | Model | Rule baseline |
 |---|---|---|
-| PR-AUC | 0.872 | 0.544 |
-| Precision at alert (amber+) | 0.68 | 0.586 |
-| Recall at alert | 0.914 | 0.757 |
-| ROC-AUC | 0.908 | – |
-| Brier | 0.1218 | – |
+| PR-AUC | 0.912 | 0.53 |
+| Precision at alert (amber+) | 0.81 | 0.568 |
+| Recall at alert | 0.894 | 0.759 |
+| ROC-AUC | 0.942 | – |
+| Brier | 0.0923 | – |
 | Median warning lead time, all alerted positives (days) | 3.0 | – |
 | Median warning lead time, new shortfalls only (days) | 6.0 | – |
 
-Observations: 1693, positive rate 0.414
+Observations: 1814, positive rate 0.41
+
+## E6 category suggestion
+
+| Metric | Value |
+|---|---|
+| n_payments | 13912 |
+| top1_accuracy | 0.728 |
+| top3_accuracy | 0.912 |
+| baseline_majority_top1 | 0.666 |
+
+## E15 recent payments
+
+| Metric | Value |
+|---|---|
+| n_obs | 2062 |
+| hit_rate | 0.645 |
+| baseline_recency_hit_rate | 0.572 |
+
+## E16 Smart DPS
+
+| Metric | Value |
+|---|---|
+| n_dps_holders | 153 |
+| smart_missed_rate | 0.14 |
+| naive_10pct_missed_rate | 0.127 |
+| smart_avg_monthly | 4367.0 |
+| naive_avg_monthly | 2474.0 |
+| not_now_share | 0.51 |
+
+## E8 Eid planner
+
+| Metric | Value |
+|---|---|
+| n_users | 273 |
+| mae | 1846.0 |
+| baseline_global_mean_mae | 4309.0 |
+| mean_actual_eid_spend | 9624.0 |
+
+## E9 learning nudges (replay)
+
+| Metric | Value |
+|---|---|
+| actions_acceptance_bandit | 0.5812 |
+| actions_acceptance_static | 0.3408 |
+| actions_acceptance_random | 0.3585 |
+| lessons_acceptance_bandit | 0.5039 |
+| lessons_acceptance_static | 0.4637 |
+| lessons_acceptance_random | 0.3896 |
 
 ## Notes
 

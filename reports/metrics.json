@@ -1,27 +1,60 @@
 {
   "E2": {
-    "n_forecasts": 1195,
-    "mae_day14": 1668.1,
-    "baseline_last_month_mae_day14": 2202.3,
-    "baseline_trailing_avg_mae_day14": 3369.6,
-    "p10_p90_coverage_day14": 0.746,
-    "mae_day30": 2541.2,
-    "baseline_last_month_mae_day30": 3067.9,
-    "baseline_trailing_avg_mae_day30": 3067.9,
-    "p10_p90_coverage_day30": 0.805
+    "n_forecasts": 1285,
+    "mae_day14": 1639.9,
+    "baseline_last_month_mae_day14": 2083.9,
+    "baseline_trailing_avg_mae_day14": 3577.3,
+    "p10_p90_coverage_day14": 0.767,
+    "mae_day30": 2569.0,
+    "baseline_last_month_mae_day30": 3055.7,
+    "baseline_trailing_avg_mae_day30": 3055.7,
+    "p10_p90_coverage_day30": 0.809
   },
   "E3": {
-    "n_obs": 1693,
-    "positive_rate": 0.414,
-    "pr_auc": 0.872,
-    "roc_auc": 0.908,
-    "brier": 0.1218,
-    "precision_at_alert": 0.68,
-    "recall_at_alert": 0.914,
+    "n_obs": 1814,
+    "positive_rate": 0.41,
+    "pr_auc": 0.912,
+    "roc_auc": 0.942,
+    "brier": 0.0923,
+    "precision_at_alert": 0.81,
+    "recall_at_alert": 0.894,
     "median_lead_days": 3.0,
     "median_lead_days_new_shortfalls": 6.0,
-    "baseline_rule_pr_auc": 0.544,
-    "baseline_rule_precision": 0.586,
-    "baseline_rule_recall": 0.757
+    "baseline_rule_pr_auc": 0.53,
+    "baseline_rule_precision": 0.568,
+    "baseline_rule_recall": 0.759
+  },
+  "E6": {
+    "n_payments": 13912,
+    "top1_accuracy": 0.728,
+    "top3_accuracy": 0.912,
+    "baseline_majority_top1": 0.666
+  },
+  "E15": {
+    "n_obs": 2062,
+    "hit_rate": 0.645,
+    "baseline_recency_hit_rate": 0.572
+  },
+  "E16": {
+    "n_dps_holders": 153,
+    "smart_missed_rate": 0.14,
+    "naive_10pct_missed_rate": 0.127,
+    "smart_avg_monthly": 4367.0,
+    "naive_avg_monthly": 2474.0,
+    "not_now_share": 0.51
+  },
+  "E8": {
+    "n_users": 273,
+    "mae": 1846.0,
+    "baseline_global_mean_mae": 4309.0,
+    "mean_actual_eid_spend": 9624.0
+  },
+  "E9": {
+    "actions_acceptance_bandit": 0.5812,
+    "actions_acceptance_static": 0.3408,
+    "actions_acceptance_random": 0.3585,
+    "lessons_acceptance_bandit": 0.5039,
+    "lessons_acceptance_static": 0.4637,
+    "lessons_acceptance_random": 0.3896
   }
 }
