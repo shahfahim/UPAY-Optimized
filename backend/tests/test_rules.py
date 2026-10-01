@@ -23,7 +23,7 @@ def test_actions_catalog_ids():
     assert ids == [
         "save_on_payday", "split_remittance", "digital_pay_instead_of_cashout",
         "cheaper_route", "pause_paisa_saving", "trim_discretionary",
-        "dps_ready", "eid_weekly_saving",
+        "dps_ready", "eid_weekly_saving", "daily_limit",
     ]
 
 

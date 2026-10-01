@@ -49,3 +49,9 @@ actions:
     title_en: "Save ৳{amount} a week for Eid"
     why_bn: "ঈদ আর {days} দিন পরে; এখন থেকে ভাগ করে রাখলে চাপ কমবে।"
     why_en: "Eid is {days} days away; saving in parts now eases the pressure."
+  - id: daily_limit
+    sensitive: false
+    title_bn: "বেতন পর্যন্ত দিনে ৳{amount}-এর মধ্যে খরচ রাখার চেষ্টা করো"
+    title_en: "Try to keep spending under ৳{amount} a day until payday"
+    why_bn: "এই হিসাবে বেতন আসা পর্যন্ত টাকা থাকবে। কোন খরচ কমাবে, তা তোমার সিদ্ধান্ত।"
+    why_en: "At this pace your money lasts until payday. You decide what to cut."

@@ -322,14 +322,20 @@ def balance_band(balance: float, flows: pd.DataFrame, residuals: dict, persona: 
                           shortfall_amount=float(sf_amount))
 
 
-def forecast(ctx, models, transforms: Sequence[Transform] = (), horizon: int = 30,
-             events: list[RecurringEvent] | None = None) -> ForecastResult:
+def band_from_flows(ctx, models, flows: pd.DataFrame, transforms: Sequence[Transform] = (),
+                    horizon: int = 30) -> ForecastResult:
+    """Apply transforms to precomputed future flows and build the band (cheap; used for what-ifs)."""
     threshold = load_rules("guardrails")["shortfall_threshold"]
-    flows = future_flows(ctx, models.forecaster, horizon, events)
     for tr in transforms:
-        flows = tr(flows, ctx)
+        flows = tr(flows.copy(), ctx)
     return balance_band(ctx.balance, flows, models.residuals, ctx.persona, ctx.today, horizon,
                         threshold=threshold)
+
+
+def forecast(ctx, models, transforms: Sequence[Transform] = (), horizon: int = 30,
+             events: list[RecurringEvent] | None = None) -> ForecastResult:
+    flows = future_flows(ctx, models.forecaster, horizon, events)
+    return band_from_flows(ctx, models, flows, transforms, horizon)
 
 
 # --- baselines -----------------------------------------------------------------------------------------
