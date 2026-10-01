@@ -30,6 +30,7 @@ class RecurringEvent:
     confidence: float
     next_date: date
     counterparty_name: str = ""
+    tx_type: str = ""
 
 
 def _kind(typ: str, category: str) -> str:
@@ -97,6 +98,7 @@ def detect_recurring(tx: pd.DataFrame, as_of: date) -> list[RecurringEvent]:
             kind=kind, counterparty_id=str(cp), category=str(cat), direction=direction, day_of_month=dom,
             amount=round(float(np.median(amounts)), 2), confidence=round(conf, 3),
             next_date=_next_on_day(as_of, dom), counterparty_name=str(g["counterparty_name"].iloc[-1]),
+            tx_type=str(typ),
         ))
     events.sort(key=lambda e: (e.next_date, -e.amount))
     return events
