@@ -19,6 +19,11 @@ import Calendar from './pages/hub/Calendar'
 import HubLayout from './pages/hub/HubLayout'
 import Learn from './pages/hub/Learn'
 import Overview from './pages/hub/Overview'
+import Dps from './pages/savings/Dps'
+import Emergency from './pages/savings/Emergency'
+import Levels from './pages/savings/Levels'
+import Pockets from './pages/savings/Pockets'
+import SavingsHome from './pages/savings/SavingsHome'
 
 function RequireSession({ children }: { children: ReactNode }) {
   return getSession() ? <>{children}</> : <Navigate to="/login" replace />
@@ -60,6 +65,11 @@ export default function App() {
           <Route path="ask" element={<Soon />} />
         </Route>
         <Route path="hishab/health" element={<Health />} />
+        <Route path="savings" element={<SavingsHome />} />
+        <Route path="savings/pockets" element={<Pockets />} />
+        <Route path="savings/levels" element={<Levels />} />
+        <Route path="savings/emergency" element={<Emergency />} />
+        <Route path="savings/dps" element={<Dps />} />
         <Route path="*" element={<Soon />} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
