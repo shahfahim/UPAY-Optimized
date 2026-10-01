@@ -165,11 +165,53 @@ def main() -> None:
     if "--skip-e2" not in sys.argv:
         m["E2"] = eval_e2(data, models, test_ids)
         print("E2", m["E2"], f"({time.time() - t0:.0f}s)")
-    m["E3"] = eval_e3(data, models, test_ids)
-    print("E3", m["E3"], f"({time.time() - t0:.0f}s)")
+    if "--skip-e3" not in sys.argv:
+        m["E3"] = eval_e3(data, models, test_ids)
+        print("E3", m["E3"], f"({time.time() - t0:.0f}s)")
+    snapshot = None
+    if "--skip-part2" not in sys.argv:
+        import evaluate_impact as EI
+        from hishab.rules import load_rules
+
+        train_ids = [u for u in data.users.user_id if u not in set(test_ids)]
+        m["E6"] = EI.eval_e6(data, train_ids, test_ids)
+        print("E6", m["E6"], f"({time.time() - t0:.0f}s)")
+        m["E15"] = EI.eval_e15(data, test_ids)
+        print("E15", m["E15"], f"({time.time() - t0:.0f}s)")
+        m["E16"] = EI.eval_e16(data, models)
+        print("E16", m["E16"], f"({time.time() - t0:.0f}s)")
+        m["E8"] = EI.eval_e8(data, test_ids)
+        print("E8", m["E8"], f"({time.time() - t0:.0f}s)")
+        action_ids = [a["id"] for a in load_rules("actions")["actions"]]
+        lesson_ids = [x["id"] for x in load_rules("lessons")["lessons"]]
+        bc = EI.bandit_replay(data, test_ids, action_ids)
+        lc = EI.bandit_replay(data, test_ids, lesson_ids)
+        m["E9"] = {"actions_acceptance_bandit": bc["bandit"][-1], "actions_acceptance_static": bc["static"][-1],
+                   "actions_acceptance_random": bc["random"][-1], "lessons_acceptance_bandit": lc["bandit"][-1],
+                   "lessons_acceptance_static": lc["static"][-1], "lessons_acceptance_random": lc["random"][-1]}
+        print("E9", m["E9"], f"({time.time() - t0:.0f}s)")
+        imp = EI.impact(data, models, test_ids)
+        print("impact", imp["headline"], imp["active_rate"], f"({time.time() - t0:.0f}s)")
+        fair = EI.fairness(data, models, test_ids, imp["group_rows"])
+        rd = EI.readiness_distribution(data, test_ids, date(2026, 9, 18))
+        snapshot = {"headline": imp["headline"], "per_100k": imp["per_100k"], "active_rate": imp["active_rate"],
+                    "user_months": imp["user_months"], "acceptance_mean": imp["acceptance_mean"],
+                    "bandit_curve": bc, "lesson_curve": lc, "fairness": fair, "readiness_distribution": rd,
+                    "assumptions_note": ASSUMPTIONS}
     allm = merge_metrics(m)
     write_markdown(allm, NOTES)
+    if snapshot is not None:
+        snapshot["models"] = allm
+        (ART / "impact_snapshot.json").write_text(json.dumps(snapshot, ensure_ascii=False, indent=1, default=str),
+                                                  encoding="utf-8")
+    print(f"done ({time.time() - t0:.0f}s)")
 
+
+ASSUMPTIONS = ("Simulated on synthetic data (docs/synthetic-data.md). Impact: the 300 held-out users over Aug–Sep 2026 "
+               "are replayed month by month. With Hishab, the top-3 ranked actions are accepted with each persona's "
+               "assumed acceptance probability, and their effect is applied to the month's real flows. The active rate "
+               "re-applies the generator's assumed inactivity mechanism. Fees are placeholders. These are model-based "
+               "estimates, not measured outcomes.")
 
 NOTES: list[str] = [
     "E2 beats both baselines at day 14 and day 30; the P10–P90 band covers about 75–81% of actual balances "

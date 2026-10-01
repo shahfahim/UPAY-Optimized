@@ -241,6 +241,7 @@ class _Sim:
         self.depletion_days = 30
         self.days_since_income = 0
         self.session_drift = 1.0
+        self.last_ts: datetime | None = None
 
     # --- emit -------------------------------------------------------------------------------------
     def emit(self, d: date, hour: int, typ: str, amount: float, direction: int, category: str,
@@ -256,7 +257,12 @@ class _Sim:
         c["tx_id"].append(f"T{self.seq[0]:09d}")
         c["user_id"].append(self.f.user_id)
         minute = int(self.rng.integers(0, 60))
-        c["ts"].append(datetime(d.year, d.month, d.day, hour, minute))
+        ts = datetime(d.year, d.month, d.day, hour, minute)
+        # balance_after follows emission order, so timestamps must never go backwards within the user's history
+        if self.last_ts is not None and ts <= self.last_ts:
+            ts = self.last_ts + timedelta(minutes=1)
+        self.last_ts = ts
+        c["ts"].append(ts)
         c["type"].append(typ)
         c["amount"].append(amount)
         c["direction"].append(direction)
@@ -577,6 +583,27 @@ def generate(n_users: int = 2000, seed: int = 42, start: date = date(2025, 10, 1
     labels = _labels(tx, users, start, end, eids)
     return SyntheticData(users=users, transactions=tx, sessions=sess, labels=labels,
                          acceptance_truth=_acceptance_truth(rng))
+
+
+def generate_one(user_id: str, name: str, persona: str = "garment_worker", seed: int = 0,
+                 start: date = date(2025, 10, 1), end: date = date(2026, 9, 30)) -> tuple[dict, list[dict]]:
+    """One extra synthetic user (used by demo registration). Never goes inactive."""
+    with open(PERSONAS_PATH, encoding="utf-8") as fh:
+        personas = yaml.safe_load(fh)["personas"]
+    merchant_pool = [(f"M-{i:03d}", f"{MERCHANT_NAMES[i % len(MERCHANT_NAMES)]} {i}") for i in range(120)]
+    urng = np.random.default_rng([seed, 999_999])
+    prof = _make_profile(user_id, persona, personas, urng, merchant_pool, {"name": name})
+    prof.never_inactive = True
+    cols = {k: [] for k in TX_COLS}
+    sim = _Sim(prof, urng, cols, [], start, end, _eids(start, end), _fee_rules(), [0])
+    sim.run()
+    tx = pd.DataFrame(cols)
+    tx["tx_id"] = user_id + "-" + tx["tx_id"]
+    user = dict(user_id=user_id, synthetic_name=name, persona=persona, gender=prof.gender, age_band="25-34",
+                area=prof.area, tenure_days=0, family_wallet_type=prof.family_wallet, paisa_saving_default=False,
+                dps_monthly=prof.dps, monthly_income=round(prof.monthly_income, 0), salary_day=prof.income_day,
+                phone_masked="", demo_pin="", inactive_from=None)
+    return user, tx.to_dict("records")
 
 
 def _labels(tx: pd.DataFrame, users: pd.DataFrame, start: date, end: date, eids: list[date]) -> pd.DataFrame:

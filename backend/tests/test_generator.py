@@ -67,3 +67,9 @@ def test_inactivity_hazard_monotonic_in_cashout_share():
     base = dict(depletion_days=10, cashout_share=0.2, other_wallet_share=0.1, pocket_total=0, session_trend=0)
     hi = dict(base, cashout_share=0.8)
     assert 0 < inactivity_hazard(base) < inactivity_hazard(hi) < 1
+
+
+def test_timestamps_follow_balance_chain(data):
+    """Rows sorted by time must reproduce the balance chain (ts never goes backwards per user)."""
+    for _, t in data.transactions.groupby("user_id"):
+        assert t["ts"].is_monotonic_increasing

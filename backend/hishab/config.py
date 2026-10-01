@@ -43,6 +43,6 @@ def get_settings() -> Settings:
         artifacts_dir=Path(os.environ.get("HISHAB_ARTIFACTS_DIR", BACKEND_DIR / "artifacts")),
         db_path=Path(os.environ.get("HISHAB_DB_PATH", Path(tempfile.gettempdir()) / "hishab.db")),
         llm_enabled=_llm_enabled(os.environ.get("LLM_ENABLED", "auto"), key),
-        llm_model=os.environ.get("LLM_MODEL", "claude-haiku-4-5-20251001"),
+        llm_model=os.environ.get("LLM_MODEL", "claude-opus-5-5"),
         anthropic_api_key=key,
     )

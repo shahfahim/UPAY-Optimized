@@ -9,7 +9,7 @@ personas:
     rent: {prob: 0.85, amount: [2000, 4000], day: [1, 10]}
     remittance: {prob: 0.85, frac: [0.25, 0.45]}
     family_wallet: {cash: 0.45, other_mfs: 0.35, upay: 0.10, bank: 0.10}
-    spend_ratio: [0.88, 1.08]
+    spend_ratio: [0.80, 1.00]
     digital_share: [0.05, 0.40]
     utilities: {prob: 0.5, amount: [300, 900]}
     recharge: {per_month: [2, 4], amount: [50, 300]}
@@ -25,7 +25,7 @@ personas:
     rent: {prob: 0.7, amount: [1500, 3500], day: [1, 10]}
     remittance: {prob: 0.5, frac: [0.10, 0.30]}
     family_wallet: {cash: 0.55, other_mfs: 0.30, upay: 0.10, bank: 0.05}
-    spend_ratio: [0.90, 1.06]
+    spend_ratio: [0.82, 0.98]
     digital_share: [0.05, 0.25]
     utilities: {prob: 0.3, amount: [200, 600]}
     recharge: {per_month: [3, 6], amount: [30, 150]}
@@ -57,7 +57,7 @@ personas:
     rent: {prob: 0.6, amount: [1500, 3000], day: [1, 10]}
     remittance: {prob: 0.0, frac: [0.0, 0.0]}
     family_wallet: {cash: 0.25, other_mfs: 0.45, upay: 0.15, bank: 0.15}
-    spend_ratio: [0.85, 1.05]
+    spend_ratio: [0.79, 0.99]
     digital_share: [0.30, 0.70]
     utilities: {prob: 0.1, amount: [200, 500]}
     recharge: {per_month: [3, 6], amount: [50, 200]}

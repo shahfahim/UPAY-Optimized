@@ -138,6 +138,23 @@ class Store:
         rows = self._exec("SELECT body FROM notifications WHERE user_id=? ORDER BY rowid_", (user_id,))
         return [json.loads(r[0]) for r in rows]
 
+    def mark_notifications_read(self, user_id: str) -> None:
+        rows = self._exec("SELECT rowid_, body FROM notifications WHERE user_id=?", (user_id,))
+        with self._lock:
+            for rid, body in rows:
+                d = json.loads(body)
+                d["read"] = True
+                self._conn.execute("UPDATE notifications SET body=? WHERE rowid_=?", (json.dumps(d, ensure_ascii=False), rid))
+            self._conn.commit()
+
+    # meta ----------------------------------------------------------------------------------------
+    def set_meta(self, key: str, value: str) -> None:
+        self._exec("INSERT OR REPLACE INTO meta (key, value) VALUES (?, ?)", (key, value))
+
+    def get_meta(self, key: str) -> str | None:
+        rows = self._exec("SELECT value FROM meta WHERE key=?", (key,))
+        return rows[0][0] if rows else None
+
     # clock ---------------------------------------------------------------------------------------
     def clock_offset(self) -> int:
         rows = self._exec("SELECT value FROM meta WHERE key='clock_offset'")

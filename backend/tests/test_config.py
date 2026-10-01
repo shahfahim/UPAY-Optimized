@@ -11,7 +11,7 @@ def test_defaults(monkeypatch):
     s = get_settings()
     assert s.demo_today == date(2026, 9, 18)
     assert s.seed == 42
-    assert s.llm_model == "claude-haiku-4-5-20251001"
+    assert s.llm_model == "claude-opus-5-5"
     assert s.llm_enabled is False
 
 
