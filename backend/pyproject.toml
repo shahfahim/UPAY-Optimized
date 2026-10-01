@@ -32,4 +32,5 @@ include = ["hishab*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+pythonpath = ["tests"]
 addopts = "--basetemp=.pytest_tmp"
