@@ -112,7 +112,7 @@ Hishab is pitched as **an AI feature + API for the existing upay app**. The prot
 | I5 | **সেন্ড মানি, এনপিএসবি, ফান্ড ট্রান্সফার** flows | Smart Route (E7) + AI category (E6) | Advice at the exact moment of a transfer |
 | I6 | **ক্যাশ আউট** flow | Cash-out nudge with fee saved + "তবুও cash-out" | Directly reduces cash dependency |
 | I7 | **মেক পেমেন্ট, পে বিল** flows | AI category chip | Budget tracking without manual effort |
-| I8 | **সঞ্চয়** service | Hishab pockets, goals, paisa saving, Eid planner (F4) as a "আমার পকেট" area **alongside** upay's existing savings products | Uses an existing entry point; final placement is adjusted once the contents of upay's current সঞ্চয় screen are confirmed |
+| I8 | **সঞ্চয়** service (today: Islamic DPS + ই-টিন ও সঞ্চয় বিবরণী; empty state "আপনার ডিপিএস খুলুন মিনিটেই") | Adds **আমার পকেট** and **DPS প্রস্তুতি** above upay's existing items. Adds **Smart DPS** advice on the existing DPS-opening screen (F4) | upay has only fixed-commitment DPS; Hishab adds flexible savings and safe DPS sizing, which grows upay's existing DPS product instead of competing with it |
 
 Report appendix "Additional UX suggestions": the avatar in the header and collapsing the payment tiles. These are presented as suggestions with rationale, not as requirements on upay.
 
@@ -144,10 +144,32 @@ The Hishab hub (F1) opens from I1 or I2 and has its own in-hub tab strip: **ও�
 - Per-category bars: spent vs budget, with an alert at 80% and 100%.
 - In Auto mode each budget shows the reason it was set ("গত ৩ মাসের হিসাব আর সামনের পূর্বাভাস থেকে").
 
-**F4. Savings**
+**F4. Savings** (inside upay's সঞ্চয়, I8)
+
+Screen order:
+1. ✨ আমার পকেট
+2. ✨ DPS প্রস্তুতি
+3. ডিপিএস (upay existing, with Smart DPS on its opening screen)
+4. ই-টিন ও সঞ্চয় বিবরণী (upay existing, unchanged)
+
 - **Pockets:** জরুরি (emergency), ঈদ, বাড়ি (family), শিক্ষা (education), and custom. Each pocket has a balance, optional target and date, and progress. Money moves in and out freely; withdrawals are **never blocked**.
 - **Goal planner:** target plus date gives the recommended monthly amount, a feasibility likelihood, and which actions would make it feasible.
 - **Paisa saving (পয়সা-সঞ্চয়)** toggle; see the rule in §5.3. Shows the total saved and an "auto-paused due to risk" state.
+- **DPS প্রস্তুতি (graduation path)** (E16): a 4-step progress strip.
+  1. পয়সা-সঞ্চয় চালু.
+  2. জরুরি পকেটে ১৫ দিনের খরচ.
+  3. ৩ মাস ঘাটতি ছাড়া.
+  4. **"তুমি এখন DPS-এর জন্য প্রস্তুত"**.
+
+  Each step shows its status and the next concrete action. When all steps are done, the card links to DPS opening with Smart DPS pre-filled.
+- **Smart DPS** (E16), shown on upay's existing Islamic DPS opening screen, above the two dropdowns:
+  - **নিরাপদ মাসিক জমা:** the largest installment that keeps the 3-month simulated risk below amber, rounded down to the nearest available option.
+  - **কিস্তির তারিখ:** the day after the detected salary day.
+  - **সময়কাল:** derived from a linked goal if there is one, otherwise the shortest option that reaches the emergency-plus-goal target.
+  - Projected maturity amount, labelled as an estimate excluding profit.
+  - The dropdowns stay fully user-controlled; the advice only pre-highlights an option.
+  - If current risk is amber or red, the card says "এখন নতুন কিস্তি শুরু না করাই ভালো" and gives the reason. It never pushes.
+  - DPS opening is simulated in the demo.
 - **Eid planner card:** days to the next Eid, last Eid's spend, expected bonus, recommended weekly saving, and a one-tap "ঈদ pocket-এ লক্ষ্য বসাও".
 
 **F5. Send / Pay intelligence inside upay flows** (I5–I7; simulated money movement; banner "Demo — কোনো আসল টাকা যাবে না")
@@ -195,7 +217,7 @@ Real money movement or integration with real MFS or NPSB; push notifications; le
 | Track 03 opportunity | Where in Hishab |
 |---|---|
 | AI Financial Health Coach | F8 health snapshot, habits, monthly report (E12) + "কেন?" drivers + chat |
-| Personal Savings Planner | F4 goal planner (E8) |
+| Personal Savings Planner | F4 goal planner (E8), Smart DPS sizing and the pocket → DPS graduation path (E16) |
 | Smart Spending Companion | E5 actions (`trim_discretionary`, `digital_pay_instead_of_cashout`), cash-out nudge, E12 unusual-spend habits |
 | Cash-Flow Forecasting | E2 + E3, Home chart, Calendar |
 | Financial Goal Copilot | Pockets (emergency, Eid, family, education, custom) + Eid planner |
@@ -222,6 +244,7 @@ All engine modules are plain Python in `backend/hishab/engine/`, are stateless (
 | E11 | Safe-to-spend | Deterministic formula on E1 + E2 (§5.2) | ৳ per day | n/a | n/a |
 | E12 | Health indicators and habit miner | Indicators: emergency days = pocket total ÷ avg daily essential spend; cash dependency = cash-out ÷ income (30 d); shortfall-free months (last 3). Habits: rule templates over features (post-salary depletion speed, cash-out count/fees, weekday spikes, category z-score > 2 vs own 3-month history) ranked by ৳ impact | 3 indicators + month-over-month delta; top 3–5 habits; monthly report facts | n/a | Habit detector P/R vs injected habits |
 | E13 | Literacy personalizer | Lesson library (`rules/lessons.yaml`, 10–12 Bangla micro-lessons with `{placeholders}`) + trigger rules on E12 features; selection via E9 Thompson sampling per (persona, lesson) | ≤1 lesson card on Home, ranked list in F8, filled with the user's numbers | Random or generic lesson | Offline replay: simulated behaviour change after lesson vs generic/random |
+| E16 | Smart DPS + DPS readiness | Readiness: rule checks on E12 indicators (paisa on, emergency pocket ≥ 15 days, 3 shortfall-free months, no active DPS). Sizing: binary search over allowed installment options; each candidate is applied via the E5 transform (fixed monthly outflow on salary day + 1) and the 3-month risk is re-scored with E2/E3; pick the largest with P(shortfall) < amber | Readiness steps; safe installment, date, tenure, maturity estimate | Naive rule: 10% of income | Backtest on synthetic DPS holders: missed-installment rate of the Smart DPS amount vs the naive rule |
 | E15 | "তোমার জন্য" payment shortcuts | Score per payment type/biller = due-soon boost from E1 recurring schedule (e.g. recharge or electricity bill expected within 5 days) + 30-day frequency + recency; top 4 | 4 shortcuts with a reason ("বিল আসছে ৩ দিনে") | Global most-popular 4 | Hit rate: next payment is in the top 4 (holdout) |
 | E14 | Readiness signals | Five transparent rule-based signals (thresholds in `rules/readiness.yaml`) computed from E1/E12 features; improvement path via E2 projection of the recommended habit. **Never uses** persona, gender, area or age as inputs | Signal states + reasons + improvement projection | n/a | Fairness: signal-state distribution by group; unit tests on thresholds |
 
@@ -247,6 +270,7 @@ Each action has `id`, `applies_if` (rule on features), `params` (computed), `tra
 | `cheaper_route` | E7 finds a habit with a cheaper path | Swap the route; fee difference saved |
 | `pause_paisa_saving` | paisa saving on and risk ≥ amber | Stop sweeps until the next income |
 | `trim_discretionary` | discretionary category above its 3-month median by > 20% | Reduce that category by 10% (never essentials) |
+| `dps_ready` | all E16 readiness steps met, risk green, no active DPS | Fixed monthly outflow of the Smart DPS amount on salary day + 1 |
 | `eid_weekly_saving` | Eid within 120 days and Eid pocket below need | Weekly transfer to the Eid pocket |
 
 **Risk levels** (from E3 probability, configurable in `guardrails.yaml`): green < 0.30 ≤ amber < 0.60 ≤ red.
@@ -269,6 +293,12 @@ Each action has `id`, `applies_if` (rule on features), `params` (computed), `tra
   - Never used by any upay-facing decision path, in code or in the API. The Impact page exposes only aggregate distributions for fairness checking.
   - The disclaimer is always shown.
   - Inputs exclude protected or proxy attributes (persona, gender, area, age).
+- **Smart DPS (E16):**
+  - Never suggested when risk is amber or red.
+  - Never pre-selects an amount above the safe limit.
+  - The user always chooses the final amount and tenure.
+  - No pressure language.
+  - The maturity figure is labelled as an estimate.
 - **Lessons (E13):** educational only, never promote paid products; at most 1 lesson card on Home at a time.
 - At most 3 action cards at once, and at most 1 contextual nudge per send/pay flow.
 
@@ -306,8 +336,8 @@ safe_today  = max(0, (balance − committed − cushion − essential_buffer) / 
 - **Demo "today":** `DEMO_TODAY=2026-09-18` (config). Serving uses history ≤ DEMO_TODAY and forecasts after it, so Rina is mid-cycle and heading to a shortfall.
 
 ### 6.2 Tables (parquet in `backend/data/`, gitignored except the small serving subset)
-- `users`: user_id, synthetic_name, persona, gender, age_band, area, tenure_days, family_wallet_type (`upay|other_mfs|bank|cash`), paisa_saving_default.
-- `transactions`: tx_id, user_id, ts, type (`salary_in, bonus_in, cash_in, cash_out, send_money, receive_money, merchant_pay, bill_pay, mobile_recharge, pocket_in, pocket_out`), amount (2 dp), fee, counterparty_id, counterparty_type (`employer, person, merchant, agent, biller`), counterparty_channel (`upay, other_mfs, bank`), category (`food_grocery, rent, family_support, transport, mobile, health, education, utilities, shopping, festival, other`), area.
+- `users`: user_id, synthetic_name, persona, gender, age_band, area, tenure_days, family_wallet_type (`upay|other_mfs|bank|cash`), paisa_saving_default, dps_monthly (0 if none; ~10% of users hold a DPS, some sized too high so they miss installments).
+- `transactions`: tx_id, user_id, ts, type (`salary_in, bonus_in, cash_in, cash_out, send_money, receive_money, merchant_pay, bill_pay, mobile_recharge, pocket_in, pocket_out, dps_installment, dps_installment_missed`), amount (2 dp), fee, counterparty_id, counterparty_type (`employer, person, merchant, agent, biller`), counterparty_channel (`upay, other_mfs, bank`), category (`food_grocery, rent, family_support, transport, mobile, health, education, utilities, shopping, festival, other`), area.
 - `sessions`: user_id, date, session_count (for the simulated active-rate metric).
 - `labels`: per (user, observation_date): `shortfall_14d`, `inactive_30d` (impact simulation only, no model), `pre_eid_spend`.
 - `action_acceptance_truth`: latent acceptance propensity per (persona, action type), used to simulate bandit feedback.
@@ -436,6 +466,9 @@ Synthetic data → features → models (E1–E14, excluding E4/E10) → business
 | POST | `/users/{id}/savings/pockets/{pocket}/move` | simulated in/out |
 | PUT | `/users/{id}/savings/paisa` | toggle paisa saving |
 | POST | `/users/{id}/goals/plan` | goal feasibility plan |
+| GET | `/users/{id}/dps/readiness` | 4 graduation steps with status and next action |
+| POST | `/users/{id}/dps/advice` | Smart DPS: safe installment, date, tenure, maturity estimate, or a "not now" reason |
+| POST | `/users/{id}/dps/open` | simulated DPS opening (records the chosen amount/tenure) |
 | POST | `/users/{id}/category/suggest` | top-3 categories for a draft transaction |
 | POST | `/users/{id}/category/confirm` | store confirmed label |
 | POST | `/users/{id}/route` | ranked routes for {amount, destination_type} + habit insight |
@@ -530,6 +563,7 @@ Results are reported per user-month and extrapolated to "per 100,000 users", **c
   - E11 is never negative.
   - Paisa sweep arithmetic.
   - E15 puts a recurring bill due in 3 days into the top 4.
+  - E16 returns "not now" at amber/red risk, never exceeds the safe limit, and puts the installment date on salary day + 1.
   - E12 indicators on a hand-built fixture, and habit detection of injected habits.
   - E13 lesson triggers fire only on their conditions, and placeholders are always filled.
   - E14 thresholds; E14 output never contains a numeric score or loan language; E14 inputs exclude protected attributes (asserted on the feature list).
@@ -566,15 +600,15 @@ Results are reported per user-month and extrapolated to "per 100,000 users", **c
 |---|---|---|
 | 0–5 | Repo, CI skeleton, config, synthetic generator (incl. Eid, areas, inactivity mechanism, acceptance truth, injected habits, bill timeliness) | `generate_data` produces tables; generator tests pass |
 | 5–13 | Features, E1, E2, E3 + baselines + evaluate script | metrics.md shows E2/E3 vs baselines |
-| 13–19 | E5 actions + guardrails, E11 safe-to-spend, E7 route, E8 goals + Eid | Engine tests pass |
-| 19–21 | E6 category, E9 bandit + replay | metrics.md complete |
-| 21–24 | E12 health + habits, E13 lessons (library + triggers), E14 readiness signals | Engine tests pass; impact_snapshot.json |
-| 24–29 | FastAPI routes + SQLite + API tests, Dockerfile, **first deploy** | Live URL serves `/api/health` and a stub UI |
-| 29–44 | React UI: upay-style shell (S0) + integration points I1–I8 incl. E15 shortcuts, Hishab hub (overview, Budget, Calendar, শেখো), Health Coach, Savings, Send/Pay/Cash-out flows + Smart Route + Money Map, Impact | Full flow clickable on the live URL |
-| 44–49 | Chat + tools + fallback + Bangla voice | Chat answers suggested questions; fallback verified |
-| 49–54 | Polish, bug fixes, fairness views, final deploy | Demo checklist passes on the live URL |
-| 54–63 | README (10 sections + "how upay integrates" section), project report, demo video | All submission files ready |
-| 63–72 | Buffer (~7 h usable after rest), final verification, submit | Submitted before deadline |
+| 13–20 | E5 actions + guardrails, E11 safe-to-spend, E7 route, E8 goals + Eid, E16 Smart DPS + readiness | Engine tests pass |
+| 20–22 | E6 category, E9 bandit + replay | metrics.md complete |
+| 22–25 | E12 health + habits, E13 lessons (library + triggers), E14 readiness signals, E15 shortcuts | Engine tests pass; impact_snapshot.json |
+| 25–30 | FastAPI routes + SQLite + API tests, Dockerfile, **first deploy** | Live URL serves `/api/health` and a stub UI |
+| 30–45 | React UI (incl. সঞ্চয় with আমার পকেট, DPS প্রস্তুতি, Smart DPS): upay-style shell (S0) + integration points I1–I8 incl. E15 shortcuts, Hishab hub (overview, Budget, Calendar, শেখো), Health Coach, Savings, Send/Pay/Cash-out flows + Smart Route + Money Map, Impact | Full flow clickable on the live URL |
+| 45–50 | Chat + tools + fallback + Bangla voice | Chat answers suggested questions; fallback verified |
+| 50–55 | Polish, bug fixes, fairness views, final deploy | Demo checklist passes on the live URL |
+| 55–64 | README (10 sections + "how upay integrates" section), project report, demo video | All submission files ready |
+| 64–72 | Buffer (~5 h usable after rest), final verification, submit | Submitted before deadline |
 
 **Time warning:** solo builds overrun. The cut order in §14.2 is mandatory to follow if any phase overruns by more than 2 hours.
 
@@ -585,7 +619,7 @@ Results are reported per user-month and extrapolated to "per 100,000 users", **c
 4. E6 ML replaced by counterparty-memory + rules; E15 reduced to 30-day frequency only.
 5. Chat reduced to template fallback; voice Chrome-only.
 
-**Never cut:** upay shell integration points I1–I3, E2 forecast, E3 risk, E5 actions, E7 Smart Route, E8 Eid planner, E9 learning nudges, E12 health snapshot, E14 signals + disclaimer, live deployment.
+**Never cut:** upay shell integration points I1–I3, E2 forecast, E3 risk, E5 actions, E7 Smart Route, E8 Eid planner, E9 learning nudges, E12 health snapshot, E14 signals + disclaimer, E16 Smart DPS, live deployment.
 
 ### 14.3 README checklist (rulebook §6.2)
 1. Project overview
@@ -614,7 +648,7 @@ Results are reported per user-month and extrapolated to "per 100,000 users", **c
 2. Home: forecast, risk, "কেন?", tap an action to see the what-if (50 s).
 2b. Health Coach: indicators, habits, a personalised lesson, readiness signals with disclaimer (30 s).
 3. Send home with Smart Route and the cash-out nudge (40 s).
-4. Savings: Eid planner and paisa saving (30 s).
+4. সঞ্চয়: pockets, paisa saving, Eid planner, DPS readiness and Smart DPS on upay's DPS screen (40 s).
 5. Bangla voice question (30 s).
 6. Impact page: financial independence, customer and upay benefit, metrics vs baselines, fairness (50 s).
 7. Responsible AI + what's next (20 s).
@@ -642,6 +676,7 @@ Results are reported per user-month and extrapolated to "per 100,000 users", **c
 - **Added unique features:** learning nudges (bandit), Bangla voice, Eid planner.
 - **Added for retention:** safe-to-spend and Smart Route framed as a universal wallet. Retention is a supporting business argument, not the headline.
 - **Positioning:** Hishab is an AI feature + API inside the upay app (integration points I1–I8), shown in a simplified upay-style shell with a prototype ribbon. Placement was chosen from screenshots of the current upay app: icon in the empty slot next to এনপিএসবি, a risk-only home card, safe-to-spend under the balance, and a "তোমার জন্য" payment row (E15). Header avatar and payment-tile collapse are UX suggestions.
+- **Savings integration:** upay's সঞ্চয় today offers only Islamic DPS and tax statements. Hishab adds flexible pockets, a pocket → DPS graduation path, and Smart DPS sizing on upay's existing DPS screen (E16). This grows upay's existing product rather than competing with it.
 - **Removed as off-track:** churn-risk model (Track 02) and agent cash-out forecast (Track 05). The analyst tab became a Track 03 **Impact** page. Both removed items are kept as on-site candidates (§13).
 - **Paisa saving** = sweep of the balance's fractional part after each transaction (§5.3).
 - **Full Track 03 coverage:** Health Coach (E12), Literacy Personalizer (E13), and Responsible Credit Readiness as transparent, non-scored, user-only signals (E14) — all three in full scope.
