@@ -191,12 +191,14 @@ def _window(tx: pd.DataFrame, today: date, lo_days: int, hi_days: int) -> pd.Dat
 
 
 def cash_remittance_saving(recurring: list[RecurringEvent]) -> tuple[float, RecurringEvent | None]:
-    """Monthly fee saved by sending a cash-out remittance through NPSB instead."""
+    """Monthly fee saved by sending a cash-out remittance by the cheapest digital route (E7) instead."""
+    from hishab.engine.route import routes
     for e in recurring:
         if e.kind == "remittance" and e.tx_type == "cash_out":
-            saving = _fee("upay_wallet", "agent_cash", e.amount) - _fee("upay_wallet", "npsb", e.amount)
-            if saving > 0:
-                return round(saving, 2), e
+            rs = routes(e.amount, "other_mfs_wallet")
+            cash = [r for r in rs if "agent_cash" in r.nodes]
+            if rs and cash and cash[0].fee > rs[0].fee:
+                return round(cash[0].fee - rs[0].fee, 2), e
     return 0.0, None
 
 
