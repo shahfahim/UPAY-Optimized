@@ -2,10 +2,13 @@
 
 from __future__ import annotations
 
+import os
+from pathlib import Path
+
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import FileResponse, JSONResponse
 
 from hishab.config import Settings, get_settings
 from hishab.engine.context import UserNotFound
@@ -22,7 +25,12 @@ def build_service(settings: Settings):
     return Hishab(DataRepo.from_dir(settings.data_dir / "serving"), store, load_from(settings.artifacts_dir), settings)
 
 
-def create_app(settings: Settings | None = None, svc=None) -> FastAPI:
+def _default_web_dist() -> Path:
+    from hishab.config import BACKEND_DIR
+    return Path(os.environ.get("HISHAB_WEB_DIST", BACKEND_DIR.parent / "web" / "dist"))
+
+
+def create_app(settings: Settings | None = None, svc=None, web_dist: Path | None = None) -> FastAPI:
     settings = settings or get_settings()
     app = FastAPI(title="Hishab API", version="0.1.0",
                   description="AI cash-flow copilot for upay — demo API on synthetic data.")
@@ -71,6 +79,19 @@ def create_app(settings: Settings | None = None, svc=None) -> FastAPI:
     @app.get("/api/health")
     def health():
         return {"status": "ok", "llm": bool(settings.llm_enabled), "demo_today": settings.demo_today.isoformat()}
+
+    dist = Path(web_dist) if web_dist is not None else _default_web_dist()
+    if (dist / "index.html").exists():
+        root = dist.resolve()
+
+        @app.get("/{path:path}", include_in_schema=False)
+        def spa(path: str):
+            if path.startswith("api/") or path == "api":
+                return JSONResponse(status_code=404, content={"detail": "Not Found"})
+            target = (root / path).resolve()
+            if path and target.is_file() and root in target.parents:
+                return FileResponse(target)
+            return FileResponse(root / "index.html")  # client-side routes
 
     return app
 

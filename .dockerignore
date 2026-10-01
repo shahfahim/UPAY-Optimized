@@ -1,0 +1,13 @@
+.git
+.venv
+**/.venv
+**/__pycache__
+**/.pytest_cache
+.pytest_tmp
+.superpowers
+web/node_modules
+web/dist
+backend/data/full
+docs/reference
+*.db
+.env
