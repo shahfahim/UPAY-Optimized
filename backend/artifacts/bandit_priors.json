@@ -1,0 +1,226 @@
+{
+"garment_worker|save_on_payday": [
+4.8553,
+7.1447
+],
+"garment_worker|split_remittance": [
+3.2851,
+8.7149
+],
+"garment_worker|digital_pay_instead_of_cashout": [
+5.2031,
+6.7969
+],
+"garment_worker|cheaper_route": [
+7.2605,
+4.7395
+],
+"garment_worker|pause_paisa_saving": [
+7.0482,
+4.9518
+],
+"garment_worker|trim_discretionary": [
+3.2742,
+8.7258
+],
+"garment_worker|dps_ready": [
+3.9357,
+8.0643
+],
+"garment_worker|eid_weekly_saving": [
+5.7248,
+6.2752
+],
+"garment_worker|cashout_cost": [
+6.3016,
+5.6984
+],
+"garment_worker|emergency_fund": [
+4.8086,
+7.1914
+],
+"garment_worker|eid_planning": [
+6.7702,
+5.2298
+],
+"garment_worker|npsb_basics": [
+4.9828,
+7.0172
+],
+"garment_worker|budget_why": [
+3.57,
+8.43
+],
+"garment_worker|paisa_saving": [
+4.0138,
+7.9862
+],
+"daily_wage|save_on_payday": [
+4.1982,
+7.8018
+],
+"daily_wage|split_remittance": [
+2.7403,
+9.2597
+],
+"daily_wage|digital_pay_instead_of_cashout": [
+4.4985,
+7.5015
+],
+"daily_wage|cheaper_route": [
+5.0014,
+6.9986
+],
+"daily_wage|pause_paisa_saving": [
+5.9798,
+6.0202
+],
+"daily_wage|trim_discretionary": [
+2.6418,
+9.3582
+],
+"daily_wage|dps_ready": [
+3.5723,
+8.4277
+],
+"daily_wage|eid_weekly_saving": [
+4.1003,
+7.8997
+],
+"daily_wage|cashout_cost": [
+4.4545,
+7.5455
+],
+"daily_wage|emergency_fund": [
+5.0,
+7.0
+],
+"daily_wage|eid_planning": [
+5.0353,
+6.9647
+],
+"daily_wage|npsb_basics": [
+4.6058,
+7.3942
+],
+"daily_wage|budget_why": [
+3.1508,
+8.8492
+],
+"daily_wage|paisa_saving": [
+3.3964,
+8.6036
+],
+"shop_owner|save_on_payday": [
+3.8329,
+8.1671
+],
+"shop_owner|split_remittance": [
+3.2109,
+8.7891
+],
+"shop_owner|digital_pay_instead_of_cashout": [
+4.8784,
+7.1216
+],
+"shop_owner|cheaper_route": [
+6.5644,
+5.4356
+],
+"shop_owner|pause_paisa_saving": [
+6.1361,
+5.8639
+],
+"shop_owner|trim_discretionary": [
+2.8219,
+9.1781
+],
+"shop_owner|dps_ready": [
+3.801,
+8.199
+],
+"shop_owner|eid_weekly_saving": [
+3.9114,
+8.0886
+],
+"shop_owner|cashout_cost": [
+5.5272,
+6.4728
+],
+"shop_owner|emergency_fund": [
+4.7986,
+7.2014
+],
+"shop_owner|eid_planning": [
+5.3583,
+6.6417
+],
+"shop_owner|npsb_basics": [
+4.0244,
+7.9756
+],
+"shop_owner|budget_why": [
+4.0054,
+7.9946
+],
+"shop_owner|paisa_saving": [
+4.7074,
+7.2926
+],
+"student|save_on_payday": [
+4.1143,
+7.8857
+],
+"student|split_remittance": [
+3.8615,
+8.1385
+],
+"student|digital_pay_instead_of_cashout": [
+6.4724,
+5.5276
+],
+"student|cheaper_route": [
+6.5292,
+5.4708
+],
+"student|pause_paisa_saving": [
+8.3591,
+3.6409
+],
+"student|trim_discretionary": [
+3.3165,
+8.6835
+],
+"student|dps_ready": [
+4.8665,
+7.1335
+],
+"student|eid_weekly_saving": [
+6.2466,
+5.7534
+],
+"student|cashout_cost": [
+5.4932,
+6.5068
+],
+"student|emergency_fund": [
+5.841,
+6.159
+],
+"student|eid_planning": [
+6.6034,
+5.3966
+],
+"student|npsb_basics": [
+4.7783,
+7.2217
+],
+"student|budget_why": [
+4.0839,
+7.9161
+],
+"student|paisa_saving": [
+5.601,
+6.399
+]
+}

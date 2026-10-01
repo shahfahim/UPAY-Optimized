@@ -15,6 +15,7 @@ from hishab.config import BACKEND_DIR
 from hishab.data.generator import SyntheticData
 from hishab.data.splits import TRAIN_START, VAL_START, TEST_START, split_users
 from hishab.engine import forecast as F
+from hishab.engine.bandit import Bandit
 from hishab.engine.forecast import save_residuals
 from hishab.engine.risk import train_risk
 
@@ -49,6 +50,9 @@ def main() -> None:
     risk = train_risk(data, val_from=VAL_START, until=TEST_START, user_ids=train_set)
     risk.save(ART)
     print(f"risk model saved ({time.time() - t0:.0f}s)")
+
+    Bandit.from_truth(data.acceptance_truth).save(ART / "bandit_priors.json")
+    print("bandit priors saved")
 
 
 if __name__ == "__main__":

@@ -66,3 +66,16 @@ def test_daily_limit_offered_and_improves_forecast(repo, store, settings, tiny_m
     assert cards["daily_limit"].risk_after <= cards["daily_limit"].risk_before
     fc_after, _ = simulate_action(ctx, tiny_models, "daily_limit")
     assert min(fc_after.p50[:14]) > min(forecast(ctx, tiny_models).p50[:14])
+
+
+def test_bandit_preferences_change_ranking(repo, store, settings, tiny_models):
+    import numpy as np
+
+    from hishab.engine.bandit import Bandit
+    ctx = build_ctx("U0001", repo, store, settings)
+    ids = [c.id for c in rank_actions(ctx, tiny_models, k=10)]
+    assert "save_on_payday" in ids
+    loves = Bandit({("garment_worker", i): ((1000.0, 1.0) if i == "save_on_payday" else (1.0, 1000.0))
+                    for i in ids})
+    top = rank_actions(ctx, tiny_models, bandit=loves, k=1, rng=np.random.default_rng(0))
+    assert top[0].id == "save_on_payday"
