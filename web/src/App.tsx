@@ -10,6 +10,8 @@ import Splash from './pages/auth/Splash'
 import Welcome from './pages/auth/Welcome'
 import History from './pages/History'
 import Home from './pages/Home'
+import Impact from './pages/Impact'
+import Ask from './pages/hub/Ask'
 import More from './pages/More'
 import Notifications from './pages/Notifications'
 import Payments from './pages/Payments'
@@ -54,6 +56,7 @@ export default function App() {
       <Route path="/welcome" element={<Frame><Welcome /></Frame>} />
       <Route path="/login" element={<Frame><Login /></Frame>} />
       <Route path="/register" element={<Frame><Register /></Frame>} />
+      <Route path="/impact" element={<Impact />} />
       <Route path="/app" element={<RequireSession><AppShell /></RequireSession>}>
         <Route index element={<Navigate to="home" replace />} />
         <Route path="home" element={<Home />} />
@@ -67,7 +70,7 @@ export default function App() {
           <Route path="budget" element={<Budget />} />
           <Route path="calendar" element={<Calendar />} />
           <Route path="learn" element={<Learn />} />
-          <Route path="ask" element={<Soon />} />
+          <Route path="ask" element={<Ask />} />
         </Route>
         <Route path="hishab/health" element={<Health />} />
         <Route path="savings" element={<SavingsHome />} />
