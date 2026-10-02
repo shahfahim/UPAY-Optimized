@@ -301,7 +301,7 @@ def answer(uid: str, message: str, svc) -> dict:  # noqa: C901 (intentionally lo
         top_cat = tx["by_category"][0]["category_bn"] if tx.get("by_category") else None
         if h["insufficient_history"]:
             text = "হিসাব দেখাতে আরও কিছু দিনের লেনদেন লাগবে।"
-        elif h["risk_level"] == "green":
+        elif h.get("risk_level", "green") == "green":
             adv = svc.dps_advice(uid)
             used.append({"name": "dps_advice", "result": adv})
             if adv.get("status") == "ok":
@@ -364,7 +364,7 @@ def answer(uid: str, message: str, svc) -> dict:  # noqa: C901 (intentionally lo
         h = tool("get_home_summary")
         if h["insufficient_history"]:
             text = "হিসাব দেখাতে আরও কিছু দিনের লেনদেন লাগবে।"
-        elif h["risk_level"] in ("amber", "red") and h["shortfall_date"]:
+        elif h.get("risk_level", "green") in ("amber", "red") and h["shortfall_date"]:
             drivers = tool("get_shortfall_drivers")["drivers"]
             why = ", ".join(d["text_bn"] for d in drivers[:2])
             text = (f"{_day(h['shortfall_date'])} দিকে টানাটানি হতে পারে "
@@ -396,7 +396,7 @@ def answer(uid: str, message: str, svc) -> dict:  # noqa: C901 (intentionally lo
         tx = tool("get_transactions_summary", period="month")
         cats = tx.get("by_category", [])
         top = ", ".join(c["category_bn"] for c in cats[:2])
-        net = tx["income_total"] - tx["spend_total"]
+        net = tx.get("income_total", 0) - tx.get("spend_total", 0)
         is_avg    = re.search(r"average|avg|গড়", text_l)
         wants_inc = re.search(r"income koto|aay koto|আয় কত|আয়.*কত|income.*কত", text_l)
         wants_exp = re.search(r"kharoch koto|খরচ কত|koto kharoch|কত খরচ", text_l)
@@ -510,7 +510,7 @@ def answer(uid: str, message: str, svc) -> dict:  # noqa: C901 (intentionally lo
     # ── Budget overview ───────────────────────────────────────────────────────
     elif intent == "budget":
         tx = tool("get_transactions_summary", period="month")
-        diff = tx["income_total"] - tx["spend_total"]
+        diff = tx.get("income_total", 0) - tx.get("spend_total", 0)
         text = (f"এই মাসে আয় ৳{bn_num(tx['income_total'])}, "
                 f"খরচ ৳{bn_num(tx['spend_total'])}। ")
         text += (f"এখন পর্যন্ত ৳{bn_num(diff)} সাশ্রয় — চালিয়ে যাও!"
@@ -521,12 +521,12 @@ def answer(uid: str, message: str, svc) -> dict:  # noqa: C901 (intentionally lo
         h = tool("get_home_summary")
         if h["insufficient_history"]:
             text = "হিসাব দেখাতে আরও কিছু দিনের লেনদেন লাগবে।"
-        elif h["risk_level"] == "red" and h["shortfall_date"]:
+        elif h.get("risk_level", "green") == "red" and h["shortfall_date"]:
             drivers = tool("get_shortfall_drivers")["drivers"]
             why = ", ".join(d["text_bn"] for d in drivers[:2])
             text = (f"এই মাসে একটু সাবধান থাকো — "
                     f"{why} কারণে {_day(h['shortfall_date'])} দিকে টানাটানি হতে পারে।")
-        elif h["risk_level"] == "amber":
+        elif h.get("risk_level", "green") == "amber":
             text = ("মাসের শেষ দিকে একটু পরিকল্পনা করো — "
                     "এখনই সতর্ক হলে টানাটানি এড়ানো যাবে।")
         else:
