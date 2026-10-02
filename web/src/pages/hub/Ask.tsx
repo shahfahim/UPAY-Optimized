@@ -18,7 +18,7 @@ const MAX = 500
 const TOOL_BN: Record<string, string> = {
   get_home_summary: 'ব্যালেন্স আর সামনের ৩০ দিনের হিসাব', get_shortfall_drivers: 'টাকা কম পড়ার কারণ',
   list_actions: 'তোমার জন্য পরামর্শ', simulate_action: 'পরামর্শ মানলে কী হবে', plan_goal: 'লক্ষ্যের হিসাব',
-  plan_eid: 'ঈদের হিসাব', get_budget_status: 'বাজেট', find_route: 'টাকা পাঠানোর পথ ও fee',
+  plan_eid: 'ঈদের হিসাব', find_route: 'টাকা পাঠানোর পথ ও fee',
   get_transactions_summary: 'লেনদেনের সারাংশ', get_health: 'আর্থিক স্বাস্থ্য', get_readiness: 'নিয়মিততার সংকেত',
   get_lessons: 'ছোট পাঠ', get_levels: 'সঞ্চয় লেভেল', emergency_options: 'জরুরি টাকার উপায়',
 }

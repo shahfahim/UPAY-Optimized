@@ -135,15 +135,6 @@ export type CalendarDay = {
 }
 export type Calendar = { month: string; today: string; days: CalendarDay[] }
 
-export type BudgetItem = {
-  category: string
-  category_bn: string
-  budget: number
-  spent: number
-  pct: number
-  status: 'ok' | 'warn' | 'over'
-}
-export type Budget = { period: 'day' | 'week' | 'month'; mode: 'auto' | 'manual'; items: BudgetItem[]; reason_bn: string }
 
 export type Pocket = {
   name: string

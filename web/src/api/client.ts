@@ -64,9 +64,6 @@ export const api = {
   readiness: (uid: string) => req<Readiness>('GET', `${u(uid)}/readiness`),
   levels: (uid: string) => req<LevelStatus>('GET', `${u(uid)}/levels`),
   calendar: (uid: string, month: string) => req<Calendar>('GET', `${u(uid)}/calendar?month=${month}`),
-  budget: (uid: string, period: 'day' | 'week' | 'month') => req<Budget>('GET', `${u(uid)}/budget?period=${period}`),
-  setBudget: (uid: string, mode: 'auto' | 'manual', manual: Record<string, number> = {}) =>
-    req<{ mode: string }>('PUT', `${u(uid)}/budget`, { mode, manual }),
 
   savings: (uid: string) => req<Savings>('GET', `${u(uid)}/savings`),
   movePocket: (uid: string, pocket: string, direction: 'in' | 'out', amount: number) =>
