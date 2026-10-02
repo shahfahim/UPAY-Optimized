@@ -16,9 +16,10 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 RUN apt-get update && apt-get install -y --no-install-recommends libgomp1 && rm -rf /var/lib/apt/lists/*
 RUN useradd -m -u 1000 user
 WORKDIR /app
-COPY backend/pyproject.toml backend/pyproject.toml
+COPY backend/pyproject.toml backend/requirements.lock backend/
+RUN pip install --no-cache-dir -r backend/requirements.lock
 COPY backend/hishab backend/hishab
-RUN pip install --no-cache-dir -e ./backend
+RUN pip install --no-cache-dir --no-deps -e ./backend
 COPY backend/artifacts backend/artifacts
 COPY backend/data/serving backend/data/serving
 COPY --from=web /web/dist web/dist

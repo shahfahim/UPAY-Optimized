@@ -11,6 +11,7 @@ from typing import Callable
 
 import anthropic
 
+from hishab.errors import UserError
 from hishab.llm import fallback
 from hishab.llm.prompts import SYSTEM_PROMPT
 from hishab.llm.tools import TOOLS, run_tool
@@ -22,6 +23,7 @@ MAX_CHARS = 500
 BUDGET_SECONDS = 25.0
 MAX_ROUNDS = 4
 FALLBACK_BETA = "server-side-fallback-2026-07-01"
+LLM_CALLS_PER_MINUTE = 30  # across all users; past it, chat answers from templates instead of the API
 
 
 class RateLimited(Exception):
@@ -51,9 +53,9 @@ _default_limiter = RateLimiter()
 def validate_message(message: str) -> str:
     m = (message or "").strip()
     if not m:
-        raise ValueError("প্রশ্ন লিখুন")
+        raise UserError("প্রশ্ন লিখুন")
     if len(m) > MAX_CHARS:
-        raise ValueError("প্রশ্ন ৫০০ অক্ষরের মধ্যে লিখুন")
+        raise UserError("প্রশ্ন ৫০০ অক্ষরের মধ্যে লিখুন")
     return m
 
 
@@ -108,12 +110,19 @@ def _loop(uid: str, message: str, svc, settings, client) -> dict | None:
     return None
 
 
-def answer(uid: str, message: str, svc, settings, client=None, limiter: RateLimiter | None = None) -> dict:
+def answer(uid: str, message: str, svc, settings, client=None, limiter: RateLimiter | None = None,
+           llm_budget: RateLimiter | None = None) -> dict:
     message = validate_message(message)
     (limiter or _default_limiter).check(uid)
-    if client is None:
-        if not settings.llm_enabled:
+    if client is None and not settings.llm_enabled:
+        return fallback.answer(uid, message, svc)
+    if llm_budget is not None:
+        try:
+            llm_budget.check("all")
+        except RateLimited:
+            log.warning("LLM call budget reached, using fallback")
             return fallback.answer(uid, message, svc)
+    if client is None:
         client = _real_client(settings)
     try:
         result = _loop(uid, message, svc, settings, client)

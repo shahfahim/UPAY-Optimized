@@ -1,8 +1,9 @@
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, Depends, Request
 
+from hishab.api.deps import require_session
 from hishab.api.schemas import TimeTravelIn
 
-router = APIRouter(prefix="/demo")
+router = APIRouter(prefix="/demo", dependencies=[Depends(require_session)])  # shared clock: logged-in users only
 
 
 @router.post("/time-travel")

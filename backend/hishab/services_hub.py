@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import calendar as _cal
+import functools
 import json
 import re
 import secrets
@@ -26,6 +27,7 @@ from hishab.engine.recurring import detect_recurring
 from hishab.engine.route import detect_costly_habits, routes as _routes
 from hishab.engine.savings import apply_paisa
 from hishab.engine.text import CATEGORY_BN, POCKET_BN, bn_num
+from hishab.errors import UserError
 from hishab.jsonable import jsonable
 from hishab.rules import load_rules
 from hishab.store.sqlite import POCKETS
@@ -37,6 +39,15 @@ _EVENT_LABELS = {"salary_in": "বেতন", "bonus_in": "বোনাস"}
 
 class InsufficientFunds(Exception):
     pass
+
+
+def locked(fn):
+    """Run a method that reads, checks and writes one user's balance or state under that user's lock."""
+    @functools.wraps(fn)
+    def wrapper(self, uid, *args, **kwargs):
+        with self.user_lock(uid):
+            return fn(self, uid, *args, **kwargs)
+    return wrapper
 
 
 def _dates(tx: pd.DataFrame) -> pd.Series:
@@ -72,7 +83,7 @@ class HubMixin:
     # --- calendar and budget ------------------------------------------------------------------------------
     def calendar(self, uid, month: str):
         if not re.fullmatch(r"\d{4}-(0[1-9]|1[0-2])", month or ""):
-            raise ValueError("মাস সঠিক নয় (YYYY-MM)")
+            raise UserError("মাস সঠিক নয় (YYYY-MM)")
         y, m = int(month[:4]), int(month[5:])
         ctx = self.ctx(uid)
         days = [date(y, m, k) for k in range(1, _cal.monthrange(y, m)[1] + 1)]
@@ -107,7 +118,7 @@ class HubMixin:
 
     def budget(self, uid, period: str):
         if period not in PERIOD_DAYS:
-            raise ValueError("সময়কাল সঠিক নয়")
+            raise UserError("সময়কাল সঠিক নয়")
         ctx = self.ctx(uid)
         n = PERIOD_DAYS[period]
         sp = ctx.tx[(ctx.tx.direction == -1) & ctx.tx.type.isin(SPEND_TYPES)]
@@ -136,14 +147,15 @@ class HubMixin:
         reason = "তুমি নিজে যে বাজেট বসিয়েছ" if manual else "গত ৩ মাসের হিসাব আর সামনের পূর্বাভাস থেকে"
         return {"period": period, "mode": ctx.state.budget_mode, "items": items, "reason_bn": reason}
 
+    @locked
     def set_budget(self, uid, mode, manual):
         ctx = self.ctx(uid)
         clean = {}
         for c, v in (manual or {}).items():
             if c not in CATEGORIES:
-                raise ValueError("ক্যাটাগরি সঠিক নয়")
+                raise UserError("ক্যাটাগরি সঠিক নয়")
             if v is None or not (0 <= float(v) <= load_rules("guardrails")["max_amount"]):
-                raise ValueError("বাজেটের পরিমাণ সঠিক নয়")
+                raise UserError("বাজেটের পরিমাণ সঠিক নয়")
             clean[c] = float(v)
         ctx.state.budget_mode = mode
         if clean:
@@ -189,9 +201,10 @@ class HubMixin:
             "area": ctx.user.get("area", "")})
         return bal
 
+    @locked
     def move_pocket(self, uid, pocket, direction, amount):
         if pocket not in POCKETS or (pocket == "paisa" and direction == "in"):
-            raise ValueError("পকেট সঠিক নয়")
+            raise UserError("পকেট সঠিক নয়")
         amount = validate.amount(amount)
         ctx = self.ctx(uid)
         if direction == "in":
@@ -207,6 +220,7 @@ class HubMixin:
         self.store.save_state(uid, ctx.state)
         return self.savings(uid)
 
+    @locked
     def set_paisa(self, uid, on):
         ctx = self.ctx(uid)
         ctx.state.paisa_on = bool(on)
@@ -215,12 +229,13 @@ class HubMixin:
         self.store.save_state(uid, ctx.state)
         return self.savings(uid)
 
+    @locked
     def plan_goal(self, uid, target, months, pocket=None):
         ctx = self.ctx(uid)
         g = _plan_goal(ctx, self.models, target, months)
         if pocket:
             if pocket not in POCKETS or pocket == "paisa":
-                raise ValueError("পকেট সঠিক নয়")
+                raise UserError("পকেট সঠিক নয়")
             goals = dict(ctx.state.pocket_goals or {})
             goals[pocket] = {"target": g.target, "months": g.months,
                              "date": (ctx.today + timedelta(days=30 * g.months)).isoformat()}
@@ -234,18 +249,19 @@ class HubMixin:
             return {"status": "not_now", "reason_bn": "আরও কিছু দিনের লেনদেন লাগবে", "safe_monthly": None}
         return jsonable(_dps_advice(ctx, self.models, goal_target))
 
+    @locked
     def dps_open(self, uid, monthly, tenure_months):
         rules = load_rules("dps")
         monthly = validate.amount(monthly)
         try:
             tenure = int(tenure_months)
         except (TypeError, ValueError):
-            raise ValueError("সময়কাল সঠিক নয়")
+            raise UserError("সময়কাল সঠিক নয়")
         if monthly not in rules["monthly_options"] or tenure not in rules["tenure_months"]:
-            raise ValueError("জমার পরিমাণ বা সময়কাল তালিকা থেকে বেছে নিন")
+            raise UserError("জমার পরিমাণ বা সময়কাল তালিকা থেকে বেছে নিন")
         ctx = self.ctx(uid)
         if ctx.state.dps:
-            raise ValueError("আগে থেকেই একটা DPS চালু আছে")
+            raise UserError("আগে থেকেই একটা DPS চালু আছে")
         sal = [e for e in detect_recurring(ctx.tx, ctx.today) if e.kind == "salary"]
         ctx.state.dps = {"monthly": monthly, "tenure_months": tenure,
                          "day": min(28, sal[0].day_of_month + 1) if sal else 10,
@@ -269,7 +285,7 @@ class HubMixin:
     def category_confirm(self, uid, counterparty_id, category):
         self.ctx(uid)
         if category not in CATEGORIES:
-            raise ValueError("ক্যাটাগরি সঠিক নয়")
+            raise UserError("ক্যাটাগরি সঠিক নয়")
         self.store.set_category(uid, counterparty_id, category)
         return {"ok": True}
 
@@ -279,6 +295,7 @@ class HubMixin:
         return jsonable({"routes": _routes(amount, destination), "habits": detect_costly_habits(ctx),
                          "fees_placeholder": True})
 
+    @locked
     def send(self, uid, body: dict):
         amount = validate.amount(body.get("amount"))
         typ = body["type"]
@@ -293,7 +310,7 @@ class HubMixin:
             if picked:  # the user chose a path on the money map: charge that path, never silently another
                 options = [r for r in options if r.nodes == list(picked)]
                 if not options:
-                    raise ValueError("পথ সঠিক নয়")
+                    raise UserError("পথ সঠিক নয়")
             fee = options[0].fee
             channel = "bank" if dest == "bank_account" else "other_mfs"
             tx_type, cp_type = "send_money", "person"
@@ -308,7 +325,7 @@ class HubMixin:
         category = body.get("category")
         if category:
             if category not in CATEGORIES:
-                raise ValueError("ক্যাটাগরি সঠিক নয়")
+                raise UserError("ক্যাটাগরি সঠিক নয়")
             self.store.set_category(uid, cp_id, category)
         else:
             category = suggest_category(ctx, cp_id, cp_type, amount, self.store.categories(uid))[0][0]
@@ -337,9 +354,9 @@ class HubMixin:
         try:
             limit = int(limit)
         except (TypeError, ValueError):
-            raise ValueError("সংখ্যা সঠিক নয়")
+            raise UserError("সংখ্যা সঠিক নয়")
         if not 1 <= limit <= 200:
-            raise ValueError("১ থেকে ২০০-এর মধ্যে দিন")
+            raise UserError("১ থেকে ২০০-এর মধ্যে দিন")
         ctx = self.ctx(uid)
         t = ctx.tx[ctx.tx["type"] != "dps_installment_missed"].sort_values("ts", ascending=False).head(limit)
         items = [{"ts": pd.Timestamp(r.ts).isoformat(), "type": r.type, "name": r.counterparty_name,

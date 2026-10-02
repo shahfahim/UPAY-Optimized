@@ -10,6 +10,7 @@ import numpy as np
 import pandas as pd
 
 from hishab.engine.forecast import forecast
+from hishab.errors import UserError
 from hishab.rules import load_rules
 
 INTERNAL_TYPES = {"pocket_in", "pocket_out", "dps_installment", "dps_installment_missed"}
@@ -30,11 +31,11 @@ def validate_goal(target, months) -> tuple[float, int]:
     try:
         target, months = float(target), int(months)
     except (TypeError, ValueError):
-        raise ValueError("লক্ষ্যের পরিমাণ বা মাস সঠিক নয়")
+        raise UserError("লক্ষ্যের পরিমাণ বা মাস সঠিক নয়")
     if not (0 < target <= max_amount):
-        raise ValueError("লক্ষ্যের পরিমাণ সঠিক নয়")
+        raise UserError("লক্ষ্যের পরিমাণ সঠিক নয়")
     if not (1 <= months <= 60):
-        raise ValueError("মাস ১ থেকে ৬০-এর মধ্যে হতে হবে")
+        raise UserError("মাস ১ থেকে ৬০-এর মধ্যে হতে হবে")
     return target, months
 
 

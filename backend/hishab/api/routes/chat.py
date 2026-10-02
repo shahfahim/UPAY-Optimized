@@ -1,8 +1,10 @@
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, Depends, Request
+
+from hishab.api.deps import require_user
 
 from hishab.api.schemas import ChatIn
 
-router = APIRouter()
+router = APIRouter(dependencies=[Depends(require_user)])  # every route here is /users/{uid}/…
 
 
 @router.post("/users/{uid}/chat")

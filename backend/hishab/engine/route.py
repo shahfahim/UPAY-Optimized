@@ -5,6 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from hishab.engine.recurring import detect_recurring
+from hishab.errors import UserError
 from hishab.rules import load_rules
 
 START = "upay_wallet"
@@ -37,7 +38,7 @@ def edge_fee(edge: dict, amount: float) -> float:
 def routes(amount: float, destination: str, fees: dict | None = None) -> list[Route]:
     """All simple paths from the upay wallet to `destination`, cheapest first (tie-break: faster)."""
     if amount is None or amount <= 0:
-        raise ValueError("টাকার পরিমাণ সঠিক নয়")
+        raise UserError("টাকার পরিমাণ সঠিক নয়")
     fees = fees or load_rules("fees")
     labels = fees.get("labels_bn", {})
     adj: dict[str, list[dict]] = {}

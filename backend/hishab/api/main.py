@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import logging
 import os
 from pathlib import Path
 
@@ -12,6 +13,9 @@ from fastapi.responses import FileResponse, JSONResponse
 
 from hishab.config import Settings, get_settings
 from hishab.engine.context import UserNotFound
+from hishab.errors import UserError
+
+log = logging.getLogger(__name__)
 
 
 def build_service(settings: Settings):
@@ -42,9 +46,14 @@ def create_app(settings: Settings | None = None, svc=None, web_dist: Path | None
     async def _not_found(_: Request, exc: UserNotFound):
         return JSONResponse(status_code=404, content={"detail": "ব্যবহারকারী পাওয়া যায়নি"})
 
-    @app.exception_handler(ValueError)
-    async def _value_error(_: Request, exc: ValueError):
+    @app.exception_handler(UserError)
+    async def _user_error(_: Request, exc: UserError):
         return JSONResponse(status_code=422, content={"detail": str(exc)})
+
+    @app.exception_handler(ValueError)
+    async def _value_error(request: Request, exc: ValueError):  # a bug, not bad input: keep the details in the log
+        log.error("unexpected ValueError on %s %s", request.method, request.url.path, exc_info=exc)
+        return JSONResponse(status_code=500, content={"detail": "কিছু একটা ভুল হয়েছে"})
 
     from hishab.services_hub import InsufficientFunds
 
