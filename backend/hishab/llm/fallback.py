@@ -11,13 +11,20 @@ from hishab.llm.tools import run_tool
 _BN_TO_ASCII = str.maketrans("০১২৩৪৫৬৭৮৯", "0123456789")
 
 _INTENTS = [
-    ("emergency", r"জরুরি|ইমার্জেন্সি|emergency|ঋণ|loan|ধার"),
-    ("dps", r"dps|ডিপিএস"),
-    ("eid", r"ঈদ|eid"),
-    ("goal", r"জমা|জমাতে|সঞ্চয়|save|saving|goal|লক্ষ্য"),
-    ("cashout", r"cash.?out|ক্যাশ ?আউট|ক্যাশআউট"),
-    ("transactions", r"লেনদেন|transaction|বুঝিয়ে|খরচ কোথায়|কোথায় খরচ"),
-    ("shortfall", r"কম পড়|শেষে|short|month.?end|টানাটানি|চলবে"),
+    # --- existing intents (expanded with Banglish) ---
+    ("emergency",     r"জরুরি|ইমার্জেন্সি|emergency|ঋণ|loan|ধার|dorkar|urgent|help lagbe"),
+    ("dps",           r"dps|ডিপিএস|deposit|মাসিক জমা"),
+    ("eid",           r"ঈদ|eid|festival|bonos|বোনাস"),
+    ("goal",          r"জমা|জমাতে|সঞ্চয়|save|saving|goal|লক্ষ্য|target|joma|bachabo|bachaibo"),
+    ("cashout",       r"cash.?out|ক্যাশ ?আউট|ক্যাশআউট|agent|এজেন্ট|fee|ফি"),
+    ("transactions",  r"লেনদেন|transaction|বুঝিয়ে|খরচ কোথায়|কোথায় খরচ|history|hisab|হিসাব দেখা|kharoch"),
+    ("shortfall",     r"কম পড়|শেষে|short|month.?end|টানাটানি|চলবে|taka nei|taka shesh|টাকা নেই|শেষ হয়"),
+    # --- new intents ---
+    ("safe_spend",    r"নিরাপদ খরচ|safe.?spend|aaj koto|আজ কত|আজকে কত|kharoch korte parbo|খরচ করতে পারব"),
+    ("balance",       r"balance|ব্যালেন্স|taka ache|টাকা আছে|koto taka|কত টাকা|wallet e koto"),
+    ("budget",        r"budget|বাজেট|plan|পরিকল্পনা|mas er plan|মাসের পরিকল্পনা|income|আয়"),
+    ("savings_level", r"level|লেভেল|dps.?ready|sanchoy level|সঞ্চয় লেভেল|badge|streak"),
+    ("pocket",        r"pocket|পকেট|amar pocket|আমার পকেট|joma ache|জমা আছে|goal pocket"),
 ]
 
 
@@ -107,7 +114,42 @@ def answer(uid: str, message: str, svc) -> dict:
                 f"৳{bn_num(e['last_eid_spend'])}।")
         text += (f" সপ্তাহে ৳{bn_num(e['weekly'])} করে রাখলে চাপ কমবে।" if e["weekly"] > 0
                  else " বোনাস আর জমানো টাকাতেই ঈদের খরচ চলার কথা।")
+    elif intent == "safe_spend":
+        h = tool("get_home_summary")
+        if h["insufficient_history"]:
+            text = "হিসাব দেখাতে আরও কিছু দিনের লেনদেন লাগবে।"
+        elif (h.get("safe_to_spend_today") or 0) > 0:
+            text = (f"আজ নিরাপদভাবে প্রায় ৳{bn_num(h['safe_to_spend_today'])} খরচ করতে পারো। "
+                    f"এটা ধরে চললে মাস শেষে চাপ কম হবে।")
+        else:
+            text = "আজ খরচ যতটা পারো কমাও — মাসের বাজেট একটু টাইট আছে।"
+    elif intent == "balance":
+        h = tool("get_home_summary")
+        if h["insufficient_history"]:
+            text = "হিসাব দেখাতে আরও কিছু দিনের লেনদেন লাগবে।"
+        else:
+            text = (f"তোমার বর্তমান ব্যালেন্স হিসাব থেকে দেখো। "
+                    f"আজকের নিরাপদ খরচসীমা প্রায় ৳{bn_num(h.get('safe_to_spend_today') or 0)}।")
+    elif intent == "budget":
+        tx = tool("get_transactions_summary", period="month")
+        text = (f"এই মাসে আয় প্রায় ৳{bn_num(tx['income_total'])}, খরচ প্রায় ৳{bn_num(tx['spend_total'])}। ")
+        diff = tx['income_total'] - tx['spend_total']
+        if diff > 0:
+            text += f"এখন পর্যন্ত ৳{bn_num(diff)} সাশ্রয় হয়েছে — চালিয়ে যাও!"
+        else:
+            text += "খরচ একটু বেশি হয়েছে — বাকি মাসে একটু সামলে চলো।"
+    elif intent == "savings_level":
+        h = tool("get_home_summary")
+        text = "তোমার সঞ্চয় লেভেল দেখতে হিসাব ট্যাব → সঞ্চয় → লেভেল পেজে যাও।"
+        if not h["insufficient_history"]:
+            text += f" এই মাসে ঝুঁকির মাত্রা: {h.get('risk_level', 'green')}।"
+    elif intent == "pocket":
+        h = tool("get_home_summary")
+        text = "তোমার পকেটগুলো দেখতে হিসাব ট্যাব → সঞ্চয় → আমার পকেট-এ যাও।"
+        if not h["insufficient_history"] and h.get("safe_to_spend_today"):
+            text += f" আজ নিরাপদ খরচসীমা ৳{bn_num(h['safe_to_spend_today'])}।"
     else:
+
         h = tool("get_home_summary")
         if h["insufficient_history"]:
             text = "হিসাব দেখাতে আরও কিছু দিনের লেনদেন লাগবে।"
