@@ -1,4 +1,5 @@
-# Hishab — one image: React build + FastAPI API (Hugging Face Spaces, Docker SDK, port 7860)
+# Hishab -- one image: React build + FastAPI API
+# Supports Render.com ($PORT) and Hugging Face Spaces (port 7860)
 
 FROM node:22-slim AS web
 WORKDIR /web
@@ -25,4 +26,4 @@ COPY backend/data/serving backend/data/serving
 COPY --from=web /web/dist web/dist
 USER user
 EXPOSE 7860
-CMD ["uvicorn", "hishab.api.main:create_app", "--factory", "--host", "0.0.0.0", "--port", "7860"]
+CMD ["sh", "-c", "uvicorn hishab.api.main:create_app --factory --host 0.0.0.0 --port ${PORT:-7860}"]

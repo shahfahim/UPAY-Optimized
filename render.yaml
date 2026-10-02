@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: hishab
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: DEMO_TODAY
+        value: "2026-09-18"
+      - key: LLM_ENABLED
+        value: "auto"
+      - key: LLM_MODEL
+        value: "claude-opus-5-5"
+      - key: ANTHROPIC_API_KEY
+        sync: false   # set this manually in Render dashboard
