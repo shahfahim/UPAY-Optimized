@@ -34,14 +34,14 @@ def _numbers(text: str) -> list[tuple[float, int]]:
     return [(float(m.group()), m.end()) for m in re.finditer(r"\d+(?:\.\d+)?", t)]
 
 
-def _parse_goal(text: str) -> tuple[float, int]:
+def _parse_goal(text: str) -> tuple[float | None, int]:
     t = text.translate(_BN_TO_ASCII).replace(",", "")
     months = 6
     m = re.search(r"(\d+)\s*(?:মাস|month)", t)
     if m:
         months = int(m.group(1))
     amounts = [n for n, _ in _numbers(text) if n >= 100]
-    return (max(amounts) if amounts else 30000.0), max(1, min(60, months))
+    return (max(amounts) if amounts else None), max(1, min(60, months))
 
 
 def _day(iso: str | None) -> str:
@@ -64,17 +64,25 @@ def answer(uid: str, message: str, svc) -> dict:
 
     if intent == "goal":
         target, months = _parse_goal(message)
-        g = tool("plan_goal", target=target, months=months)
-        if g.get("insufficient_history"):
-            text = "লক্ষ্যের হিসাব করতে আরও কিছু দিনের লেনদেন লাগবে।"
-        else:
-            text = f"৳{bn_num(target)} {bn_num(months)} মাসে জমাতে মাসে ৳{bn_num(g['monthly'])} লাগবে। "
-            if g["feasibility"] < 0.05:
-                text += ("লক্ষ্যটা বর্তমানে একটু কঠিন। আগে ছোট লক্ষ্য দিয়ে শুরু করো — সময় বাড়ালে বা জমার পরিমাণ কমালে সহজ হবে।")
+        if target is None:
+            adv = svc.dps_advice(uid)
+            used.append({"name": "dps_advice", "result": adv})
+            if adv.get("status") == "ok":
+                text = f"তোমার বর্তমান আয়-ব্যয় অনুযায়ী, মাসে নিরাপদে প্রায় ৳{bn_num(adv['safe_monthly'])} জমাতে পারবে।"
             else:
-                text += f"তোমার আয়-খরচ অনুযায়ী এটা পারার সম্ভাবনা {bn_num(100 * g['feasibility'])}%।"
-                if g["feasibility"] < 0.5:
-                    text += " সময় বাড়ালে বা লক্ষ্য কমালে আরও সহজ হবে।"
+                text = adv["reason_bn"]
+        else:
+            g = tool("plan_goal", target=target, months=months)
+            if g.get("insufficient_history"):
+                text = "লক্ষ্যের হিসাব করতে আরও কিছু দিনের লেনদেন লাগবে।"
+            else:
+                text = f"৳{bn_num(target)} {bn_num(months)} মাসে জমাতে মাসে ৳{bn_num(g['monthly'])} লাগবে। "
+                if g["feasibility"] < 0.05:
+                    text += ("লক্ষ্যটা বর্তমানে একটু কঠিন। আগে ছোট লক্ষ্য দিয়ে শুরু করো — সময় বাড়ালে বা জমার পরিমাণ কমালে সহজ হবে।")
+                else:
+                    text += f"তোমার আয়-খরচ অনুযায়ী এটা পারার সম্ভাবনা {bn_num(100 * g['feasibility'])}%।"
+                    if g["feasibility"] < 0.5:
+                        text += " সময় বাড়ালে বা লক্ষ্য কমালে আরও সহজ হবে।"
     elif intent == "cashout":
         tx = tool("get_transactions_summary", period="month")
         route = tool("find_route", amount=5000, destination="other_mfs_wallet")
