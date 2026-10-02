@@ -280,21 +280,24 @@ def answer(uid: str, message: str, svc) -> dict:  # noqa: C901 (intentionally lo
             text = "হিসাব দেখাতে আরও কিছু দিনের লেনদেন লাগবে।"
         else:
             risk = h.get("risk_level", "green")
+            bal  = h.get("balance") or 0
+            safe = h.get("safe_to_spend_today") or 0
             if risk == "green":
-                text = (f"হ্যাঁ, ভালোই করছ! এই মাসে ঝুঁকি কম। "
-                        f"আজ নিরাপদ খরচসীমা ৳{bn_num(h.get('safe_to_spend_today') or 0)}।")
+                text = f"ভালো করছ! ব্যালেন্স ৳{bn_num(bal)}, আজ ৳{bn_num(safe)} খরচ করতে পারবে।"
             elif risk == "amber":
-                text = ("মোটামুটি চলছে, তবে মাসের শেষে একটু সামলে চলো। "
-                        f"আজ ৳{bn_num(h.get('safe_to_spend_today') or 0)}-এর মধ্যে রাখো।")
+                text = (f"মোটামুটি চলছে। ব্যালেন্স ৳{bn_num(bal)}, তবে মাসের শেষে একটু সামলে চলো। "
+                        f"আজ ৳{bn_num(safe)}-এর মধ্যে রাখো।")
             else:
                 drivers = tool("get_shortfall_drivers")["drivers"]
                 why = ", ".join(d["text_bn"] for d in drivers[:2])
-                text = (f"এই মাসে একটু চাপ আছে — {why}। "
-                        "একটু সামলালেই সামলে নিতে পারবে।")
+                text = (f"এই মাসে চাপ আছে। ব্যালেন্স ৳{bn_num(bal)}, "
+                        f"তবে {why} কারণে সাবধান থাকো।")
 
     # ── Advice ("ki korbo?") ──────────────────────────────────────────────────
     elif intent == "advice":
-        h = tool("get_home_summary")
+        h  = tool("get_home_summary")
+        tx = tool("get_transactions_summary", period="month")
+        top_cat = tx["by_category"][0]["category_bn"] if tx.get("by_category") else None
         if h["insufficient_history"]:
             text = "হিসাব দেখাতে আরও কিছু দিনের লেনদেন লাগবে।"
         elif h["risk_level"] == "green":
@@ -302,8 +305,8 @@ def answer(uid: str, message: str, svc) -> dict:  # noqa: C901 (intentionally lo
             used.append({"name": "dps_advice", "result": adv})
             if adv.get("status") == "ok":
                 text = (f"ভালো অবস্থায় আছ! "
-                        f"মাসে ৳{bn_num(adv['safe_monthly'])} DPS-এ রাখলে "
-                        "দারুণ হবে।")
+                        f"মাসে ৳{bn_num(adv['safe_monthly'])} DPS-এ দিলে বছরে ৳{bn_num(int(adv['safe_monthly']*12))} জমবে।")
+
             else:
                 text = "ভালো অবস্থায় আছ! cash-out কমিয়ে সরাসরি পেমেন্ট করো।"
         else:
@@ -318,13 +321,16 @@ def answer(uid: str, message: str, svc) -> dict:  # noqa: C901 (intentionally lo
         h = tool("get_home_summary")
         if h["insufficient_history"]:
             text = "হিসাব দেখাতে আরও কিছু দিনের লেনদেন লাগবে।"
-        elif (h.get("safe_to_spend_today") or 0) > 0:
-            text = (f"আজকের নিরাপদ খরচসীমা ৳{bn_num(h['safe_to_spend_today'])}। "
-                    "এটা ধরে চললে মাস শেষে চাপ কম হবে।")
-        else:
-            text = "আজ খরচ যতটা পারো কমাও — মাসের বাজেট একটু টাইট।"
-
-    # ── Specific amount check ("500 taka kharoch korte pari?") ───────────────
+            safe = h.get("safe_to_spend_today") or 0
+            risk = h.get("risk_level", "green")
+            if safe <= 0:
+                text = "আজ খরচ যতটা পারো কমাও — মাসের বাজেট একটু টাইট।"
+            elif risk == "green":
+                text = f"আজ ৳{bn_num(safe)} পর্যন্ত নিরাপদে খরচ করতে পারবে — ভালো অবস্থায় আছ!"
+            elif risk == "amber":
+                text = f"আজ ৳{bn_num(safe)}-এর মধ্যে রাখলে ভালো — মাসের শেষে সামলানো যাবে।"
+            else:
+                text = f"আজ ৳{bn_num(safe)}-এর বেশি খরচ করো না — টানাটানির ঝুঁকি আছে।"
     elif intent == "specific_amount":
         h = tool("get_home_summary")
         nums = [n for n, _ in _numbers(message) if n >= 10]
@@ -333,8 +339,9 @@ def answer(uid: str, message: str, svc) -> dict:  # noqa: C901 (intentionally lo
         if h["insufficient_history"]:
             text = "হিসাব দেখাতে আরও কিছু দিনের লেনদেন লাগবে।"
         elif amount <= safe:
-            text = (f"৳{bn_num(amount)} খরচ করা নিরাপদ — আজকের সীমা "
-                    f"৳{bn_num(safe)}, তাই ঠিক আছে।")
+            remaining = safe - amount
+            text = (f"হ্যাঁ, ৳{bn_num(amount)} খরচ করতে পারবে। "
+                    f"খরচের পর আজের বাকি সীমা ৳{bn_num(remaining)}।")
         else:
             text = (f"৳{bn_num(amount)} একটু বেশি হতে পারে। "
                     f"আজকের নিরাপদ সীমা ৳{bn_num(safe)}। "
@@ -346,8 +353,10 @@ def answer(uid: str, message: str, svc) -> dict:  # noqa: C901 (intentionally lo
         if h["insufficient_history"]:
             text = "হিসাব দেখাতে আরও কিছু দিনের লেনদেন লাগবে।"
         else:
-            text = (f"মূল ব্যালেন্স উপায় অ্যাপের উপরে দেখতে পাবে। "
-                    f"আজ নিরাপদ খরচসীমা ৳{bn_num(h.get('safe_to_spend_today') or 0)}।")
+            bal  = h.get("balance") or 0
+            safe = h.get("safe_to_spend_today") or 0
+            text = (f"তোমার উপায় ব্যালেন্স ৳{bn_num(bal)}। "
+                    f"আজ নিরাপদ খরচসীমা ৳{bn_num(safe)}।")
 
     # ── Shortfall / risk ──────────────────────────────────────────────────────
     elif intent == "shortfall":
@@ -369,28 +378,45 @@ def answer(uid: str, message: str, svc) -> dict:  # noqa: C901 (intentionally lo
     elif intent == "cashout":
         tx = tool("get_transactions_summary", period="month")
         route = tool("find_route", amount=5000, destination="other_mfs_wallet")
-        text = (f"গত ৩০ দিনে {bn_num(tx['cash_out_count'])} বার cash-out ফি দিয়েছ "
-                f"প্রায় ৳{bn_num(tx['cash_out_fees'])}। "
-                "দোকানে সরাসরি upay দিয়ে পেমেন্ট করলে এই ফি বাঁচে।")
-        if route["habits"]:
+        # Lead with count (answers "কতবার"), then fee total
+        count = tx.get("cash_out_count", 0)
+        fees  = tx.get("cash_out_fees", 0)
+        text = (f"গত ৩০ দিনে {bn_num(count)} বার ক্যাশ আউট করেছ, "
+                f"ফি গেছে মোট ৳{bn_num(fees)}। "
+                "এজেন্টে না গিয়ে সরাসরি upay দিয়ে পেমেন্ট করলে এই ফি বাঁচত।")
+        # Only show NPSB saving when habits data is present AND saving > 0
+        habits = route.get("habits", [])
+        if habits and habits[0].get("annual_saving", 0) > 0:
             text += (f" NPSB দিয়ে পাঠালে বছরে "
-                     f"৳{bn_num(route['habits'][0]['annual_saving'])} বাঁচবে।")
+                     f"৳{bn_num(habits[0]['annual_saving'])} বাঁচবে।")
 
     # ── Transactions / spending history ───────────────────────────────────────
     elif intent == "transactions":
         tx = tool("get_transactions_summary", period="month")
-        top = ", ".join(f"{c['category_bn']}" for c in tx["by_category"][:2])
+        cats = tx.get("by_category", [])
+        top = ", ".join(c["category_bn"] for c in cats[:2])
         net = tx["income_total"] - tx["spend_total"]
-        is_avg = re.search(r"average|avg|গড়", text_l)
+        is_avg    = re.search(r"average|avg|গড়", text_l)
+        wants_inc = re.search(r"income koto|aay koto|আয় কত|আয়.*কত|income.*কত", text_l)
+        wants_exp = re.search(r"kharoch koto|খরচ কত|koto kharoch|কত খরচ", text_l)
+        top_line  = (f"সবচেয়ে বেশি গেছে: {top}।" if top else "")
         if is_avg:
             text = (f"গত মাসে আয় ৳{bn_num(tx['income_total'])}, "
                     f"খরচ ৳{bn_num(tx['spend_total'])}। "
-                    f"গড় নিট সঞ্চয় প্রায় ৳{bn_num(max(0.0, net))} — "
-                    + (f"বেশি খরচ হয়েছে {top}-এ।" if top else ""))
+                    f"গড় নিট সঞ্চয় প্রায় ৳{bn_num(max(0.0, net))}। "
+                    + top_line)
+        elif wants_inc:
+            text = (f"গত ৩০ দিনে তোমার আয় হয়েছে ৳{bn_num(tx['income_total'])}। "
+                    f"এই সময়ে খরচ হয়েছে ৳{bn_num(tx['spend_total'])}। "
+                    + top_line)
+        elif wants_exp:
+            text = (f"গত ৩০ দিনে মোট খরচ হয়েছে ৳{bn_num(tx['spend_total'])}। "
+                    f"আয় ছিল ৳{bn_num(tx['income_total'])}। "
+                    + top_line)
         else:
             text = (f"গত ৩০ দিনে আয় ৳{bn_num(tx['income_total'])}, "
                     f"খরচ ৳{bn_num(tx['spend_total'])}। "
-                    f"বেশি খরচ হয়েছে: {top}।")
+                    + top_line)
 
     # ── Comparison (this vs last month) ──────────────────────────────────────
     elif intent == "compare":
@@ -407,8 +433,10 @@ def answer(uid: str, message: str, svc) -> dict:  # noqa: C901 (intentionally lo
         if target is None:
             adv = svc.dps_advice(uid)
             used.append({"name": "dps_advice", "result": adv})
+            tx_g = tool("get_transactions_summary", period="month")
+            net_g = max(0.0, tx_g["income_total"] - tx_g["spend_total"])
             if adv.get("status") == "ok":
-                text = (f"তোমার আয়-ব্যয় দেখে মাসে নিরাপদে প্রায় "
+                text = (f"গত মাসে ৳{bn_num(net_g)} বাঁচানো হয়েছে। চেষ্টা করলে মাসে "
                         f"৳{bn_num(adv['safe_monthly'])} জমাতে পারবে। "
                         "ছোট লক্ষ্য দিয়ে শুরু করো।")
             else:
@@ -433,7 +461,7 @@ def answer(uid: str, message: str, svc) -> dict:  # noqa: C901 (intentionally lo
         adv = svc.dps_advice(uid)
         used.append({"name": "dps_advice", "result": adv})
         if adv.get("status") == "ok":
-            text = (f"তোমার নিরাপদ মাসিক DPS প্রায় ৳{bn_num(adv['safe_monthly'])}। "
+            text = (f"মাসে ৳{bn_num(adv['safe_monthly'])} DPS-এ দিলে বছরে ৳{bn_num(int(adv['safe_monthly']*12))} জমবে। "
                     + adv["reason_bn"])
         else:
             text = adv["reason_bn"]

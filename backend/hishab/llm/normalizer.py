@@ -26,6 +26,26 @@ _PHRASE_MAP: list[tuple[str, str]] = [
     ("bujhechi",  "বুঝেছি"),
     ("bujhlam",   "বুঝলাম"),
 
+
+    # ─── cashout queries ────────────────────────────────────────────────────────
+    ("cashout korsi",    "ক্যাশ আউট করেছি"),
+    ("cashout korechi",  "ক্যাশ আউট করেছি"),
+    ("cash out korsi",   "ক্যাশ আউট করেছি"),
+    ("koto bar cashout", "কতবার ক্যাশ আউট"),
+    ("kotbar",           "কতবার"),
+    ("koto bar",         "কতবার"),
+    ("last 30 dine",     "গত ৩০ দিনে"),
+    ("last 30dine",      "গত ৩০ দিনে"),
+    ("last 7 dine",      "গত ৭ দিনে"),
+    ("last month e",     "গত মাসে"),
+
+    # ─── goal / savings queries ───────────────────────────────────────────────
+    ("save korte parbo", "সঞ্চয় করতে পারব"),
+    ("koto joma hobe",   "কত জমা হবে"),
+    ("ki ki korle",      "কী কী করলে"),
+    ("cholte parbe",     "চলতে পারবে"),
+    ("kichu pabe",       "কিছু পাবে"),
+
     # ─── money & balance ──────────────────────────────────────────────────────
     ("koto taka ache",   "কত টাকা আছে"),
     ("taka koto ache",   "টাকা কত আছে"),
@@ -85,6 +105,12 @@ _PHRASE_MAP: list[tuple[str, str]] = [
     ("taka",                "টাকা"),   # standalone (last resort)
 
     # ─── cash-out ─────────────────────────────────────────────────────────────
+    ("cashout korsi",  "ক্যাশ আউট করেছি"),
+    ("cashout korechi","ক্যাশ আউট করেছি"),
+    ("last 30dine",    "গত ৩০ দিনে"),
+    ("last 30 din",    "গত ৩০ দিন"),
+    ("koto bar",       "কতবার"),
+    ("ktobar",         "কতবার"),
     ("cashout",        "ক্যাশ আউট"),
     ("cash out",       "ক্যাশ আউট"),
     ("cash-out",       "ক্যাশ আউট"),
