@@ -6,30 +6,45 @@ import re
 from datetime import date
 
 from hishab.engine.text import bn_digits, bn_num
+from hishab.llm.normalizer import normalize
 from hishab.llm.tools import run_tool
 
 _BN_TO_ASCII = str.maketrans("০১২৩৪৫৬৭৮৯", "0123456789")
 
-_INTENTS = [
-    # --- existing intents (expanded with Banglish) ---
-    ("emergency",     r"জরুরি|ইমার্জেন্সি|emergency|ঋণ|loan|ধার|dorkar|urgent|help lagbe"),
-    ("dps",           r"dps|ডিপিএস|deposit|মাসিক জমা"),
-    ("eid",           r"ঈদ|eid|festival|bonos|বোনাস"),
-    ("goal",          r"জমা|জমাতে|সঞ্চয়|save|saving|goal|লক্ষ্য|target|joma|bachabo|bachaibo"),
-    ("cashout",       r"cash.?out|ক্যাশ ?আউট|ক্যাশআউট|agent|এজেন্ট|fee|ফি"),
-    ("transactions",  r"লেনদেন|transaction|বুঝিয়ে|খরচ কোথায়|কোথায় খরচ|history|hisab|হিসাব দেখা|kharoch"),
-    ("shortfall",     r"কম পড়|শেষে|short|month.?end|টানাটানি|চলবে|taka nei|taka shesh|টাকা নেই|শেষ হয়"),
-    # --- new intents ---
-    ("safe_spend",    r"নিরাপদ খরচ|safe.?spend|aaj koto|আজ কত|আজকে কত|kharoch korte parbo|খরচ করতে পারব"),
-    ("balance",       r"balance|belence|balence|ব্যালেন্স|taka ache|টাকা আছে|koto taka|কত টাকা|wallet e koto"),
-    ("budget",        r"budget|বাজেট|plan|পরিকল্পনা|mas er plan|মাসের পরিকল্পনা|income|আয়"),
-    ("savings_level", r"level|লেভেল|dps.?ready|sanchoy level|সঞ্চয় লেভেল|badge|streak"),
-    ("pocket",        r"pocket|পকেট|amar pocket|আমার পকেট|joma ache|জমা আছে|goal pocket"),
-    ("greeting",      r"^hi$|^hello$|^hey$|^হ্যালো$|^হাই$|^সালাম$|salam|ki khobor|kemn|kmn|কেমন"),
-    ("identity",      r"tumi ke|who are you|tomar nam ki|ki nam|তুমি কে|তোমার নাম|bot|ai"),
-    ("help",          r"help|sahajjo|ki koro|ki korte paro|সাহায্য|কী করো|কী করতে পারো|kivabe kaj koro"),
-    ("complaint",     r"fau|faul|faltu|pagol|bokachoda|vul|andaze|vua|ফাউল|ফালতু|ভুল|আন্দাজে|ভুয়া|পাগল"),
-    ("ack",           r"^ok$|^okay$|^thik ache$|^yes$|^ha$|^হুম$|^hm$|^hmm$|^আচ্ছা$|^ঠিক আছে$|^daw$|^দাও$|thanks|thank you|ধন্যবাদ|dhonnobad"),
+_INTENTS: list[tuple[str, str]] = [
+    # ── high-priority: match before generic words ──
+    ("greeting",      r"^hi$|^hello$|^hey$|^হ্যালো$|^হাই$|^সালাম$"
+                      r"|আসসালামু আলাইকুম|ওয়ালাইকুম"
+                      r"|salam|ki khobor|কী খবর|kemn|kmn|কেমন আছ"),
+    ("ack",           r"^ok$|^okay$|^ঠিক আছে$|^thik ache$|^yes$|^ha$"
+                      r"|^হুম$|^hm$|^hmm$|^আচ্ছা$|^daw$|^দাও$"
+                      r"|thanks|thank you|ধন্যবাদ|dhonnobad"),
+    ("identity",      r"tumi ke|who are you|তুমি কে|তোমার নাম|ki nam|bot ki|ai ki"),
+    ("help",          r"ki korte paro|কী করতে পারো|ki koro|কী করো"
+                      r"|sahajjo|সাহায্য করো|help lagbe|সাহায্য লাগবে|kivabe kaj"),
+    ("complaint",     r"faltu|ফালতু|pagol|পাগল|vul|ভুল|andaze|আন্দাজে"
+                      r"|kaj hochhe na|কাজ হচ্ছে না|vua|ভুয়া|fau|faul"),
+    # ── financial intents ──
+    ("safe_spend",    r"নিরাপদ খরচ|safe.?spend|aaj koto|আজ কত|আজকে কত"
+                      r"|kharoch korte parbo|খরচ করতে পারব|daily limit|দৈনিক সীমা"),
+    ("balance",       r"ব্যালেন্স|balance|belence|balence"
+                      r"|taka ache|টাকা আছে|koto taka|কত টাকা|wallet e koto"),
+    ("shortfall",     r"কম পড়|শেষে|short|month.?end|টানাটানি|চলবে"
+                      r"|taka nei|taka shesh|টাকা নেই|শেষ হয়"
+                      r"|kobe shesh|কত দিন চলবে|koto din chalbe"),
+    ("cashout",       r"cash.?out|ক্যাশ ?আউট|ক্যাশআউট|agent|এজেন্ট|fee|ফি"
+                      r"|agent theke|cash komabo"),
+    ("transactions",  r"লেনদেন|transaction|বুঝিয়ে|কোথায় খরচ|history"
+                      r"|kharoch kothay|খরচ কোথায়|lenden|income koto|আয় koto|আয় কত"),
+    ("goal",          r"জমা|জমাতে|সঞ্চয়|save|saving|goal|লক্ষ্য|target"
+                      r"|joma|bachabo|bachaibo|save korbo|jomate parbo"),
+    ("dps",           r"dps|ডিপিএস|deposit|মাসিক জমা|kisti|কিস্তি|monthly joma"),
+    ("eid",           r"ঈদ|eid|puja|পূজা|festival|bonos|বোনাস|উৎসব"),
+    ("emergency",     r"জরুরি|ইমার্জেন্সি|emergency|ঋণ|loan|ধার|dorkar|urgent"),
+    ("pocket",        r"pocket|পকেট|amar pocket|আমার পকেট|goal pocket"),
+    ("savings_level", r"level|লেভেল|badge|streak|achievement|sanchoy level|সঞ্চয় লেভেল"),
+    ("budget",        r"budget|বাজেট|plan|পরিকল্পনা|mas er plan|মাসের পরিকল্পনা"),
+    ("notification",  r"notification|নোটিফিকেশন|alert|কেন জানালে|কেন পাঠালে|mane ki"),
 ]
 
 
@@ -56,7 +71,9 @@ def _day(iso: str | None) -> str:
 
 
 def answer(uid: str, message: str, svc) -> dict:
-    text_l = message.lower()
+    # Normalize Banglish → Bangla before intent matching
+    normalized = normalize(message)
+    text_l = normalized.lower()
     intent = next((name for name, pat in _INTENTS if re.search(pat, text_l)), "unknown")
     used: list[dict] = []
     cache: dict = {}
@@ -179,6 +196,18 @@ def answer(uid: str, message: str, svc) -> dict:
                 text += f" পরামর্শ: {h['top_actions'][0]}।"
         else:
             text = f"এই মাসে টানাটানির ঝুঁকি কম। আজ নিরাপদ খরচ প্রায় ৳{bn_num(h['safe_to_spend_today'] or 0)}।"
+    elif intent == "notification":
+        h = tool("get_home_summary")
+        if h["insufficient_history"]:
+            text = "হিসাব দেখাতে আরো কিছু দিনের লেনদেন লাগবে।"
+        elif h["risk_level"] == "red" and h["shortfall_date"]:
+            drivers = tool("get_shortfall_drivers")["drivers"]
+            why = ", ".join(d["text_bn"] for d in drivers[:2])
+            text = f"এই মাসে একটু সাবধান থাকো — {why} কারণে {_day(h['shortfall_date'])} দিকে টানাটানি হতে পারে।"
+        elif h["risk_level"] == "amber":
+            text = "মাসের শেষ দিকে একটু পরিকল্পনা করো — এখনই সতর্ক হলে টানাটানি এড়ানো যাবে।"
+        else:
+            text = "ভালো করছ! তোমার সঞ্চয়ের অগ্রগতি জানাতে notification দিয়েছি।"
     else:
-        text = "আমি উপায় 'হিসাব'। আমি শুধু লেনদেন, সঞ্চয় আর বাজেট নিয়ে সাহায্য করতে পারি। একটু বুঝিয়ে বলবে?"
+        text = "এই বিষয়ে আমার কিছু জানা নেই — আমি শুধু তোমার আর্থিক হিসাব নিয়ে কাজ করি।"
     return {"text": text, "used_tools": used, "numbers_source": "engine", "ai": False}
