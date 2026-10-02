@@ -21,11 +21,11 @@ _INTENTS = [
     ("shortfall",     r"কম পড়|শেষে|short|month.?end|টানাটানি|চলবে|taka nei|taka shesh|টাকা নেই|শেষ হয়"),
     # --- new intents ---
     ("safe_spend",    r"নিরাপদ খরচ|safe.?spend|aaj koto|আজ কত|আজকে কত|kharoch korte parbo|খরচ করতে পারব"),
-    ("balance",       r"balance|ব্যালেন্স|taka ache|টাকা আছে|koto taka|কত টাকা|wallet e koto"),
+    ("balance",       r"balance|belence|balence|ব্যালেন্স|taka ache|টাকা আছে|koto taka|কত টাকা|wallet e koto"),
     ("budget",        r"budget|বাজেট|plan|পরিকল্পনা|mas er plan|মাসের পরিকল্পনা|income|আয়"),
     ("savings_level", r"level|লেভেল|dps.?ready|sanchoy level|সঞ্চয় লেভেল|badge|streak"),
     ("pocket",        r"pocket|পকেট|amar pocket|আমার পকেট|joma ache|জমা আছে|goal pocket"),
-    ("greeting",      r"^hi$|^hello$|^hey$|^হ্যালো$|^হাই$|^সালাম$|salam|ki khobor|কেমন"),
+    ("greeting",      r"^hi$|^hello$|^hey$|^হ্যালো$|^হাই$|^সালাম$|salam|ki khobor|kemn|kmn|কেমন"),
 ]
 
 
@@ -53,7 +53,7 @@ def _day(iso: str | None) -> str:
 
 def answer(uid: str, message: str, svc) -> dict:
     text_l = message.lower()
-    intent = next((name for name, pat in _INTENTS if re.search(pat, text_l)), "shortfall")
+    intent = next((name for name, pat in _INTENTS if re.search(pat, text_l)), "unknown")
     used: list[dict] = []
     cache: dict = {}
 
@@ -151,8 +151,7 @@ def answer(uid: str, message: str, svc) -> dict:
             text += f" আজ নিরাপদ খরচসীমা ৳{bn_num(h['safe_to_spend_today'])}।"
     elif intent == "greeting":
         text = "হ্যালো! আমি উপায়ের আর্থিক সহকারী 'হিসাব'। তোমার আজকের জমা-খরচ বা হিসাব নিয়ে কিছু জানতে চাও?"
-    else:
-
+    elif intent == "shortfall":
         h = tool("get_home_summary")
         if h["insufficient_history"]:
             text = "হিসাব দেখাতে আরও কিছু দিনের লেনদেন লাগবে।"
@@ -165,4 +164,6 @@ def answer(uid: str, message: str, svc) -> dict:
                 text += f" একটা কাজ করতে পারো: {h['top_actions'][0]}।"
         else:
             text = (f"এই মাসে টানাটানির ঝুঁকি কম। আজ নিরাপদ খরচ প্রায় ৳{bn_num(h['safe_to_spend_today'] or 0)}।")
+    else:
+        text = "আমি উপায়ের আর্থিক সহকারী 'হিসাব'। আমি শুধু আপনার লেনদেন, সঞ্চয় এবং অ্যাপ সম্পর্কিত বিষয়ে সাহায্য করতে পারি। আপনার প্রশ্নটি বুঝতে পারিনি, আরেকটু সহজ করে বলবেন?"
     return {"text": text, "used_tools": used, "numbers_source": "engine", "ai": False}
