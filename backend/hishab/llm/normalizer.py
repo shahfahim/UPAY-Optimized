@@ -8,100 +8,185 @@ import re
 
 # Core Banglish → Bangla word map (order matters: longer phrases first)
 _PHRASE_MAP: list[tuple[str, str]] = [
-    # --- greetings ---
-    ("assalamualaikum", "আসসালামু আলাইকুম"),
+    # ─── greetings ────────────────────────────────────────────────────────────
+    ("assalamualaikum",  "আসসালামু আলাইকুম"),
     ("walaikum assalam", "ওয়ালাইকুম আস্সালাম"),
-    ("ki khobor", "কী খবর"),
-    ("kemon acho", "কেমন আছো"),
-    ("kemn acho", "কেমন আছো"),
-    ("kem acho", "কেমন আছো"),
-    ("thik ache", "ঠিক আছে"),
-    ("thik achhi", "ঠিক আছি"),
-    ("dhonnobad", "ধন্যবাদ"),
-    ("shuvo", "শুভ"),
-    # --- acknowledgment ---
-    ("okay", "ঠিক আছে"),
-    ("salam", "সালাম"),
-    # --- money & balance ---
-    ("koto taka ache", "কত টাকা আছে"),
-    ("taka koto ache", "টাকা কত আছে"),
-    ("wallet e koto", "ওয়ালেটে কত"),
-    ("belence koto", "ব্যালেন্স কত"),
-    ("balence koto", "ব্যালেন্স কত"),
-    ("balance koto", "ব্যালেন্স কত"),
-    ("belence", "ব্যালেন্স"),
-    ("balence", "ব্যালেন্স"),
-    ("balance", "ব্যালেন্স"),
-    ("koto taka", "কত টাকা"),
-    ("taka ache", "টাকা আছে"),
-    ("taka nei", "টাকা নেই"),
-    ("taka shesh", "টাকা শেষ"),
-    ("taka kobe shesh hobe", "টাকা কবে শেষ হবে"),
-    # --- spending ---
-    ("kharoch korte parbo", "খরচ করতে পারব"),
-    ("kharoch kothay jay", "খরচ কোথায় যায়"),
-    ("kharoch kothay gelo", "খরচ কোথায় গেলো"),
-    ("aaj koto kharoch", "আজ কত খরচ"),
-    ("ajke koto kharoch", "আজকে কত খরচ"),
-    ("aaj koto", "আজ কত"),
-    ("kharoch", "খরচ"),
-    # --- savings ---
-    ("save korbo", "সঞ্চয় করব"),
-    ("save korte chai", "সঞ্চয় করতে চাই"),
-    ("bachabo", "বাঁচাব"),
-    ("bachaibo", "বাঁচাব"),
-    ("joma dibo", "জমা দেব"),
-    ("joma ache", "জমা আছে"),
-    ("joma korbo", "জমা করব"),
-    ("joma", "জমা"),
-    ("saving", "সঞ্চয়"),
-    ("save", "সঞ্চয়"),
-    # --- shortfall ---
-    ("taka shesh hobe", "টাকা শেষ হবে"),
-    ("taka kobe shesh", "টাকা কবে শেষ"),
-    ("taka shesh", "টাকা শেষ"),
-    ("taka chalbe", "টাকা চলবে"),
-    ("taka nei", "টাকা নেই"),
-    ("koto din chalbe", "কত দিন চলবে"),
-    ("maser sheshe", "মাসের শেষে"),
-    ("mas er sheshe", "মাসের শেষে"),
-    ("tanatani", "টানাটানি"),
-    # standalone taka → টাকা (for "wallet e koto taka" etc.)
-    ("taka", "টাকা"),
-    # --- cash-out ---
-    ("cashout", "ক্যাশ আউট"),
-    ("cash out", "ক্যাশ আউট"),
-    ("cash-out", "ক্যাশ আউট"),
-    ("agent theke", "এজেন্ট থেকে"),
-    # --- DPS ---
-    ("dps korbo", "DPS করব"),
-    ("dps ki", "DPS কী"),
-    ("monthly joma", "মাসিক জমা"),
-    ("kisti", "কিস্তি"),
-    # --- identity / help ---
-    ("tumi ke", "তুমি কে"),
-    ("ki korte paro", "কী করতে পারো"),
-    ("ki koro", "কী করো"),
-    ("sahajjo koro", "সাহায্য করো"),
-    ("help lagbe", "সাহায্য লাগবে"),
+    ("ki khobor",        "কী খবর"),
+    ("kemon acho",       "কেমন আছো"),
+    ("kemn acho",        "কেমন আছো"),
+    ("kem acho",         "কেমন আছো"),
+    ("thik ache",        "ঠিক আছে"),
+    ("thik achhi",       "ঠিক আছি"),
+    ("dhonnobad",        "ধন্যবাদ"),
+    ("shuvo",            "শুভ"),
+    ("okay",             "ঠিক আছে"),
+    ("salam",            "সালাম"),
+
+    # ─── acknowledgment ───────────────────────────────────────────────────────
+    ("bujhechi",  "বুঝেছি"),
+    ("bujhlam",   "বুঝলাম"),
+
+    # ─── money & balance ──────────────────────────────────────────────────────
+    ("koto taka ache",   "কত টাকা আছে"),
+    ("taka koto ache",   "টাকা কত আছে"),
+    ("wallet e koto",    "ওয়ালেটে কত"),
+    ("wallet er taka",   "ওয়ালেটের টাকা"),
+    ("belence koto",     "ব্যালেন্স কত"),
+    ("balence koto",     "ব্যালেন্স কত"),
+    ("balance koto",     "ব্যালেন্স কত"),
+    ("belence",          "ব্যালেন্স"),
+    ("balence",          "ব্যালেন্স"),
+    ("balance",          "ব্যালেন্স"),
+    ("koto taka",        "কত টাকা"),
+    ("taka ache",        "টাকা আছে"),
+
+    # ─── spending ─────────────────────────────────────────────────────────────
+    ("kharoch korte parbo",  "খরচ করতে পারব"),
+    ("kharoch korte pari",   "খরচ করতে পারি"),
+    ("kharoch kothay jay",   "খরচ কোথায় যায়"),
+    ("kharoch kothay gelo",  "খরচ কোথায় গেলো"),
+    ("kharoch komabo",       "খরচ কমাব"),
+    ("kharoch er hisab",     "খরচের হিসাব"),
+    ("aaj koto kharoch",     "আজ কত খরচ"),
+    ("ajke koto kharoch",    "আজকে কত খরচ"),
+    ("aaj koto",             "আজ কত"),
+    ("kharoch",              "খরচ"),
+
+    # ─── savings & goal ───────────────────────────────────────────────────────
+    ("save korbo",          "সঞ্চয় করব"),
+    ("save korte chai",     "সঞ্চয় করতে চাই"),
+    ("save korte parchhi",  "সঞ্চয় করতে পারছি"),
+    ("bachabo",             "বাঁচাব"),
+    ("bachaibo",            "বাঁচাব"),
+    ("joma dibo",           "জমা দেব"),
+    ("joma ache",           "জমা আছে"),
+    ("joma korbo",          "জমা করব"),
+    ("jomate parbo",        "জমাতে পারব"),
+    ("jomate pari",         "জমাতে পারি"),
+    ("jomate chai",         "জমাতে চাই"),
+    ("jomate parchhi",      "জমাতে পারছি"),
+    ("joma",                "জমা"),
+    ("saving",              "সঞ্চয়"),
+    ("save",                "সঞ্চয়"),
+
+    # ─── shortfall ────────────────────────────────────────────────────────────
+    ("taka shesh hobe ki",  "টাকা শেষ হবে কি"),
+    ("taka shesh hobe",     "টাকা শেষ হবে"),
+    ("taka kobe shesh",     "টাকা কবে শেষ"),
+    ("taka shesh",          "টাকা শেষ"),
+    ("taka chalbe",         "টাকা চলবে"),
+    ("taka nei",            "টাকা নেই"),
+    ("koto din chalbe",     "কত দিন চলবে"),
+    ("maser sheshe",        "মাসের শেষে"),
+    ("mas er sheshe",       "মাসের শেষে"),
+    ("tanatani",            "টানাটানি"),
+    ("taka kome jacche",    "টাকা কমে যাচ্ছে"),
+    ("taka thakbe",         "টাকা থাকবে"),
+    ("taka",                "টাকা"),   # standalone (last resort)
+
+    # ─── cash-out ─────────────────────────────────────────────────────────────
+    ("cashout",        "ক্যাশ আউট"),
+    ("cash out",       "ক্যাশ আউট"),
+    ("cash-out",       "ক্যাশ আউট"),
+    ("agent theke",    "এজেন্ট থেকে"),
+    ("agent fee",      "এজেন্ট ফি"),
+    ("fee komabo",     "ফি কমাব"),
+    ("fee koto",       "ফি কত"),
+
+    # ─── DPS ─────────────────────────────────────────────────────────────────
+    ("dps ki",        "DPS কী"),
+    ("dps korbo",     "DPS করব"),
+    ("monthly joma",  "মাসিক জমা"),
+    ("kisti",         "কিস্তি"),
+
+    # ─── identity / help ──────────────────────────────────────────────────────
+    ("tumi ke",         "তুমি কে"),
+    ("ki korte paro",   "কী করতে পারো"),
+    ("ki koro",         "কী করো"),
+    ("sahajjo koro",    "সাহায্য করো"),
+    ("help lagbe",      "সাহায্য লাগবে"),
     ("kivabe kaj koro", "কীভাবে কাজ করো"),
-    # --- complaint ---
-    ("kaj hocche na", "কাজ হচ্ছে না"),
-    ("kaj hochhe na", "কাজ হচ্ছে না"),
-    ("andaze", "আন্দাজে"),
-    ("faltu", "ফালতু"),
-    ("pagol", "পাগল"),
-    ("vul", "ভুল"),
-    # --- general ---
-    ("hisab", "হিসাব"),
-    ("income", "আয়"),
-    ("korbo", "করব"),
-    ("nibo", "নেব"),
-    ("dibo", "দেব"),
-    ("parbo", "পারব"),
-    ("jabo", "যাব"),
-    ("kemn", "কেমন"),
-    ("kmn", "কেমন"),
+
+    # ─── advice ("ki korbo?") ─────────────────────────────────────────────────
+    ("ki korbo ekhon",     "কী করব এখন"),
+    ("ki korbo",           "কী করব"),
+    ("ki korle",           "কী করলে"),
+    ("ki kora uchit",      "কী করা উচিত"),
+    ("taka bachate ki",    "টাকা বাঁচাতে কী"),
+    ("kharoch komabo",     "খরচ কমাব"),
+    ("ki korle valo hobe", "কী করলে ভালো হবে"),
+    ("pরামর্শ dao",        "পরামর্শ দাও"),
+
+    # ─── status ("ami ki bhalo korchi?") ─────────────────────────────────────
+    ("ami ki bhalo korchi",     "আমি কি ভালো করছি"),
+    ("ami ki bhalo achi",       "আমি কি ভালো আছি"),
+    ("amar obostha kemon",      "আমার অবস্থা কেমন"),
+    ("amar financial condition","আমার আর্থিক অবস্থা"),
+    ("hisab thik ache",         "হিসাব ঠিক আছে"),
+    ("kemon cholche",           "কেমন চলছে"),
+    ("ami ki save korte parchhi", "আমি কি সঞ্চয় করতে পারছি"),
+    ("amar progress",           "আমার প্রগতি"),
+
+    # ─── next income ("kobe taka ashbe?") ────────────────────────────────────
+    ("kobe taka ashbe",    "কবে টাকা আসবে"),
+    ("kobe income ashbe",  "কবে আয় আসবে"),
+    ("next income kobe",   "পরের আয় কবে"),
+    ("income kobe ashbe",  "আয় কবে আসবে"),
+    ("kobe pabo",          "কবে পাব"),
+
+    # ─── comparison ───────────────────────────────────────────────────────────
+    ("age cheyey beshi",   "আগের চেয়ে বেশি"),
+    ("age cheyey kom",     "আগের চেয়ে কম"),
+    ("last month vs",      "গত মাসের তুলনায়"),
+    ("age er tulonay",     "আগের তুলনায়"),
+
+    # ─── complaint ────────────────────────────────────────────────────────────
+    ("kaj hocche na",   "কাজ হচ্ছে না"),
+    ("kaj hochhe na",   "কাজ হচ্ছে না"),
+    ("kaje ashe na",    "কাজে আসে না"),
+    ("andaze",          "আন্দাজে"),
+    ("faltu",           "ফালতু"),
+    ("pagol",           "পাগল"),
+    ("vul",             "ভুল"),
+    ("bekar",           "বেকার"),
+    ("matha kharap",    "মাথা খারাপ"),
+
+    # ─── emergency ────────────────────────────────────────────────────────────
+    ("joruri taka lagbe", "জরুরি টাকা লাগবে"),
+    ("joruri taka",       "জরুরি টাকা"),
+    ("joruri",            "জরুরি"),
+    ("ekhoni taka",       "এখনই টাকা"),
+    ("ekhuni taka",       "এখনই টাকা"),
+    ("udhar lagbe",       "উধার লাগবে"),
+    ("udhar",             "উধার"),
+    ("taka lagbe",        "টাকা লাগবে"),
+
+    # ─── specific amount check ────────────────────────────────────────────────
+    ("kinbo ki",   "কিনব কি"),
+    ("kinbo",      "কিনব"),
+    ("kinte parbo","কিনতে পারব"),
+
+    # ─── general verbs ────────────────────────────────────────────────────────
+    ("hisab",   "হিসাব"),
+    ("income",  "আয়"),
+    ("korbo",   "করব"),
+    ("korle",   "করলে"),
+    ("nibo",    "নেব"),
+    ("dibo",    "দেব"),
+    ("parbo",   "পারব"),
+    ("parchhi", "পারছি"),
+    ("jabo",    "যাব"),
+    ("ashbe",   "আসবে"),
+    ("thakbe",  "থাকবে"),
+    ("hobe",    "হবে"),
+    ("kemn",    "কেমন"),
+    ("kmn",     "কেমন"),
+    ("kobe",    "কবে"),
+    ("keno",    "কেন"),
+    ("kothay",  "কোথায়"),
+    ("kivabe",  "কীভাবে"),
+    ("koto",    "কত"),
+    ("ki",      "কী"),
 ]
 
 # Compile patterns for efficiency
@@ -116,6 +201,7 @@ def normalize(text: str) -> str:
 
     Replaces known Banglish words/phrases with their Bangla equivalents.
     Preserves original case and structure for pure Bangla/English text.
+    Numbers (500, 1000 etc.) are preserved as-is.
     """
     result = text
     for pattern, replacement in _COMPILED:
