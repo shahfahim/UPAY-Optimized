@@ -25,6 +25,7 @@ _INTENTS = [
     ("budget",        r"budget|বাজেট|plan|পরিকল্পনা|mas er plan|মাসের পরিকল্পনা|income|আয়"),
     ("savings_level", r"level|লেভেল|dps.?ready|sanchoy level|সঞ্চয় লেভেল|badge|streak"),
     ("pocket",        r"pocket|পকেট|amar pocket|আমার পকেট|joma ache|জমা আছে|goal pocket"),
+    ("greeting",      r"^hi$|^hello$|^hey$|^হ্যালো$|^হাই$|^সালাম$|salam|ki khobor|কেমন"),
 ]
 
 
@@ -148,6 +149,8 @@ def answer(uid: str, message: str, svc) -> dict:
         text = "তোমার পকেটগুলো দেখতে হিসাব ট্যাব → সঞ্চয় → আমার পকেট-এ যাও।"
         if not h["insufficient_history"] and h.get("safe_to_spend_today"):
             text += f" আজ নিরাপদ খরচসীমা ৳{bn_num(h['safe_to_spend_today'])}।"
+    elif intent == "greeting":
+        text = "হ্যালো! আমি উপায়ের আর্থিক সহকারী 'হিসাব'। তোমার আজকের জমা-খরচ বা হিসাব নিয়ে কিছু জানতে চাও?"
     else:
 
         h = tool("get_home_summary")
