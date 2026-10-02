@@ -35,9 +35,12 @@ _INTENTS: list[tuple[str, str]] = [
     ("cashout",       r"cash.?out|ক্যাশ ?আউট|ক্যাশআউট|agent|এজেন্ট|fee|ফি"
                       r"|agent theke|cash komabo"),
     ("transactions",  r"লেনদেন|transaction|বুঝিয়ে|কোথায় খরচ|history"
-                      r"|kharoch kothay|খরচ কোথায়|lenden|income koto|আয় koto|আয় কত"),
-    ("goal",          r"জমা|জমাতে|সঞ্চয়|save|saving|goal|লক্ষ্য|target"
-                      r"|joma|bachabo|bachaibo|save korbo|jomate parbo"),
+                      r"|kharoch kothay|খরচ কোথায়|lenden|income koto|আয় koto|আয় কত"
+                      r"|average savings|average joma|average koto|গড় সঞ্চয়|গড় জমা|গড় কত"),
+    ("goal",          r"জমাতে চাই|সঞ্চয় করতে চাই|সঞ্চয় করব|বাঁচাব|save korbo|jomate parbo|jomate chai"
+                      r"|goal|লক্ষ্য|target|bachabo|bachaibo|বাঁচাব"
+                      r"|(?:\d).*(?:joma|save|সঞ্চয়|জমা)"
+                      r"|(?:joma|save|সঞ্চয়|জমা).*(?:\d|mase|mash|month)"),
     ("dps",           r"dps|ডিপিএস|deposit|মাসিক জমা|kisti|কিস্তি|monthly joma"),
     ("eid",           r"ঈদ|eid|puja|পূজা|festival|bonos|বোনাস|উৎসব"),
     ("emergency",     r"জরুরি|ইমার্জেন্সি|emergency|ঋণ|loan|ধার|dorkar|urgent"),
@@ -114,9 +117,15 @@ def answer(uid: str, message: str, svc) -> dict:
     elif intent == "transactions":
         tx = tool("get_transactions_summary", period="month")
         top = ", ".join(f"{c['category_bn']}" for c in tx["by_category"][:2])
-        text = (f"গত ৩০ দিনে আয় ৳{bn_num(tx['income_total'])}, খরচ ৳{bn_num(tx['spend_total'])}। "
-                f"বেশি খরচ হয়েছে: {top}।")
-    elif intent == "emergency":
+        net = tx["income_total"] - tx["spend_total"]
+        is_avg = re.search(r"average|avg|গড়|গড় সঞ্চয়|average savings|average joma", text_l)
+        if is_avg:
+            text = (f"গত মাসে আয় ৳{bn_num(tx['income_total'])}, খরচ ৳{bn_num(tx['spend_total'])}। "
+                    f"গড় নিট সঞ্চয় প্রায় ৳{bn_num(max(0.0, net))} — "
+                    + (f"বেশি খরচ হয়েছে {top}-এ।" if top else "লেনদেন দেখাতে আরো কিছু দিনের তথ্য লাগবে।"))
+        else:
+            text = (f"গত ৩০ দিনে আয় ৳{bn_num(tx['income_total'])}, খরচ ৳{bn_num(tx['spend_total'])}। "
+                    f"বেশি খরচ হয়েছে: {top}।")
         amounts = [n for n, _ in _numbers(message) if n >= 100]
         e = tool("emergency_options", amount=max(amounts) if amounts else 2000)
         if e["options"]:
