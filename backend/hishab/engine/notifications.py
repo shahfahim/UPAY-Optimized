@@ -128,8 +128,8 @@ def message_strip(ctx, risk, safe_today: float, budget_daily: float, shortcuts: 
     days_left = max(1, (risk.shortfall_date - ctx.today).days) if risk.shortfall_date else None
     to_income = (next_income - ctx.today).days if next_income else None
     if risk.level == "red":
-        bn = f"সাবধান: টাকা আর প্রায় {bn_num(days_left or 3)} দিন চলবে"
-        en = f"Heads up: money may last about {days_left or 3} more days"
+        bn = f"এই মাসে একটু সাবধান থাকো — আর প্রায় {bn_num(days_left or 3)} দিনের বাজেট আছে"
+        en = f"Stay careful this month — budget for about {days_left or 3} more days"
         msgs.append(StripMessage(1, bn, en, "/app/hishab"))
     for s in shortcuts:
         if s.due_in_days:
@@ -137,8 +137,8 @@ def message_strip(ctx, risk, safe_today: float, budget_daily: float, shortcuts: 
                                      f"{s.name} due in {s.due_in_days} days", "/app/home"))
             break
     if risk.level == "amber":
-        bn = f"টাকা আর প্রায় {bn_num(days_left)} দিন চলবে" if days_left else "মাসের শেষে টানাটানির ঝুঁকি আছে"
-        en = f"Money may last about {days_left} more days" if days_left else "Some risk of running short this month"
+        bn = f"মাসের শেষ দিকে একটু পরিকল্পনা করো — {bn_num(days_left)} দিন সামলে চলো" if days_left else "মাসের শেষে একটু সাশ্রয়ী থাকলে ভালো হবে"
+        en = f"Plan ahead — manage spending for {days_left} more days" if days_left else "Some planning this month-end will help"
         if to_income:
             bn += f" · বেতন {bn_num(to_income)} দিন পরে"
             en += f" · income in {to_income} days"

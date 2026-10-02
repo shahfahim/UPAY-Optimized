@@ -114,10 +114,10 @@ def answer(uid: str, message: str, svc) -> dict:
         elif h["risk_level"] in ("amber", "red") and h["shortfall_date"]:
             drivers = tool("get_shortfall_drivers")["drivers"]
             why = "; ".join(d["text_bn"] for d in drivers[:2])
-            text = (f"হিসাব বলছে, {_day(h['shortfall_date'])} দিকে প্রায় ৳{bn_num(h['shortfall_amount'])} কম "
-                    f"পড়তে পারে। কারণ: {why}।")
+            text = (f"হিসাব বলছে, {_day(h['shortfall_date'])} দিকে একটু টানাটানি হতে পারে — প্রায় "
+                    f"৳{bn_num(h['shortfall_amount'])} সামলানো দরকার। মূল কারণ: {why}।")
             if h["top_actions"]:
-                text += f" একটা পরামর্শ: {h['top_actions'][0]}।"
+                text += f" একটা কাজ করতে পারো: {h['top_actions'][0]}।"
         else:
             text = (f"এই মাসে টানাটানির ঝুঁকি কম। আজ নিরাপদ খরচ প্রায় ৳{bn_num(h['safe_to_spend_today'] or 0)}।")
     return {"text": text, "used_tools": used, "numbers_source": "engine", "ai": False}
