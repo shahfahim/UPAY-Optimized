@@ -181,8 +181,8 @@ export default function Overview() {
             <p className="font-semibold">{L(`আজ নিরাপদ খরচ ${taka(home.safe_today)}`, `Safe to spend today: ${taka(home.safe_today)}`)}</p>
           ) : (
             <>
-              <p className="font-semibold">{L(`বেতন পর্যন্ত দিনে ${taka(home.daily_budget)}-এর মধ্যে খরচ রাখো`, `Keep spending under ${taka(home.daily_budget)} a day until payday`)}</p>
-              <p className="text-xs text-warn">{L('ঝুঁকি থাকছে — হিসাবের অনিশ্চয়তা ধরলে আজ নিরাপদ খরচ ৳০', 'Still risky — with uncertainty, today\'s safe amount is ৳0')}</p>
+              <p className="font-semibold">{L(`দৈনিক খরচসীমা ${taka(home.daily_budget)}-এর মধ্যে রাখার চেষ্টা করো`, `Try to keep daily spending under ${taka(home.daily_budget)}`)}</p>
+              <p className="text-xs text-warn">{L('ঝুঁকি থাকছে — এই মাসে একটু সামলে চলো', 'Still risky — spend carefully this month')}</p>
             </>
           )}
         </div>
