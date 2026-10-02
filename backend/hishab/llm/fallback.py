@@ -26,7 +26,10 @@ _INTENTS = [
     ("savings_level", r"level|লেভেল|dps.?ready|sanchoy level|সঞ্চয় লেভেল|badge|streak"),
     ("pocket",        r"pocket|পকেট|amar pocket|আমার পকেট|joma ache|জমা আছে|goal pocket"),
     ("greeting",      r"^hi$|^hello$|^hey$|^হ্যালো$|^হাই$|^সালাম$|salam|ki khobor|kemn|kmn|কেমন"),
-    ("ack",           r"^ok$|^okay$|^thik ache$|^yes$|^ha$|^হুম$|^hm$|^hmm$|^আচ্ছা$|^ঠিক আছে$|thanks|thank you|ধন্যবাদ|dhonnobad"),
+    ("identity",      r"tumi ke|who are you|tomar nam ki|ki nam|তুমি কে|তোমার নাম|bot|ai"),
+    ("help",          r"help|sahajjo|ki koro|ki korte paro|সাহায্য|কী করো|কী করতে পারো|kivabe kaj koro"),
+    ("complaint",     r"fau|faul|faltu|pagol|bokachoda|vul|andaze|vua|ফাউল|ফালতু|ভুল|আন্দাজে|ভুয়া|পাগল"),
+    ("ack",           r"^ok$|^okay$|^thik ache$|^yes$|^ha$|^হুম$|^hm$|^hmm$|^আচ্ছা$|^ঠিক আছে$|^daw$|^দাও$|thanks|thank you|ধন্যবাদ|dhonnobad"),
 ]
 
 
@@ -156,6 +159,12 @@ def answer(uid: str, message: str, svc) -> dict:
             text += f" আজ নিরাপদ খরচসীমা ৳{bn_num(h['safe_to_spend_today'])}।"
     elif intent == "greeting":
         text = "হ্যালো! আমি উপায় 'হিসাব'। তোমার বাজেট বা জমানো নিয়ে কোনো সাহায্য লাগবে?"
+    elif intent == "identity":
+        text = "আমি 'হিসাব', উপায়-এর একটি স্মার্ট আর্থিক সহকারী। আমি তোমার আয়-ব্যয় বিশ্লেষণ করে সঞ্চয় করতে সাহায্য করি।"
+    elif intent == "help":
+        text = "আমি তোমার প্রতিদিনের নিরাপদ খরচসীমা, মাসের বাজেট, এবং কীভাবে সঞ্চয় করা যায়— এই বিষয়গুলো নিয়ে পরামর্শ দিতে পারি।"
+    elif intent == "complaint":
+        text = "দুঃখিত! আমি একটি সাধারণ এআই সিস্টেম, তাই মাঝেমধ্যে ভুল হতে পারে। একটু বুঝিয়ে বললে আমি চেষ্টা করব সঠিক উত্তর দেওয়ার।"
     elif intent == "ack":
         text = "ঠিক আছে! আর কোনো সাহায্য লাগলে জানিও।"
     elif intent == "shortfall":
