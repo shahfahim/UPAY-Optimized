@@ -6,6 +6,7 @@ import hashlib
 import json
 import re
 import secrets
+import threading
 from datetime import date, datetime, timedelta
 
 import numpy as np
@@ -29,7 +30,7 @@ from hishab.engine.features import user_features
 from hishab.engine.models import Models
 from hishab.store.sqlite import Store
 from hishab.jsonable import jsonable
-from hishab.services_hub import HubMixin, InsufficientFunds  # noqa: F401
+from hishab.services_hub import HubMixin, InsufficientFunds, locked  # noqa: F401
 
 _MOBILE = re.compile(r"^01[3-9]\d{8}$")
 _PIN = re.compile(r"^\d{6}$")
@@ -54,9 +55,18 @@ class Hishab(HubMixin):
         self.repo, self.store, self.models, self.settings = repo, store, models, settings
         self.bandit = Bandit.from_dict(models.bandit_priors) if models.bandit_priors else None
         self.rng = np.random.default_rng()
-        from hishab.llm.client import RateLimiter
+        from hishab.llm.client import LLM_CALLS_PER_MINUTE, RateLimiter
         self.limiter = RateLimiter(limit=10, window=60.0)
+        self.llm_budget = RateLimiter(limit=LLM_CALLS_PER_MINUTE, window=60.0)  # all users together
+        self._locks: dict[str, threading.RLock] = {}
+        self._locks_guard = threading.Lock()
+        self._clock_lock = threading.Lock()
         self.llm_client = None  # injected in tests; real client is created on demand when the LLM is enabled
+
+    def user_lock(self, uid: str) -> threading.RLock:
+        """Serialises read-check-write on one user's balance and state (the app runs as one process)."""
+        with self._locks_guard:
+            return self._locks.setdefault(uid, threading.RLock())
 
     # --- context ---------------------------------------------------------------------------------------
     def ctx(self, uid: str) -> UserCtx:
@@ -176,6 +186,7 @@ class Hishab(HubMixin):
                 pass
         return extras
 
+    @locked
     def shell(self, uid: str) -> dict:
         ctx = self.ctx(uid)
         pub = self._user_public(ctx)
@@ -212,6 +223,7 @@ class Hishab(HubMixin):
     def _unread(self, uid: str) -> int:
         return sum(1 for n in self.store.notifications(uid) if not n.get("read"))
 
+    @locked
     def notifications(self, uid: str) -> list[dict]:
         self.ctx(uid)  # 404 for unknown users
         items = list(reversed(self.store.notifications(uid)))
@@ -238,18 +250,21 @@ class Hishab(HubMixin):
     def chat(self, uid: str, message: str) -> dict:
         from hishab.llm.client import answer
         self.ctx(uid)  # 404 for unknown users
-        return jsonable(answer(uid, message, self, self.settings, client=self.llm_client, limiter=self.limiter))
+        return jsonable(answer(uid, message, self, self.settings, client=self.llm_client, limiter=self.limiter,
+                                llm_budget=self.llm_budget))
 
     # --- demo controls ------------------------------------------------------------------------------------
     def time_travel(self, days: int) -> dict:
         if days not in (7, 14, 30):
             raise ValueError("শুধু ৭, ১৪ বা ৩০ দিন এগোনো যায়")
-        if self.store.clock_offset() + days > 60:
-            raise ValueError("demo-তে মোট ৬০ দিনের বেশি এগোনো যায় না — আগে Demo reset করুন")
-        self.store.set_clock_offset(self.store.clock_offset() + days)
-        return {"today": (self.settings.demo_today + timedelta(days=self.store.clock_offset())).isoformat(),
-                "offset_days": self.store.clock_offset()}
+        with self._clock_lock:
+            offset = self.store.clock_offset() + days
+            if offset > 60:
+                raise ValueError("demo-তে মোট ৬০ দিনের বেশি এগোনো যায় না — আগে Demo reset করুন")
+            self.store.set_clock_offset(offset)
+        return {"today": (self.settings.demo_today + timedelta(days=offset)).isoformat(), "offset_days": offset}
 
     def reset(self) -> dict:
-        self.store.reset()
+        with self._clock_lock:
+            self.store.reset(keep_sessions=True)  # whoever pressed reset stays logged in
         return {"ok": True, "today": self.settings.demo_today.isoformat()}

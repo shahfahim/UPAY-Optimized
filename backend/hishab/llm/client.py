@@ -22,6 +22,7 @@ MAX_CHARS = 500
 BUDGET_SECONDS = 25.0
 MAX_ROUNDS = 4
 FALLBACK_BETA = "server-side-fallback-2026-07-01"
+LLM_CALLS_PER_MINUTE = 30  # across all users; past it, chat answers from templates instead of the API
 
 
 class RateLimited(Exception):
@@ -108,12 +109,19 @@ def _loop(uid: str, message: str, svc, settings, client) -> dict | None:
     return None
 
 
-def answer(uid: str, message: str, svc, settings, client=None, limiter: RateLimiter | None = None) -> dict:
+def answer(uid: str, message: str, svc, settings, client=None, limiter: RateLimiter | None = None,
+           llm_budget: RateLimiter | None = None) -> dict:
     message = validate_message(message)
     (limiter or _default_limiter).check(uid)
-    if client is None:
-        if not settings.llm_enabled:
+    if client is None and not settings.llm_enabled:
+        return fallback.answer(uid, message, svc)
+    if llm_budget is not None:
+        try:
+            llm_budget.check("all")
+        except RateLimited:
+            log.warning("LLM call budget reached, using fallback")
             return fallback.answer(uid, message, svc)
+    if client is None:
         client = _real_client(settings)
     try:
         result = _loop(uid, message, svc, settings, client)

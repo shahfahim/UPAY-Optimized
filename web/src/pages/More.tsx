@@ -30,9 +30,14 @@ export default function More() {
     await refresh()
     say(L('Demo আগের অবস্থায় ফিরেছে', 'Demo reset'))
   }
-  const switchTo = (u: DemoUser) => {
-    setSession({ token: 'demo', userId: u.user_id })
-    window.location.assign('/app/home')
+  const switchTo = async (u: DemoUser) => {
+    try {
+      const r = await api.login(u.phone, '123456') // every seeded demo user's PIN; registered users log in themselves
+      setSession({ token: r.token, userId: r.user_id })
+      window.location.assign('/app/home')
+    } catch {
+      say(L('এই user-এর জন্য লগইন করুন', 'Log in as this user from the login page'))
+    }
   }
 
   const row = (icon: string, bn: string, en: string, onClick: () => void, tone = '') => (
@@ -77,7 +82,7 @@ export default function More() {
       <Sheet open={users !== null} onClose={() => setUsers(null)} title={L('Demo user বেছে নিন', 'Choose a demo user')}>
         <div className="space-y-2">
           {users?.map((u) => (
-            <button key={u.user_id} onClick={() => switchTo(u)}
+            <button key={u.user_id} onClick={() => void switchTo(u)}
               className="flex w-full items-center justify-between rounded-xl border border-line px-3 py-2 text-left">
               <span className="text-sm font-semibold">{u.name}</span>
               <span className="text-xs text-muted">{u.area}</span>

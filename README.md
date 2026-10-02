@@ -78,7 +78,7 @@ Hishab is designed to be adopted by upay with almost no change to its app:
 | I8 | সঞ্চয় | আমার পকেট, সঞ্চয় লেভেল, জরুরি টাকা above upay's DPS; Smart DPS on the DPS-opening screen |
 | I9 | Bell | Personalised notification centre, incl. re-engagement |
 
-**API:** everything the UI shows comes from a JSON API under `/api`. Interactive docs are at **`/docs`** (OpenAPI), e.g. `GET /api/users/{id}/home`, `POST /api/users/{id}/route`, `POST /api/users/{id}/chat`. upay's app can call these endpoints, or embed the engine as a service.
+**API:** everything the UI shows comes from a JSON API under `/api`. Interactive docs are at **`/docs`** (OpenAPI), e.g. `GET /api/users/{id}/home`, `POST /api/users/{id}/route`, `POST /api/users/{id}/chat`. Every `/api/users/{id}/…` call needs the session token from `/api/auth/login` (or `/register/verify`) as `Authorization: Bearer <token>`, and a token only opens its own user. upay's app can call these endpoints, or embed the engine as a service.
 
 ## 4. Tech stack
 

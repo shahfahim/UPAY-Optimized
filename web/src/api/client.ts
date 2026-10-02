@@ -3,6 +3,7 @@ import type {
   HealthReport, Home, Impact, Lesson, LevelStatus, Notification, Readiness, RouteResult, SendResult, SendType,
   Savings, Shell, Simulation, TxList,
 } from './types'
+import { clearSession, getSession } from '../lib/session'
 
 export class ApiError extends Error {
   status: number
@@ -13,11 +14,15 @@ export class ApiError extends Error {
 }
 
 async function req<T>(method: string, path: string, body?: unknown): Promise<T> {
+  const headers: Record<string, string> = {}
+  if (body !== undefined) headers['Content-Type'] = 'application/json'
+  const token = getSession()?.token
+  if (token) headers.Authorization = `Bearer ${token}`
   let res: Response
   try {
     res = await fetch(`/api${path}`, {
       method,
-      headers: body === undefined ? undefined : { 'Content-Type': 'application/json' },
+      headers,
       body: body === undefined ? undefined : JSON.stringify(body),
     })
   } catch {
@@ -25,6 +30,10 @@ async function req<T>(method: string, path: string, body?: unknown): Promise<T> 
   }
   const text = await res.text()
   const data = text ? JSON.parse(text) : null
+  if ((res.status === 401 || res.status === 403) && path.startsWith('/users/')) {
+    clearSession() // expired (server restarted) or someone else's account: log in again
+    window.location.assign('/login')
+  }
   if (!res.ok) {
     const detail = data && typeof data.detail === 'string' ? data.detail : 'কিছু একটা ভুল হয়েছে'
     throw new ApiError(res.status, detail)

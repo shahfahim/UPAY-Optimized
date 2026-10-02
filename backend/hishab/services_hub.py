@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import calendar as _cal
+import functools
 import json
 import re
 import secrets
@@ -37,6 +38,15 @@ _EVENT_LABELS = {"salary_in": "বেতন", "bonus_in": "বোনাস"}
 
 class InsufficientFunds(Exception):
     pass
+
+
+def locked(fn):
+    """Run a method that reads, checks and writes one user's balance or state under that user's lock."""
+    @functools.wraps(fn)
+    def wrapper(self, uid, *args, **kwargs):
+        with self.user_lock(uid):
+            return fn(self, uid, *args, **kwargs)
+    return wrapper
 
 
 def _dates(tx: pd.DataFrame) -> pd.Series:
@@ -136,6 +146,7 @@ class HubMixin:
         reason = "তুমি নিজে যে বাজেট বসিয়েছ" if manual else "গত ৩ মাসের হিসাব আর সামনের পূর্বাভাস থেকে"
         return {"period": period, "mode": ctx.state.budget_mode, "items": items, "reason_bn": reason}
 
+    @locked
     def set_budget(self, uid, mode, manual):
         ctx = self.ctx(uid)
         clean = {}
@@ -189,6 +200,7 @@ class HubMixin:
             "area": ctx.user.get("area", "")})
         return bal
 
+    @locked
     def move_pocket(self, uid, pocket, direction, amount):
         if pocket not in POCKETS or (pocket == "paisa" and direction == "in"):
             raise ValueError("পকেট সঠিক নয়")
@@ -207,6 +219,7 @@ class HubMixin:
         self.store.save_state(uid, ctx.state)
         return self.savings(uid)
 
+    @locked
     def set_paisa(self, uid, on):
         ctx = self.ctx(uid)
         ctx.state.paisa_on = bool(on)
@@ -215,6 +228,7 @@ class HubMixin:
         self.store.save_state(uid, ctx.state)
         return self.savings(uid)
 
+    @locked
     def plan_goal(self, uid, target, months, pocket=None):
         ctx = self.ctx(uid)
         g = _plan_goal(ctx, self.models, target, months)
@@ -234,6 +248,7 @@ class HubMixin:
             return {"status": "not_now", "reason_bn": "আরও কিছু দিনের লেনদেন লাগবে", "safe_monthly": None}
         return jsonable(_dps_advice(ctx, self.models, goal_target))
 
+    @locked
     def dps_open(self, uid, monthly, tenure_months):
         rules = load_rules("dps")
         monthly = validate.amount(monthly)
@@ -279,6 +294,7 @@ class HubMixin:
         return jsonable({"routes": _routes(amount, destination), "habits": detect_costly_habits(ctx),
                          "fees_placeholder": True})
 
+    @locked
     def send(self, uid, body: dict):
         amount = validate.amount(body.get("amount"))
         typ = body["type"]

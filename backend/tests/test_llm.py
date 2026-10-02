@@ -110,3 +110,13 @@ def test_message_validation_and_rate_limit(svc, settings):
     limiter.check("U1")
     with pytest.raises(llm.RateLimited):
         limiter.check("U1")
+
+
+def test_global_llm_budget_falls_back_instead_of_calling_the_api(svc, settings):
+    """Rotating user ids can't run up API spend: past the shared budget, answers come from templates."""
+    budget = llm.RateLimiter(limit=1, window=60.0, clock=lambda: 100.0)
+    fake = FakeClient([final("তোমার টাকা আর কয়েক দিন চলবে।")])
+    first = llm.answer("U0001", CHIPS[0], svc, settings, client=fake, llm_budget=budget)
+    second = llm.answer("U0002", CHIPS[0], svc, settings, client=fake, llm_budget=budget)
+    assert first["ai"] is True and second["ai"] is False and second["text"]
+    assert len(fake.calls) == 1

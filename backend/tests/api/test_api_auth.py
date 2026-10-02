@@ -1,3 +1,6 @@
+import pytest
+
+
 def test_health(client):
     r = client.get("/api/health")
     assert r.status_code == 200 and r.json()["status"] == "ok"
@@ -30,8 +33,46 @@ def test_register_flow_creates_user_with_history(client):
     done = client.post("/api/auth/register/verify",
                        json={"mobile": "01811223344", "otp": otp, "name": "নতুন ইউজার", "pin": "246810"})
     assert done.status_code == 200
-    uid = done.json()["user_id"]
-    home = client.get(f"/api/users/{uid}/home").json()
+    uid, token = done.json()["user_id"], done.json()["token"]
+    home = client.get(f"/api/users/{uid}/home", headers={"Authorization": f"Bearer {token}"}).json()
     assert home["insufficient_history"] is False and home["forecast"] is not None
     relog = client.post("/api/auth/login", json={"mobile": "01811223344", "pin": "246810"})
     assert relog.status_code == 200 and relog.json()["user_id"] == uid
+
+
+def _bearer(token):
+    return {"Authorization": f"Bearer {token}"}
+
+
+@pytest.mark.parametrize("method,path", [
+    ("get", "/api/users/U0001/home"), ("get", "/api/users/U0001/shell"), ("get", "/api/users/U0001/savings"),
+    ("get", "/api/users/U0001/transactions"), ("post", "/api/users/U0001/send"), ("post", "/api/users/U0001/chat"),
+    ("post", "/api/users/U0001/savings/pockets/eid/move"),
+])
+def test_user_routes_need_a_token(anon, method, path):
+    assert getattr(anon, method)(path).status_code == 401
+    assert getattr(anon, method)(path, headers=_bearer("not-a-token")).status_code == 401
+
+
+def test_token_only_opens_its_own_user(anon):
+    token = anon.post("/api/auth/login", json={"mobile": "01700000001", "pin": "123456"}).json()["token"]
+    assert anon.get("/api/users/U0001/home", headers=_bearer(token)).status_code == 200
+    r = anon.get("/api/users/U0002/home", headers=_bearer(token))
+    assert r.status_code == 403
+    assert anon.post("/api/users/U0002/send", headers=_bearer(token),
+                     json={"type": "send_money", "amount": 10}).status_code == 403
+
+
+def test_public_routes_stay_open(anon):
+    assert anon.get("/api/users").status_code == 200
+    assert anon.get("/api/health").status_code == 200
+
+
+def test_demo_reset_keeps_seeded_logins_but_drops_registered_ones(anon):
+    seeded = anon.post("/api/auth/login", json={"mobile": "01700000001", "pin": "123456"}).json()["token"]
+    otp = anon.post("/api/auth/register/start", json={"mobile": "01811223355"}).json()["otp"]
+    new = anon.post("/api/auth/register/verify",
+                    json={"mobile": "01811223355", "otp": otp, "name": "নতুন ইউজার", "pin": "246810"}).json()
+    anon.post("/api/demo/reset")
+    assert anon.get("/api/users/U0001/shell", headers=_bearer(seeded)).status_code == 200
+    assert anon.get(f"/api/users/{new['user_id']}/shell", headers=_bearer(new["token"])).status_code == 401

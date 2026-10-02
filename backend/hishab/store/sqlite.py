@@ -83,10 +83,14 @@ class Store:
         with self._lock:
             self._conn.close()
 
-    def reset(self) -> None:
+    def reset(self, keep_sessions: bool = False) -> None:
+        """Clear demo state. With keep_sessions, logins of seeded users survive; registered users are
+        removed, so their sessions go too (their ids are handed out again)."""
         with self._lock:
-            for t in ["state", "sim_tx", "responses", "categories", "notifications", "meta", "sessions",
-                      "extra_users", "extra_tx"]:
+            if keep_sessions:
+                self._conn.execute("DELETE FROM sessions WHERE user_id IN (SELECT user_id FROM extra_users)")
+            tables = ["state", "sim_tx", "responses", "categories", "notifications", "meta", "extra_users", "extra_tx"]
+            for t in tables + ([] if keep_sessions else ["sessions"]):
                 self._conn.execute(f"DELETE FROM {t}")
             self._conn.commit()
 
