@@ -6,6 +6,8 @@ import { Icon } from '../../components/Icon'
 import { AiBadge } from '../../components/ui'
 import { useLang } from '../../i18n'
 import { isVoiceSupported, listenBn } from '../../lib/voice'
+import { RouteWidget } from '../../components/RouteWidget'
+import type { RouteResult } from '../../api/types'
 
 const SUGGESTED = [
   'মাসের শেষে টাকা কম পড়ে কেন?',
@@ -107,6 +109,9 @@ export default function Ask() {
           <div key={i} className="mr-6 rounded-2xl rounded-bl-md border border-line bg-white px-3.5 py-2.5">
             {m.answer?.ai && <AiBadge className="mb-1" />}
             <p className="whitespace-pre-line leading-relaxed">{m.text}</p>
+            {m.answer?.used_tools.map(t => t.name === 'find_route' && t.result ? (
+              <RouteWidget key="route" result={t.result as RouteResult} />
+            ) : null)}
             {m.answer && <Sources a={m.answer} />}
           </div>
         ))}

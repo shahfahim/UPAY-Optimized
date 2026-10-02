@@ -27,6 +27,15 @@ _PHRASE_MAP: list[tuple[str, str]] = [
     ("bujhlam",   "বুঝলাম"),
 
 
+    # ─── routing queries ──────────────────────────────────────────────────────
+    ("nagad", "নগদ"),
+    ("bkash", "বিকাশ"),
+    ("bkashe", "বিকাশে"),
+    ("pathabo", "পাঠাব"),
+    ("kivabe pathabo", "কীভাবে পাঠাব"),
+    ("kemne pathabo", "কীভাবে পাঠাব"),
+    ("npsb theke", "npsb থেকে"),
+    ("send money", "সেন্ড মানি"),
     # ─── cashout queries ────────────────────────────────────────────────────────
     ("cashout korsi",    "ক্যাশ আউট করেছি"),
     ("cashout korechi",  "ক্যাশ আউট করেছি"),

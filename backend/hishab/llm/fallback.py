@@ -107,6 +107,7 @@ _INTENTS: list[tuple[str, str]] = [
      r"|will i have money|month end"),
 
     # ── 24. Product explanation ("what is X?") ───────────────────────────────
+    ("transaction_route", r"(কীভাবে|কিভাবে).* (পাঠাব|পাঠাতে|ট্রান্সফার|transfer|সেন্ড|send)|(নগদ|বিকাশ|npsb|ব্যাংক).* (কীভাবে|কিভাবে|পাঠাব)"),
     ("product_explain",
      r"(?:dps|pocket|npsb|upay|hishab|cash.?out|cashout)\s*(?:ki|keno|mane|কী|কেন|মানে)"
      r"|what is (?:dps|pocket|npsb|upay|hishab|cashout)"
@@ -542,6 +543,24 @@ def answer(uid: str, message: str, svc) -> dict:  # noqa: C901 (intentionally lo
                     "আরও কিছু লেনদেন হলে ধারণা দিতে পারব।")
 
     # ── Product explanation ("DPS কী?", "pocket কী?") ───────────────────────
+    # ─── Transaction Route / Send Money ───────────────────────────────────────────────────────────────────────
+    elif intent == "transaction_route":
+        # Try to parse destination
+        dest = "other_mfs_wallet"
+        if "নগদ" in text_l or "বিকাশ" in text_l:
+            dest = "other_mfs_wallet"
+        elif "npsb" in text_l or "ব্যাংক" in text_l:
+            dest = "bank_account"
+
+        # Parse amount (default 500 if not found)
+        amount = 500
+        nums = _numbers(text_l)
+        if nums: amount = nums[0]
+
+        res = tool("find_route", amount=amount, destination=dest)
+        text = "সবচেয়ে ভালো পথ হলো NPSB বা সরাসরি পেমেন্ট। નીચે পুরো হিসাব দেখানো হলো:"
+        return {"text": text, "used_tools": used, "numbers_source": "", "ai": False}
+
     elif intent == "product_explain":
         if re.search(r"dps|ডিপিএস", text_l):
             text = ("DPS (Deposit Pension Scheme) হলো মাসিক নির্দিষ্ট পরিমাণ জমা রাখার স্কিম। "
