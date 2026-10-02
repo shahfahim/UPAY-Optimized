@@ -73,6 +73,33 @@ def test_demo_reset_keeps_seeded_logins_but_drops_registered_ones(anon):
     otp = anon.post("/api/auth/register/start", json={"mobile": "01811223355"}).json()["otp"]
     new = anon.post("/api/auth/register/verify",
                     json={"mobile": "01811223355", "otp": otp, "name": "নতুন ইউজার", "pin": "246810"}).json()
-    anon.post("/api/demo/reset")
+    assert anon.post("/api/demo/reset", headers=_bearer(seeded)).status_code == 200
     assert anon.get("/api/users/U0001/shell", headers=_bearer(seeded)).status_code == 200
     assert anon.get(f"/api/users/{new['user_id']}/shell", headers=_bearer(new["token"])).status_code == 401
+
+
+def test_demo_controls_need_a_login(anon):
+    assert anon.post("/api/demo/reset").status_code == 401
+    assert anon.post("/api/demo/time-travel", json={"days": 7}).status_code == 401
+    token = anon.post("/api/auth/login", json={"mobile": "01700000002", "pin": "123456"}).json()["token"]
+    assert anon.post("/api/demo/time-travel", json={"days": 7}, headers=_bearer(token)).status_code == 200
+
+
+def test_registration_is_capped(anon, monkeypatch):
+    import hishab.services as services
+    monkeypatch.setattr(services, "MAX_REGISTERED_USERS", 1)
+    otp = anon.post("/api/auth/register/start", json={"mobile": "01811000001"}).json()["otp"]
+    assert anon.post("/api/auth/register/verify", json={"mobile": "01811000001", "otp": otp, "name": "প্রথম",
+                                                        "pin": "246810"}).status_code == 200
+    r = anon.post("/api/auth/register/start", json={"mobile": "01811000002"})
+    assert r.status_code == 422 and "নতুন অ্যাকাউন্ট" in r.json()["detail"]
+
+
+def test_parallel_verify_registers_once(anon):
+    from concurrent.futures import ThreadPoolExecutor
+    otp = anon.post("/api/auth/register/start", json={"mobile": "01811000003"}).json()["otp"]
+    body = {"mobile": "01811000003", "otp": otp, "name": "দ্বিতীয়", "pin": "246810"}
+    with ThreadPoolExecutor(6) as ex:
+        codes = list(ex.map(lambda _: anon.post("/api/auth/register/verify", json=body).status_code, range(6)))
+    assert codes.count(200) == 1
+    assert [u["phone"] for u in anon.get("/api/users").json()].count("01811000003") == 1

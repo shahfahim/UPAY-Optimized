@@ -17,7 +17,8 @@ def svc(repo, store, tiny_models, settings):
 
 
 class AuthedClient(TestClient):
-    """Logs in as the user a /api/users/{uid}/… path names, unless the test sends its own Authorization.
+    """Logs in as the user a /api/users/{uid}/… path names (U0001 for /api/demo/…), unless the test sends its
+    own Authorization.
 
     Keeps route tests about behaviour; test_api_auth.py covers the token checks themselves."""
 
@@ -27,9 +28,10 @@ class AuthedClient(TestClient):
 
     def request(self, method, url, **kwargs):
         m = re.match(r"/api/users/([^/?]+)/", str(url))
+        uid = m.group(1) if m else ("U0001" if str(url).startswith("/api/demo/") else None)
         headers = dict(kwargs.pop("headers", None) or {})
-        if m and not any(k.lower() == "authorization" for k in headers):
-            headers["Authorization"] = f"Bearer {self._store.create_session(m.group(1))}"
+        if uid and not any(k.lower() == "authorization" for k in headers):
+            headers["Authorization"] = f"Bearer {self._store.create_session(uid)}"
         return super().request(method, url, headers=headers, **kwargs)
 
 

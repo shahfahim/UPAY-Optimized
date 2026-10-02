@@ -17,6 +17,7 @@ from hishab.engine.forecast import Transform, band_from_flows, future_flows
 from hishab.engine.recurring import RecurringEvent, detect_recurring
 from hishab.engine.risk import RiskResult, score
 from hishab.engine.text import bn_num, category_bn
+from hishab.errors import UserError
 from hishab.rules import contains_forbidden, load_rules
 
 COMMITMENT_EFFECT = 0.5  # assumed share of a payday reserve that would otherwise have been spent early
@@ -343,14 +344,14 @@ def rank_actions(ctx, models, bandit=None, k: int | None = None, extras: dict | 
 
 def simulate_action(ctx, models, action_id: str, extras: dict | None = None):
     if action_id not in TRANSFORMS:
-        raise ValueError("অজানা পরামর্শ")
+        raise UserError("অজানা পরামর্শ")
     recurring = detect_recurring(ctx.tx, ctx.today)
     flows = future_flows(ctx, models.forecaster, 30, recurring)
     fc = band_from_flows(ctx, models, flows)
     risk = score(ctx, fc, models)
     cands = dict(candidate_actions(ctx, user_features(ctx), risk, recurring, fc, extras))
     if action_id not in cands:
-        raise ValueError("এই পরামর্শ এখন প্রযোজ্য নয়")
+        raise UserError("এই পরামর্শ এখন প্রযোজ্য নয়")
     return _evaluate(ctx, models, flows, fc, risk, action_id, cands[action_id])
 
 

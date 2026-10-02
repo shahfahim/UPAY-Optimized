@@ -30,7 +30,7 @@ async function req<T>(method: string, path: string, body?: unknown): Promise<T> 
   }
   const text = await res.text()
   const data = text ? JSON.parse(text) : null
-  if ((res.status === 401 || res.status === 403) && path.startsWith('/users/')) {
+  if ((res.status === 401 || res.status === 403) && !path.startsWith('/auth/')) {
     clearSession() // expired (server restarted) or someone else's account: log in again
     window.location.assign('/login')
   }

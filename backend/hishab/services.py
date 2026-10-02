@@ -28,12 +28,14 @@ from hishab.engine.safe_spend import daily_budget, safe_to_spend
 from hishab.engine.shortcuts import recent_payments
 from hishab.engine.features import user_features
 from hishab.engine.models import Models
+from hishab.errors import UserError
 from hishab.store.sqlite import Store
 from hishab.jsonable import jsonable
 from hishab.services_hub import HubMixin, InsufficientFunds, locked  # noqa: F401
 
 _MOBILE = re.compile(r"^01[3-9]\d{8}$")
 _PIN = re.compile(r"^\d{6}$")
+MAX_REGISTERED_USERS = 200  # each one generates a year of history; a demo doesn't need more
 
 
 def demo_phone(user_id: str) -> str:
@@ -61,6 +63,7 @@ class Hishab(HubMixin):
         self._locks: dict[str, threading.RLock] = {}
         self._locks_guard = threading.Lock()
         self._clock_lock = threading.Lock()
+        self._register_lock = threading.Lock()
         self.llm_client = None  # injected in tests; real client is created on demand when the LLM is enabled
 
     def user_lock(self, uid: str) -> threading.RLock:
@@ -114,7 +117,7 @@ class Hishab(HubMixin):
 
     def login(self, mobile: str, pin: str) -> dict:
         if not _MOBILE.match(mobile or ""):
-            raise ValueError("সঠিক মোবাইল নম্বর দিন")
+            raise UserError("সঠিক মোবাইল নম্বর দিন")
         u = self._find_by_phone(mobile)
         ok = False
         if u is not None:
@@ -125,9 +128,10 @@ class Hishab(HubMixin):
 
     def register_start(self, mobile: str) -> dict:
         if not _MOBILE.match(mobile or ""):
-            raise ValueError("সঠিক মোবাইল নম্বর দিন")
+            raise UserError("সঠিক মোবাইল নম্বর দিন")
         if self._find_by_phone(mobile) is not None:
-            raise ValueError("এই নম্বরে আগেই অ্যাকাউন্ট আছে")
+            raise UserError("এই নম্বরে আগেই অ্যাকাউন্ট আছে")
+        self._check_room()
         otp = f"{secrets.randbelow(10**6):06d}"
         self.store.set_meta(f"otp:{mobile}", otp)
         return {"otp": otp, "demo": True}
@@ -135,19 +139,26 @@ class Hishab(HubMixin):
     def register_verify(self, mobile: str, otp: str, name: str, pin: str) -> dict:
         from hishab.data.generator import generate_one
         if self.store.get_meta(f"otp:{mobile}") != otp:
-            raise ValueError("OTP সঠিক নয়")
+            raise UserError("OTP সঠিক নয়")
         name = (name or "").strip()
         if not (2 <= len(name) <= 40):
-            raise ValueError("নাম লিখুন")
+            raise UserError("নাম লিখুন")
         if not _PIN.match(pin or ""):
-            raise ValueError("৬ সংখ্যার PIN দিন")
-        uid = f"N{len(self.store.extra_users()) + 1:04d}"
-        seed = int(mobile[-6:])
-        user, tx = generate_one(uid, name, "garment_worker", seed=seed)
-        user.update(demo_phone=mobile, pin_hash=self._hash(pin))
-        self.store.add_user(user, tx)
-        self.store.set_meta(f"otp:{mobile}", "")
+            raise UserError("৬ সংখ্যার PIN দিন")
+        with self._register_lock:  # one at a time: ids are sequential and the OTP is single-use
+            if self.store.get_meta(f"otp:{mobile}") != otp or self._find_by_phone(mobile) is not None:
+                raise UserError("OTP সঠিক নয়")
+            self._check_room()
+            uid = f"N{len(self.store.extra_users()) + 1:04d}"
+            user, tx = generate_one(uid, name, "garment_worker", seed=int(mobile[-6:]))
+            user.update(demo_phone=mobile, pin_hash=self._hash(pin))
+            self.store.add_user(user, tx)
+            self.store.set_meta(f"otp:{mobile}", "")
         return {"token": self.store.create_session(uid), "user_id": uid}
+
+    def _check_room(self) -> None:
+        if len(self.store.extra_users()) >= MAX_REGISTERED_USERS:
+            raise UserError("demo-তে আর নতুন অ্যাকাউন্ট খোলা যাচ্ছে না — Demo reset-এর পরে চেষ্টা করুন")
 
     # --- home and shell ----------------------------------------------------------------------------------
     def home(self, uid: str) -> dict:
@@ -242,7 +253,7 @@ class Hishab(HubMixin):
     def respond(self, uid: str, kind: str, item_id: str, accepted: bool) -> dict:
         self.ctx(uid)
         if kind not in ("action", "lesson"):
-            raise ValueError("ভুল ধরন")
+            raise UserError("ভুল ধরন")
         self.store.record_response(uid, kind, item_id, bool(accepted))
         return {"ok": True}
 
@@ -256,15 +267,15 @@ class Hishab(HubMixin):
     # --- demo controls ------------------------------------------------------------------------------------
     def time_travel(self, days: int) -> dict:
         if days not in (7, 14, 30):
-            raise ValueError("শুধু ৭, ১৪ বা ৩০ দিন এগোনো যায়")
+            raise UserError("শুধু ৭, ১৪ বা ৩০ দিন এগোনো যায়")
         with self._clock_lock:
             offset = self.store.clock_offset() + days
             if offset > 60:
-                raise ValueError("demo-তে মোট ৬০ দিনের বেশি এগোনো যায় না — আগে Demo reset করুন")
+                raise UserError("demo-তে মোট ৬০ দিনের বেশি এগোনো যায় না — আগে Demo reset করুন")
             self.store.set_clock_offset(offset)
         return {"today": (self.settings.demo_today + timedelta(days=offset)).isoformat(), "offset_days": offset}
 
     def reset(self) -> dict:
-        with self._clock_lock:
+        with self._clock_lock, self._register_lock:
             self.store.reset(keep_sessions=True)  # whoever pressed reset stays logged in
         return {"ok": True, "today": self.settings.demo_today.isoformat()}

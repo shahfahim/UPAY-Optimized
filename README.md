@@ -104,7 +104,7 @@ cd UPAY-Optimized
 # Python environment (from the repo root)
 uv venv backend/.venv --python 3.11
 source backend/.venv/bin/activate        # Windows: backend\.venv\Scripts\activate
-uv pip install -e "backend[dev]"         # or: pip install -e "backend[dev]"
+uv pip install -r backend/requirements.lock -e "backend[dev]"   # or the same with pip
 
 # Optional: regenerate data, retrain and evaluate (the trained artifacts and the serving subset are already committed)
 python scripts/generate_data.py          # 2,000 synthetic users × 12 months, seed 42

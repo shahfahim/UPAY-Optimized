@@ -11,6 +11,7 @@ from typing import Callable
 
 import anthropic
 
+from hishab.errors import UserError
 from hishab.llm import fallback
 from hishab.llm.prompts import SYSTEM_PROMPT
 from hishab.llm.tools import TOOLS, run_tool
@@ -52,9 +53,9 @@ _default_limiter = RateLimiter()
 def validate_message(message: str) -> str:
     m = (message or "").strip()
     if not m:
-        raise ValueError("প্রশ্ন লিখুন")
+        raise UserError("প্রশ্ন লিখুন")
     if len(m) > MAX_CHARS:
-        raise ValueError("প্রশ্ন ৫০০ অক্ষরের মধ্যে লিখুন")
+        raise UserError("প্রশ্ন ৫০০ অক্ষরের মধ্যে লিখুন")
     return m
 
 
