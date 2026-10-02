@@ -26,6 +26,7 @@ _INTENTS = [
     ("savings_level", r"level|লেভেল|dps.?ready|sanchoy level|সঞ্চয় লেভেল|badge|streak"),
     ("pocket",        r"pocket|পকেট|amar pocket|আমার পকেট|joma ache|জমা আছে|goal pocket"),
     ("greeting",      r"^hi$|^hello$|^hey$|^হ্যালো$|^হাই$|^সালাম$|salam|ki khobor|kemn|kmn|কেমন"),
+    ("ack",           r"^ok$|^okay$|^thik ache$|^yes$|^ha$|^হুম$|^hm$|^hmm$|^আচ্ছা$|^ঠিক আছে$|thanks|thank you|ধন্যবাদ|dhonnobad"),
 ]
 
 
@@ -155,6 +156,8 @@ def answer(uid: str, message: str, svc) -> dict:
             text += f" আজ নিরাপদ খরচসীমা ৳{bn_num(h['safe_to_spend_today'])}।"
     elif intent == "greeting":
         text = "হ্যালো! আমি উপায় 'হিসাব'। তোমার বাজেট বা জমানো নিয়ে কোনো সাহায্য লাগবে?"
+    elif intent == "ack":
+        text = "ঠিক আছে! আর কোনো সাহায্য লাগলে জানিও।"
     elif intent == "shortfall":
         h = tool("get_home_summary")
         if h["insufficient_history"]:
