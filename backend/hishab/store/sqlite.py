@@ -51,9 +51,7 @@ class UserState:
         d = json.loads(body)
         la = d.get("last_active")
         d["last_active"] = date.fromisoformat(la) if la else None
-        pockets = {p: 0.0 for p in POCKETS}
-        pockets.update(d.get("pockets") or {})
-        d["pockets"] = pockets
+        d["pockets"] = d.get("pockets") or {}
         d["custom_names"] = d.get("custom_names") or {}
         return cls(**d)
 

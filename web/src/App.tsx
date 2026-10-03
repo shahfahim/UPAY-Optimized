@@ -20,6 +20,7 @@ import Calendar from './pages/hub/Calendar'
 import HubLayout from './pages/hub/HubLayout'
 import Learn from './pages/hub/Learn'
 import Overview from './pages/hub/Overview'
+import AgentLocator from './pages/hub/AgentLocator'
 import CashOut from './pages/flows/CashOut'
 import FundTransfer from './pages/flows/FundTransfer'
 import Npsb from './pages/flows/Npsb'
@@ -70,6 +71,7 @@ export default function App() {
           <Route path="calendar" element={<Calendar />} />
           <Route path="learn" element={<Learn />} />
         </Route>
+        <Route path="agents" element={<AgentLocator />} />
         <Route path="hishab/health" element={<Health />} />
         <Route path="savings" element={<SavingsHome />} />
         <Route path="savings/pockets" element={<Pockets />} />

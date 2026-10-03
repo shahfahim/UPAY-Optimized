@@ -155,7 +155,7 @@ class HubMixin:
             goal = (st.pocket_goals or {}).get(p)
             bal = round(float(st.pockets.get(p, 0.0)), 2)
             prog = round(min(1.0, bal / goal["target"]), 3) if goal and goal.get("target") else None
-            pockets.append({"name": p, "name_bn": POCKET_BN.get(p, p.title()), "balance": bal, "goal": goal, "progress": prog})
+            pockets.append({"name": p, "name_bn": getattr(st, "custom_names", {}).get(p, POCKET_BN.get(p, p.title())), "balance": bal, "goal": goal, "progress": prog})
         return jsonable({"pockets": pockets,
                          "paisa": {"on": st.paisa_on, "paused": st.paisa_paused,
                                    "total": round(st.pockets.get("paisa", 0.0), 2)},

@@ -12,15 +12,16 @@ const TILES: Tile[] = [
   { icon: 'phone', bn: 'মোবাইল রিচার্জ', en: 'Recharge', to: '/app/pay?type=mobile_recharge' },
   { icon: 'cashout', bn: 'ক্যাশ আউট', en: 'Cash Out', to: '/app/cashout' },
   { icon: 'bill', bn: 'পে বিল', en: 'Pay Bill', to: '/app/pay?type=bill_pay' },
-  { icon: 'shield', bn: 'Smart DPS', en: 'Smart DPS', to: '/app/savings/dps', hishab: true },
+  { icon: 'shield', bn: 'সঞ্চয়', en: 'Savings', to: '/app/savings/dps', hishab: true },
   { icon: 'pig', bn: 'সঞ্চয়', en: 'Savings', to: '/app/savings', hishab: true },
   { icon: 'bank', bn: 'ফান্ড ট্রান্সফার', en: 'Fund Transfer', to: '/app/transfer' },
-  { icon: 'request', bn: 'রিকোয়েস্ট মানি', en: 'Request Money' },
+  { icon: 'map-pin', bn: 'এজেন্ট খুঁজুন', en: 'Find Agent', to: '/app/agents', hishab: true },
   { icon: 'pay', bn: 'মেক পেমেন্ট', en: 'Make Payment', to: '/app/pay?type=merchant_pay' },
   { icon: 'gift', bn: 'রেফার & আর্ন', en: 'Refer & Earn' },
   { icon: 'npsb', bn: 'এনপিএসবি', en: 'NPSB', to: '/app/npsb', hishab: true },
-  { icon: 'grid', bn: 'উপায় পেমেন্ট', en: 'upay Payment', to: '/app/payments' },
+  { icon: 'grid', bn: 'উপায় পেমেন্ট', en: 'upay Payment', to: '/app/payments' },
   { icon: 'add', bn: 'অ্যাড মানি', en: 'Add Money' },
+  { icon: 'request', bn: 'রিকোয়েস্ট মানি', en: 'Request Money' },
 ]
 
 const OTHER = [

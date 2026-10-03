@@ -8,7 +8,7 @@ export default function HubLayout() {
     { to: '/app/hishab', end: true, bn: 'জিজ্ঞেস', en: 'Ask' },
     { to: '/app/hishab/overview', bn: 'ওভারভিউ', en: 'Overview' },
     { to: '/app/hishab/learn', bn: 'শেখো', en: 'Learn' },
-    { to: '/app/savings', bn: 'Smart DPS', en: 'Smart DPS' },
+    { to: '/app/savings', bn: 'সঞ্চয়', en: 'Savings' },
   ]
   return (
     <div>

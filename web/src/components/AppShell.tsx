@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from 'react'
-import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom'
+import { Link, NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom'
 import { api } from '../api/client'
 import type { Shell } from '../api/types'
 import { useLang } from '../i18n'
@@ -35,7 +35,7 @@ function MessageStrip({ shell }: { shell: Shell }) {
   }, [msgs])
   if (!msgs.length) return null
   const m = msgs[i % msgs.length]
-  const tone = m.priority === 1 ? 'bg-bad text-white' : m.priority === 3 ? 'bg-white/80 text-warn' : 'bg-white/70 text-ink'
+  const tone = m.priority === 1 ? 'bg-bad text-white' : 'bg-[#ffd500] text-slate-800'
   return (
     <button onClick={() => navigate(m.link)}
       className={`mt-2 flex w-full items-center gap-2 rounded-xl px-3 py-1.5 text-left text-[13px] font-semibold ${tone}`}>
@@ -56,16 +56,9 @@ function BalanceButton({ shell }: { shell: Shell }) {
   }, [open])
   return (
     <button onClick={() => setOpen((o) => !o)} aria-live="polite"
-      className="min-w-[104px] rounded-full bg-upay-blue px-3 py-1 text-center text-white shadow-sm">
+      className="min-w-[104px] rounded-full bg-[#0b4ea2] px-3 py-1 text-center text-white shadow-sm transition-transform active:scale-95">
       {open ? (
-        <span className="block leading-tight">
-          <span className="block text-[15px] font-bold">{taka(shell.balance)}</span>
-          <span className="block text-[10px] opacity-90">
-            {shell.safe_today > 0
-              ? L(`আজ নিরাপদ খরচ ${taka(shell.safe_today)}`, `Safe today ${taka(shell.safe_today)}`)
-              : L(`সাবধানে খরচ করুন`, `Spend carefully`)}
-          </span>
-        </span>
+        <span className="text-[15px] font-bold">{taka(shell.balance)}</span>
       ) : (
         <span className="text-sm font-semibold">{L('ব্যালেন্স', 'Balance')}</span>
       )}
@@ -76,17 +69,17 @@ function BalanceButton({ shell }: { shell: Shell }) {
 function Header({ shell }: { shell: Shell | null }) {
   const { L } = useLang()
   return (
-    <header className="header-pattern px-4 pb-3 pt-3">
+    <header className="bg-gradient-to-br from-[#083b7a] via-[#0b4ea2] to-[#083b7a] shadow-[inset_0_1px_1px_rgba(255,255,255,0.2)] px-4 pb-3 pt-3">
       <div className="flex items-center gap-3">
         <div className="flex size-11 items-center justify-center rounded-full bg-white text-base font-bold text-upay-blue ring-2 ring-white/70">
           {shell?.avatar_initials ?? '…'}
         </div>
         <div className="min-w-0 flex-1">
-          <p className="truncate text-[15px] font-bold">{shell?.name ?? ''}</p>
-          <p className="font-[Inter] text-xs text-ink/60">{shell?.phone_masked ?? ''}</p>
+          <p className="truncate text-[15px] font-bold text-white">{shell?.name ?? ''}</p>
+          <p className="font-[Inter] text-xs text-blue-50">{shell?.phone_masked ?? ''}</p>
         </div>
         {shell && <BalanceButton shell={shell} />}
-        <Link to="/app/notifications" className="relative p-1" aria-label={L('নোটিফিকেশন', 'Notifications')}>
+        <Link to="/app/notifications" className="relative p-1 text-white" aria-label={L('নোটিফিকেশন', 'Notifications')}>
           <Icon name="bell" size={22} />
           {shell && shell.unread > 0 && (
             <span className="absolute -right-0.5 -top-0.5 flex size-4 items-center justify-center rounded-full bg-bad text-[10px] font-bold text-white">
@@ -94,7 +87,7 @@ function Header({ shell }: { shell: Shell | null }) {
             </span>
           )}
         </Link>
-        <Link to="/app/more" className="p-1" aria-label={L('আরো', 'More')}>
+        <Link to="/app/more" className="p-1 text-white" aria-label={L('আরো', 'More')}>
           <Icon name="menu" size={22} />
         </Link>
       </div>
@@ -141,6 +134,7 @@ export default function AppShell() {
   const uid = getSession()?.userId ?? ''
   const [shell, setShell] = useState<Shell | null>(null)
   const [demoName, setDemoName] = useState<string | null>(null)
+  const location = useLocation()
   const refresh = useCallback(async () => {
     if (!uid) return
     try {
@@ -158,8 +152,10 @@ export default function AppShell() {
       <div className="app-frame">
         <PrototypeRibbon />
         <Header shell={shell} />
-        <main className="flex-1 bg-surface pb-4">
-          <Outlet />
+        <main className="flex-1 bg-surface pb-4 overflow-hidden relative">
+          <div key={location.pathname} className="animate-page-enter w-full min-h-full">
+            <Outlet />
+          </div>
         </main>
         <BottomNav shell={shell} onQr={() => demo('QR')} />
       </div>

@@ -68,7 +68,30 @@ export default function Overview() {
         </Card>
       </div>
 
-            <div className="px-4 mt-4 animate-slide-up" style={{ animationDelay: "300ms" }}>
+      {/* Quick Actions Grid */}
+      <div className="px-4 mt-4 animate-slide-up" style={{ animationDelay: "200ms" }}>
+        <div className="grid grid-cols-2 gap-3">
+          <Link to="/app/agents" className="block">
+            <Card className="bg-white shadow-[0_4px_20px_rgb(0,0,0,0.04)] border-none rounded-2xl p-4 flex flex-col items-center justify-center gap-2 h-full active:scale-95 transition-transform">
+              <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-upay-blue mb-1">
+                <Icon name="map-pin" size={20} />
+              </div>
+              <span className="font-semibold text-slate-800">{L('এজেন্ট খুঁজুন', 'Find Agent')}</span>
+              <span className="text-xs text-slate-500 text-center">{L('নিকটস্থ এজেন্ট ও তারল্য', 'Nearby agents & liquidity')}</span>
+            </Card>
+          </Link>
+          <div className="opacity-50">
+            <Card className="bg-white shadow-[0_4px_20px_rgb(0,0,0,0.04)] border-none rounded-2xl p-4 flex flex-col items-center justify-center gap-2 h-full">
+              <div className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 mb-1">
+                <Icon name="help-circle" size={20} />
+              </div>
+              <span className="font-semibold text-slate-600">{L('সাহায্য', 'Support')}</span>
+            </Card>
+          </div>
+        </div>
+      </div>
+
+      <div className="px-4 mt-4 animate-slide-up" style={{ animationDelay: "300ms" }}>
         {home.lesson && <LessonCard lesson={home.lesson} onDone={() => reload()} />}
       </div>
     </div>

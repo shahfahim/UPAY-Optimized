@@ -85,8 +85,8 @@ export default function Dps() {
   const [dpsType, setDpsType] = useState<'normal'|'islamic'>('islamic')
 
 
-  if (loading && !data) return <><PageTitle bn="Smart DPS" en="Smart DPS" /><Spinner /></>
-  if (error) return <><PageTitle bn="Smart DPS" en="Smart DPS" /><ErrorNote message={error} onRetry={reload} /></>
+  if (loading && !data) return <><PageTitle bn="সঞ্চয় (DPS)" en="Savings (DPS)" /><Spinner /></>
+  if (error) return <><PageTitle bn="সঞ্চয় (DPS)" en="Savings (DPS)" /><ErrorNote message={error} onRetry={reload} /></>
   if (!data) return null
   const [advice, savings] = data
   const safe = advice.status === 'ok' ? advice.safe_monthly : null
@@ -110,7 +110,7 @@ export default function Dps() {
 
   return (
     <div className="pb-6">
-      <PageTitle bn="Smart DPS" en="Smart DPS" />
+      <PageTitle bn="সঞ্চয় (DPS)" en="Savings (DPS)" />
       <div className="space-y-3 px-3">
         {done && <p className="rounded-xl bg-ok-bg p-3 text-sm font-semibold text-ok" role="status">{L('DPS চালু হয়েছে (ডেমো)', 'DPS opened (demo)')}</p>}
         {savings.dps ? <ActiveDps dps={savings.dps} /> : (

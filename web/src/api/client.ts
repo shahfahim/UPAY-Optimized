@@ -1,7 +1,7 @@
 import type {
   ActionCard, Budget, Calendar, CategoryOption, ChatAnswer, DemoUser, DpsAdvice, EmergencyResult, GoalPlan,
   HealthReport, Home, Impact, Lesson, LevelStatus, Notification, Readiness, RouteResult, SendResult, SendType,
-  Savings, Shell, Simulation, TxList,
+  Savings, Shell, Simulation, TxList, NearbyAgent
 } from './types'
 import { clearSession, getSession } from '../lib/session'
 
@@ -93,6 +93,7 @@ export const api = {
   impact: () => req<Impact>('GET', '/impact'),
   timeTravel: (days: 7 | 14 | 30) => req<{ today: string }>('POST', '/demo/time-travel', { days }),
   reset: () => req<{ ok: boolean }>('POST', '/demo/reset'),
+  nearbyAgents: (uid: string, lat: number, lng: number) => req<NearbyAgent[]>('GET', `${u(uid)}/agents/nearby?lat=${lat}&lng=${lng}`),
 }
 
 export type { ActionCard }

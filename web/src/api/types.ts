@@ -253,3 +253,13 @@ export type TxList = {
   summary: { income_total: number; spend_total: number; cash_out_count: number; cash_out_fees: number
     by_category: { category: string; category_bn: string; amount: number }[] }
 }
+
+export type NearbyAgent = {
+  id: string
+  name: string
+  lat: number
+  lng: number
+  distance_m: number
+  ai_liquidity_score: number
+  predicted_status: RiskLevel // Reusing RiskLevel for color coding ('green' | 'amber' | 'red')
+}
