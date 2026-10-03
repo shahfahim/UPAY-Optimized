@@ -27,6 +27,11 @@
   --animate-float: float 3s ease-in-out infinite;
   --animate-glow: glow 2s ease-in-out infinite alternate;
     --animate-page-enter: page-enter 300ms cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+    --animate-hole-appear: hole-appear 600ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    --animate-hole-pulse: hole-pulse 2s linear infinite;
+    --animate-hole-disappear: hole-disappear 400ms ease-in both;
+    --animate-balance-reveal: balance-reveal 600ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    --animate-spin-slow: spin 4s linear infinite;
 }
 
 @keyframes fade-in {
@@ -117,3 +122,22 @@ button, .btn, a {
 button:active:not(:disabled), a:active:not(:disabled) {
   transform: scale(0.96);
 }
+
+@keyframes hole-appear {
+  0% { transform: scale(0) rotate(0deg); opacity: 0; }
+  100% { transform: scale(1) rotate(180deg); opacity: 1; }
+}
+@keyframes hole-pulse {
+  0% { transform: scale(1) rotate(180deg); opacity: 1; box-shadow: 0 0 50px 20px rgba(139,92,246,0.6); }
+  50% { transform: scale(1.1) rotate(270deg); opacity: 1; box-shadow: 0 0 70px 30px rgba(139,92,246,0.8); }
+  100% { transform: scale(1) rotate(360deg); opacity: 1; box-shadow: 0 0 50px 20px rgba(139,92,246,0.6); }
+}
+@keyframes hole-disappear {
+  0% { transform: scale(1) rotate(360deg); opacity: 1; }
+  100% { transform: scale(0) rotate(540deg); opacity: 0; }
+}
+@keyframes balance-reveal {
+  0% { transform: scale(0) translateY(20px); opacity: 0; }
+  100% { transform: scale(1) translateY(0); opacity: 1; }
+}
+
