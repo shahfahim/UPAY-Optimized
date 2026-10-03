@@ -59,7 +59,13 @@ export default function Ask() {
   const voice = isVoiceSupported()
   const end = useRef<HTMLDivElement>(null)
 
-  useEffect(() => { end.current?.scrollIntoView({ behavior: 'smooth', block: 'end' }) }, [msgs, busy])
+  useEffect(() => { 
+    if (end.current) {
+      setTimeout(() => {
+        end.current?.scrollIntoView({ behavior: 'smooth', block: 'end' })
+      }, 100)
+    }
+  }, [msgs, busy])
 
   const ask = async (q: string) => {
     const message = q.trim()
@@ -98,7 +104,7 @@ export default function Ask() {
   }
 
   return (
-    <div className="flex min-h-[60dvh] flex-col px-4 pb-6 bg-slate-50/70">
+    <div className="flex min-h-[60dvh] flex-col px-4 pb-6 bg-gradient-to-br from-blue-50/50 via-slate-50 to-indigo-50/30">
       <div className="flex-1 space-y-3">
         {msgs.length === 0 && (
           <div className="rounded-3xl bg-white p-5 shadow-sm border border-slate-100">

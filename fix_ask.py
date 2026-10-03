@@ -1,40 +1,44 @@
 ﻿import re
 
-with open('web/src/pages/hub/Ask.tsx', 'r', encoding='utf-8') as f:
+path = 'web/src/pages/hub/Ask.tsx'
+with open(path, 'r', encoding='utf-8') as f:
     code = f.read()
 
-# 1. Container
-code = code.replace('<div className="flex min-h-[60dvh] flex-col px-3 pb-4">',
-                    '<div className="flex min-h-[60dvh] flex-col px-4 pb-6 bg-slate-50/70">')
+# 1. Update intro box (make it smaller)
+old_intro = r'<div className="rounded-3xl bg-white p-5 shadow-sm border border-slate-100">\s*<p className="flex items-center gap-2 font-semibold"><AiBadge />\{L\(\`\$\{shell\?\.name\.split\(\' \'\)\[0\] \?\? \'\'\},.*?</p>\s*</div>'
 
-# 2. Top Info Box (AI badge + Welcome text)
-old_info = '<div className="rounded-2xl bg-white p-4">'
-new_info = '<div className="rounded-3xl bg-white p-5 shadow-sm border border-slate-100">'
-code = code.replace(old_info, new_info)
+new_intro = """<div className="rounded-2xl bg-white p-3.5 shadow-sm border border-slate-100 flex flex-col gap-1 mx-2">
+            <p className="flex items-center gap-1.5 text-[15px] font-semibold text-slate-800"><AiBadge />{L(`${shell?.name.split(' ')[0] ?? ''}, টাকা নিয়ে যা খুশি জিজ্ঞেস করুন`, 'Ask anything about your money')}</p>
+            <p className="text-[13px] text-slate-500 leading-snug">{L('বাংলায় লিখে বা বলে জিজ্ঞেস করতে পারেন। উত্তর আপনার নিজের লেনদেনের হিসাব থেকে।', 'Type or speak in Bangla. Answers come from your own transactions.')}</p>
+          </div>"""
 
-# 3. User Bubble
-code = code.replace('className="ml-10 rounded-2xl rounded-br-md bg-upay-blue px-3.5 py-2.5 text-white animate-slide-up"',
-                    'className="ml-auto max-w-[85%] rounded-3xl rounded-tr-sm bg-upay-blue px-4 py-3 text-white shadow-md shadow-upay-blue/20 animate-slide-up"')
+# Ensure exact regex match is not failing due to encoding. Let's use broader regex if needed.
+# Since L(...) contains bangla, doing a generic replace is safer.
+intro_pattern = r'\{msgs\.length === 0 && \(\s*<div className="rounded-3xl bg-white p-5.*?\)\}'
+intro_replacement = """{msgs.length === 0 && (
+          <div className="rounded-2xl bg-white p-3.5 shadow-[0_2px_10px_-3px_rgba(0,0,0,0.05)] border border-slate-100 flex flex-col gap-1 mx-1 mt-2">
+            <p className="flex items-center gap-1.5 text-[15px] font-semibold text-slate-800"><AiBadge />{L(`${shell?.name.split(' ')[0] ?? ''}, টাকা নিয়ে যা খুশি জিজ্ঞেস করুন`, 'Ask anything about your money')}</p>
+            <p className="text-[12px] text-slate-500 leading-snug">{L('বাংলায় লিখে বা বলে জিজ্ঞেস করতে পারেন। উত্তর আপনার নিজের লেনদেনের হিসাব থেকে।', 'Type or speak in Bangla. Answers come from your own transactions.')}</p>
+          </div>
+        )}"""
 
-# 4. Bot Bubble
-code = code.replace('className="mr-6 rounded-2xl rounded-bl-md border border-line bg-white px-3.5 py-2.5 animate-slide-up"',
-                    'className="mr-auto max-w-[85%] rounded-3xl rounded-tl-sm border border-slate-100 bg-white px-4 py-3 text-slate-800 shadow-sm animate-slide-up"')
+code = re.sub(intro_pattern, intro_replacement, code, flags=re.DOTALL)
 
-# 5. Form Input Container
-old_form = '<form className="mt-2 flex items-end gap-2"'
-new_form = '<form className="sticky bottom-2 z-10 mt-3 flex items-end gap-2 rounded-3xl bg-white/70 backdrop-blur-lg border border-white/50 p-2 shadow-[0_8px_30px_rgb(0,0,0,0.04)]"'
-code = code.replace(old_form, new_form)
+# 2. Update background color
+code = code.replace('bg-slate-50/70', 'bg-gradient-to-b from-blue-50/40 via-slate-50/30 to-blue-50/50')
 
-# 6. Textarea container
-old_textarea_container = '<div className="flex-1 rounded-2xl border border-line bg-white px-3 py-1 focus-within:border-upay-blue">'
-new_textarea_container = '<div className="flex-1 rounded-2xl bg-white/50 px-4 py-2 focus-within:bg-white focus-within:ring-1 focus-within:ring-upay-blue/50 transition-all border border-transparent">'
-code = code.replace(old_textarea_container, new_textarea_container)
+# 3. Update scroll logic
+old_scroll = "useEffect(() => { end.current?.scrollIntoView({ behavior: 'smooth', block: 'end' }) }, [msgs, busy])"
+new_scroll = """useEffect(() => { 
+    if (end.current) {
+      setTimeout(() => {
+        end.current?.scrollIntoView({ behavior: 'smooth', block: 'end' })
+      }, 100)
+    }
+  }, [msgs, busy])"""
+code = code.replace(old_scroll, new_scroll)
 
-# 7. Loading bubble
-code = code.replace('className="mr-6 flex items-center gap-2 rounded-2xl border border-line bg-white px-3.5 py-3 text-sm text-muted"',
-                    'className="mr-auto max-w-[85%] flex items-center gap-2 rounded-3xl rounded-tl-sm border border-slate-100 bg-white px-4 py-3 text-sm text-muted shadow-sm"')
-
-with open('web/src/pages/hub/Ask.tsx', 'w', encoding='utf-8') as f:
+with open(path, 'w', encoding='utf-8') as f:
     f.write(code)
 
-print("Ask.tsx UI upgraded with professional glassmorphism and rounded bubbles.")
+print("Updated Ask.tsx with styling and scroll fixes.")
