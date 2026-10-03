@@ -24,9 +24,9 @@ export default function Overview() {
   }))
 
   return (
-    <div className="min-h-screen bg-surface">
+    <div className="min-h-screen bg-slate-50">
       {/* Top Blue Section */}
-      <div className="bg-upay-blue px-4 pt-6 pb-24 rounded-b-[40px]">
+      <div className="bg-gradient-to-b from-[#083b7a] to-[#0b4ea2] px-4 pt-6 pb-24 rounded-b-[40px]">
         <div className="flex items-center justify-center gap-2 mb-6 text-white bg-white/20 w-fit mx-auto px-4 py-1.5 rounded-full shadow-sm backdrop-blur-md">
           <Icon name="shield" size={16} className="text-yellow-400" />
           <span className="text-sm font-medium">আজ আপনার নিরাপদ খরচ ৳৮১৫</span>
@@ -34,7 +34,7 @@ export default function Overview() {
       </div>
 
       {/* Massive Stunning Card - overlaps blue and surface */}
-      <div className="px-4 -mt-20">
+      <div className="px-4 -mt-20 animate-slide-up">
         <div className="bg-[#0f172a] rounded-3xl p-6 shadow-2xl ring-4 ring-yellow-400/50 shadow-yellow-400/20 relative overflow-hidden">
           {/* Inner Glow / Gradient */}
           <div className="absolute inset-0 bg-gradient-to-br from-upay-blue/30 to-transparent pointer-events-none" />
@@ -76,7 +76,7 @@ export default function Overview() {
       {/* 3-column Grid Buttons */}
       <div className="px-4 mt-8 grid grid-cols-3 gap-4">
         {/* Button 1: Hishab AI */}
-          <Link to="/app/hishab/ask" className="flex flex-col items-center justify-center bg-white rounded-2xl p-4 shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.2)] transition-shadow border border-gray-100">
+          <Link to="/app/hishab/ask" className="flex flex-col items-center justify-center bg-white rounded-2xl p-4 shadow-[0_20px_50px_-12px_rgba(11,78,162,0.15)] hover:scale-105 transition-all duration-300 ease-out border border-gray-100 animate-slide-up">
           <div className="h-12 w-12 rounded-full bg-blue-50 flex items-center justify-center mb-3">
             <Icon name="spark" size={24} className="text-upay-blue" />
           </div>
@@ -84,7 +84,7 @@ export default function Overview() {
         </Link>
 
         {/* Button 2: Smart DPS */}
-        <Link to="/app/savings" className="flex flex-col items-center justify-center bg-white rounded-2xl p-4 shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.2)] transition-shadow border border-gray-100">
+        <Link to="/app/savings" className="flex flex-col items-center justify-center bg-white rounded-2xl p-4 shadow-[0_20px_50px_-12px_rgba(11,78,162,0.15)] hover:scale-105 transition-all duration-300 ease-out border border-gray-100 animate-slide-up">
           <div className="h-12 w-12 rounded-full bg-green-50 flex items-center justify-center mb-3">
             <Icon name="chart" size={24} className="text-green-600" />
           </div>
@@ -92,8 +92,8 @@ export default function Overview() {
         </Link>
 
         {/* Button 3: Ask Hishab (Yellow Mic) */}
-        <Link to="/app/hishab/ask" className="flex flex-col items-center justify-center bg-white rounded-2xl p-4 shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.2)] transition-shadow border border-gray-100">
-          <div className="h-12 w-12 rounded-full bg-[#FFD700] flex items-center justify-center mb-3 shadow-inner">
+        <Link to="/app/hishab/ask" className="flex flex-col items-center justify-center bg-white rounded-2xl p-4 shadow-[0_20px_50px_-12px_rgba(11,78,162,0.15)] hover:scale-105 transition-all duration-300 ease-out border border-gray-100 animate-slide-up">
+          <div className="h-12 w-12 rounded-full bg-[#FFD700] flex items-center justify-center mb-3 shadow-inner animate-pulse-mic">
             <Icon name="mic" size={24} className="text-ink" />
           </div>
           <span className="text-sm font-bold text-ink text-center">Ask Hishab</span>
@@ -112,17 +112,17 @@ export function LessonCard({ lesson, onDone }: { lesson: Lesson; onDone: () => v
     onDone()
   }
   return (
-    <Card className="border-upay-blue/30">
+    <Card className="border-slate-200 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.08)] bg-white">
       <div className="mb-1 flex items-center gap-2">
-        <Icon name="book" size={18} className="text-upay-blue" />
+        <Icon name="book" size={18} className="text-slate-500" />
         <AiBadge />
-        <span className="text-xs text-muted">{L('তোমার জন্য ছোট পাঠ', 'A short lesson for you')}</span>
+        <span className="text-xs text-slate-500">{L('তোমার জন্য ছোট পাঠ', 'A short lesson for you')}</span>
       </div>
-      <p className="font-semibold">{lesson.title_bn}</p>
-      <p className="mt-1 text-sm leading-relaxed text-ink/80">{lesson.body_bn}</p>
+      <p className="font-semibold text-slate-800">{lesson.title_bn}</p>
+      <p className="mt-1 text-sm leading-relaxed text-slate-600">{lesson.body_bn}</p>
       <div className="mt-3 flex gap-2">
-        <Button variant="outline" className="flex-1 !min-h-9 text-sm" onClick={() => void respond(true)}>{L('বুঝেছি', 'Got it')}</Button>
-        <Button variant="ghost" className="flex-1 !min-h-9 text-sm" onClick={() => void respond(false)}>{L('কাজে লাগবে না', 'Not useful')}</Button>
+        <Button variant="outline" className="flex-1 !min-h-9 text-sm text-slate-700 border-slate-300" onClick={() => void respond(true)}>{L('বুঝেছি', 'Got it')}</Button>
+        <Button variant="ghost" className="flex-1 !min-h-9 text-sm text-slate-500" onClick={() => void respond(false)}>{L('কাজে লাগবে না', 'Not useful')}</Button>
       </div>
     </Card>
   )
