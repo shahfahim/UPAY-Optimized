@@ -33,7 +33,7 @@ _BN_TO_ASCII = str.maketrans("০১২৩৪৫৬৭৮৯", "0123456789")
 # ─────────────────────────────────────────────────────────────────────────────
 # ML SECOND OPINION
 # ─────────────────────────────────────────────────────────────────────────────
-_ML_THRESHOLD = 0.6
+_ML_THRESHOLD = 0.35
 _ml_predictor = None
 
 def _load_ml():
@@ -68,6 +68,7 @@ _ML_TO_INTENT: dict[str, str] = {
     "cashout": "cashout",
     "emergency": "emergency",
     "balance": "balance",
+    "shortfall": "shortfall",
 }
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -114,7 +115,7 @@ _INTENTS: list[tuple[str, str]] = [
     ("status",
      r"ami ki bhalo|আমি কি ভালো|amar obostha|আমার অবস্থা"
      r"|financial condition|hisab thik|হিসাব ঠিক|ami ki save korte parchhi"
-     r"|আমার প্রগতি|আমার আর্থিক অবস্থা|kemon cholche|কেমন চলছে"
+     r"|আমার প্রগতি|আমার আর্থিক অবস্থা|kemon cholche|hisab dao|overview|amar overview|total hisab|কেমন চলছে"
      r"|am i doing (well|ok|good)|how am i doing|amar ki khobor"),
 
 
