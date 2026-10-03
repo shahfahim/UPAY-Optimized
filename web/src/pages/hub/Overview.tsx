@@ -37,7 +37,7 @@ export default function Overview() {
           <div className="absolute inset-0 bg-gradient-to-br from-upay-blue/30 to-transparent pointer-events-none" />
           
           <div className="relative z-10 flex flex-col items-center">
-            <h2 className="text-white text-5xl font-extrabold tracking-tight">{home.forecast ? ৳ : ৳০}</h2>
+            <h2 className="text-white text-5xl font-extrabold tracking-tight">{home.forecast ? `৳${(home.forecast.monthly_income - home.forecast.monthly_expense).toLocaleString('bn-BD')}` : '৳০'}</h2>
             <p className="text-blue-200 text-sm font-medium mt-1 uppercase tracking-widest">{L('বর্তমান ব্যালেন্স', 'Current Balance')}</p>
           </div>
 
