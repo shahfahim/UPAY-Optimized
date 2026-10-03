@@ -1,10 +1,9 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts'
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts'
 import { api } from '../../api/client'
 import type { ActionCard, Forecast, Home, Indicators, Lesson } from '../../api/types'
 import { useShell } from '../../components/AppShell'
-import { ForecastChart } from '../../components/ForecastChart'
 import { Icon } from '../../components/Icon'
 import { AiBadge, Button, Card, ErrorNote, riskClasses, Spinner } from '../../components/ui'
 import { useLang } from '../../i18n'
@@ -162,21 +161,80 @@ export default function Overview() {
   return (
     <div className="space-y-3 px-3 pb-6">
       <RiskCard home={home} />
-      <Card>
-        <div className="mb-4 flex items-center justify-between">
-          <p className="font-semibold">{L('এই মাসের হিসাব', 'This Month')}</p>
+      <Card className="overflow-hidden !p-0">
+        {/* Header */}
+        <div className="flex items-center justify-between px-4 pt-4 pb-2">
+          <div>
+            <p className="text-[15px] font-bold text-ink">{L('এই মাসের হিসাব', 'This Month')}</p>
+            <p className="text-xs text-muted mt-0.5">{L('আয় ও খরচের তুলনা', 'Income vs Expense')}</p>
+          </div>
           <AiBadge />
         </div>
-        <div className="overflow-x-auto text-xs">
-          <BarChart width={320} height={200} data={[{ name: '', 'আয়': 35000, 'খরচ': 28000 }]}>
-            <XAxis dataKey="name" />
-            <YAxis />
-            <Tooltip />
-            <Bar dataKey="আয়" fill="#22c55e" />
-            <Bar dataKey="খরচ" fill="#ef4444" />
-          </BarChart>
+
+        {/* Summary Pills */}
+        {(() => {
+          const income = home.forecast?.monthly_income ?? 0
+          const expense = home.forecast?.monthly_expense ?? 0
+          const saved = income - expense
+          return (
+            <div className="flex gap-2 px-4 pb-3">
+              <div className="flex items-center gap-1.5 rounded-full bg-green-50 border border-green-100 px-3 py-1">
+                <span className="h-2 w-2 rounded-full bg-green-500" />
+                <span className="text-xs font-semibold text-green-700">{L('আয়', 'In')} ৳{(income/1000).toFixed(1)}k</span>
+              </div>
+              <div className="flex items-center gap-1.5 rounded-full bg-red-50 border border-red-100 px-3 py-1">
+                <span className="h-2 w-2 rounded-full bg-red-500" />
+                <span className="text-xs font-semibold text-red-600">{L('খরচ', 'Out')} ৳{(expense/1000).toFixed(1)}k</span>
+              </div>
+              {saved > 0 && (
+                <div className="flex items-center gap-1.5 rounded-full bg-blue-50 border border-blue-100 px-3 py-1 ml-auto">
+                  <span className="text-xs font-semibold text-blue-700">✦ ৳{(saved/1000).toFixed(1)}k {L('সঞ্চয়', 'saved')}</span>
+                </div>
+              )}
+            </div>
+          )
+        })()}
+
+        {/* Bar Chart */}
+        <div className="px-2 pb-4">
+          <ResponsiveContainer width="100%" height={180}>
+            <BarChart
+              data={[{
+                name: '',
+                আয়: home.forecast?.monthly_income ?? 35000,
+                খরচ: home.forecast?.monthly_expense ?? 28000,
+              }]}
+              margin={{ top: 5, right: 10, left: -10, bottom: 5 }}
+              barCategoryGap="40%"
+              barGap={8}
+            >
+              <XAxis dataKey="name" hide />
+              <YAxis
+                tickFormatter={(v) => `৳${(v / 1000).toFixed(0)}k`}
+                tick={{ fontSize: 10, fill: '#94a3b8' }}
+                axisLine={false}
+                tickLine={false}
+              />
+              <Tooltip
+                formatter={(value: number, name: string) => [`৳${value.toLocaleString('bn-BD')}`, name]}
+                contentStyle={{
+                  borderRadius: '12px',
+                  border: '1px solid #e2e8f0',
+                  fontSize: '13px',
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
+                }}
+              />
+              <Bar dataKey="আয়" radius={[8, 8, 0, 0]} maxBarSize={80}>
+                <Cell fill="#22c55e" />
+              </Bar>
+              <Bar dataKey="খরচ" radius={[8, 8, 0, 0]} maxBarSize={80}>
+                <Cell fill="#f87171" />
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
         </div>
       </Card>
+
 
       {home.health && <HealthSnapshot h={home.health} prev={home.health_previous} />}
       {home.lesson && <LessonCard lesson={home.lesson} onDone={() => setData({ ...home, lesson: null })} />}
