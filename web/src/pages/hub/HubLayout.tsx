@@ -11,7 +11,7 @@ export default function HubLayout() {
     { to: '/app/savings', bn: 'সঞ্চয়', en: 'Savings' },
   ]
   return (
-    <div>
+    <div className="flex flex-col h-full flex-1">
       <nav className="no-scrollbar sticky top-0 z-30 flex items-center gap-1 overflow-x-auto bg-slate-50/95 backdrop-blur-xl px-3 py-3 border-b border-slate-200/50 shadow-sm transition-all">
         {tabs.map((t) => (
           <NavLink key={t.to} to={t.to} end={t.end}

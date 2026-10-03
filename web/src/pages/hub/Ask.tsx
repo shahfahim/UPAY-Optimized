@@ -150,7 +150,7 @@ export default function Ask() {
   }
 
   return (
-    <div className="flex min-h-[60dvh] flex-col px-4 pt-5 pb-6 bg-slate-100">
+    <div className="flex flex-1 min-h-[85dvh] flex-col px-4 pt-5 pb-6 bg-slate-100">
       <div className="flex-1 space-y-3">
         {msgs.length === 0 && (
           <div className="rounded-2xl bg-white p-3 shadow-sm border border-slate-100 flex flex-col gap-1 mx-1 mt-1">
