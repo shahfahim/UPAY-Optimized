@@ -80,11 +80,9 @@ html[lang="en"] body { font-family: var(--font-en); }
   max-width: 430px;
   min-height: 100dvh;
   margin: 0 auto;
-  background-color: #e3e9f0;
-  background-image: 
-    repeating-linear-gradient(120deg, rgba(11, 78, 162, 0.12) 0px, rgba(11, 78, 162, 0.12) 1.5px, transparent 1.5px, transparent 30px),
-    repeating-linear-gradient(60deg, rgba(11, 78, 162, 0.12) 0px, rgba(11, 78, 162, 0.12) 1.5px, transparent 1.5px, transparent 30px),
-    repeating-linear-gradient(0deg, rgba(11, 78, 162, 0.1) 0px, rgba(11, 78, 162, 0.1) 1.5px, transparent 1.5px, transparent 17.32px);
+  background-color: #f4f7fb;
+  background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
+  background-size: 20px 20px;
   display: flex;
   flex-direction: column;
 }
