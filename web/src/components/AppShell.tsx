@@ -70,7 +70,7 @@ function BalanceButton({ shell }: { shell: Shell }) {
     <button
       onClick={handleClick}
       aria-live="polite"
-      className={`relative flex h-9 items-center justify-center rounded-full bg-[#ffd500] text-[#083b7a] font-extrabold shadow-[0_4px_12px_rgba(255,213,0,0.4)] ring-[2px] ring-[#ffd500]/50 active:scale-95 ${
+      className={`relative flex h-9 items-center justify-center rounded-full bg-white/15 backdrop-blur-md border border-white/20 text-white font-extrabold shadow-[0_4px_12px_rgba(0,0,0,0.15)] ring-[1px] ring-white/30 active:scale-95 ${
         animating ? 'animate-coin-hole px-3' : 'min-w-[104px] px-3'
       }`}
     >
