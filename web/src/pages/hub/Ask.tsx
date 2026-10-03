@@ -131,14 +131,14 @@ export default function Ask() {
         )}
         <div ref={end} />
       </div>
-      <div className="mt-3 flex gap-2 overflow-x-auto pb-1">
+      <div className="mt-1 flex gap-2 overflow-x-auto pb-0">
         {SUGGESTED.map((q) => (
           <button key={q} disabled={busy} onClick={() => void ask(q)}
             className="shrink-0 rounded-full border border-upay-blue/30 bg-white px-3 py-1.5 text-[12.5px] text-upay-blue disabled:opacity-50">{q}</button>
         ))}
       </div>
       {err && <p className="mt-2 text-sm text-bad" role="alert">{err}</p>}
-      <form className="sticky bottom-2 z-10 mt-3 flex items-end gap-2 rounded-3xl bg-white/70 backdrop-blur-lg border border-white/50 p-1.5 shadow-[0_4px_20px_rgb(0,0,0,0.04)]" onSubmit={(e) => { e.preventDefault(); void ask(text) }}>
+      <form className="sticky bottom-2 z-10 mt-1.5 flex items-end gap-2 rounded-3xl bg-white/70 backdrop-blur-lg border border-white/50 p-1.5 shadow-[0_4px_20px_rgb(0,0,0,0.04)]" onSubmit={(e) => { e.preventDefault(); void ask(text) }}>
         <div className="flex-1 rounded-2xl bg-white/60 px-3.5 py-1.5 focus-within:bg-white focus-within:ring-1 focus-within:ring-upay-blue/50 transition-all border border-transparent">
           <textarea rows={1} value={text} onChange={(e) => setText(e.target.value)} aria-label={L('প্রশ্ন', 'Question')}
             onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); void ask(text) } }}
