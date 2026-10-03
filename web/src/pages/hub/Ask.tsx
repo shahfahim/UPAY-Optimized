@@ -71,7 +71,7 @@ export default function Ask() {
     try {
       const a = await api.chat(uid, message)
       setMsgs((m) => [...m, { role: 'bot', text: a.text, answer: a }])
-        speakBangla(a.text)
+        // speakBangla(a.text) // Disabled by user request
     } catch (e) {
       setErr(e instanceof ApiError ? e.message : L('উত্তর আনা যায়নি — আবার চেষ্টা করুন', 'Could not get an answer — try again'))
     } finally {
