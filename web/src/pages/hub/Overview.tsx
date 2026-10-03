@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts'
 import { api } from '../../api/client'
@@ -13,28 +14,37 @@ export default function Overview() {
   const { uid } = useShell()
   const { data: home, error, loading, reload } = useApi(() => api.home(uid), [uid])
 
+  const [view, setView] = useState<'all' | 'in_out' | 'savings_loan'>('all')
+  const [monthOffset, setMonthOffset] = useState('0')
+
   if (loading && !home) return <Spinner label={L('হিসাব করা হচ্ছে…', 'Working it out…')} />
   if (error) return <ErrorNote message={error} onRetry={reload} />
   if (!home) return null
 
-  const monthlyIncome = home.forecast?.monthly_income ?? 0
-  const monthlyExpense = home.forecast?.monthly_expense ?? 0
-  
-  // Safe parsing for balance
-  const currentBalance = typeof home.balance === 'number' ? home.balance : 0
 
-  const chartData = [
-    {
-      name: L('আয়', 'Income'),
-      value: monthlyIncome > 0 ? monthlyIncome : 12000,
-      fill: '#22c55e'
-    },
-    {
-      name: L('খরচ', 'Expense'),
-      value: monthlyExpense > 0 ? monthlyExpense : 4500,
-      fill: '#f87171'
-    }
-  ]
+
+  const monthlyIncomeBase = home.forecast?.monthly_income ?? 12000
+  const monthlyExpenseBase = home.forecast?.monthly_expense ?? 4500
+  const dpsBase = 2000
+  const loanBase = 1500
+
+  // Mock historical data multiplier
+  const multiplier = monthOffset === '0' ? 1 : monthOffset === '1' ? 0.85 : 0.92
+
+  const income = monthlyIncomeBase * multiplier
+  const expense = monthlyExpenseBase * multiplier
+  const dps = dpsBase * multiplier
+  const loan = loanBase * multiplier
+
+  const chartData = []
+  if (view === 'all' || view === 'in_out') {
+    chartData.push({ name: L('আয়', 'Income'), value: income, fill: '#22c55e' })
+    chartData.push({ name: L('খরচ', 'Expense'), value: expense, fill: '#f87171' })
+  }
+  if (view === 'all' || view === 'savings_loan') {
+    chartData.push({ name: L('ডিপিএস', 'DPS'), value: dps, fill: '#0ea5e9' })
+    chartData.push({ name: L('লোন', 'Loan'), value: loan, fill: '#f59e0b' })
+  }
 
   return (
     <div className="min-h-screen bg-transparent pb-20">
@@ -51,9 +61,27 @@ export default function Overview() {
       {/* Simple Bar Chart Card */}
       <div className="px-4 -mt-6 animate-slide-up" style={{ animationDelay: "100ms" }}>
         <Card className="bg-white shadow-[0_8px_30px_rgb(0,0,0,0.06)] border-none rounded-2xl">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="font-bold text-slate-800">{L('এই মাসের হিসাব', 'This Month')}</h3>
-            <AiBadge />
+          <div className="flex flex-col mb-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <h3 className="font-bold text-slate-800">{L('ওভারভিউ', 'Overview')}</h3>
+                <AiBadge />
+              </div>
+              <select 
+                value={monthOffset} 
+                onChange={e => setMonthOffset(e.target.value)}
+                className="bg-transparent text-[13px] font-bold text-slate-700 outline-none cursor-pointer"
+              >
+                <option value="0">{L('চলতি মাস', 'This Month')}</option>
+                <option value="1">{L('গত মাস', 'Last Month')}</option>
+                <option value="2">{L('আগস্ট ২০২৬', 'August 2026')}</option>
+              </select>
+            </div>
+            <div className="flex gap-2 overflow-x-auto no-scrollbar mt-3 pb-1">
+              <button onClick={() => setView('all')} className={`px-3 py-1.5 rounded-full text-[11px] font-bold whitespace-nowrap transition-colors ${view === 'all' ? 'bg-slate-800 text-white' : 'bg-slate-100 text-slate-600'}`}>{L('সব ওভারভিউ', 'All')}</button>
+              <button onClick={() => setView('in_out')} className={`px-3 py-1.5 rounded-full text-[11px] font-bold whitespace-nowrap transition-colors ${view === 'in_out' ? 'bg-slate-800 text-white' : 'bg-slate-100 text-slate-600'}`}>{L('আয়-ব্যয়', 'Income/Expense')}</button>
+              <button onClick={() => setView('savings_loan')} className={`px-3 py-1.5 rounded-full text-[11px] font-bold whitespace-nowrap transition-colors ${view === 'savings_loan' ? 'bg-slate-800 text-white' : 'bg-slate-100 text-slate-600'}`}>{L('ডিপিএস ও লোন', 'DPS/Loan')}</button>
+            </div>
           </div>
           <div className="h-48 w-full [&_svg]:outline-none select-none">
             <ResponsiveContainer width="100%" height="100%">
