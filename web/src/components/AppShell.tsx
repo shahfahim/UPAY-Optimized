@@ -151,7 +151,7 @@ function Header({ shell }: { shell: Shell | null }) {
         </button>
       </div>
       {item('/app/history', 'clock', L('হিস্টরি', 'History'))}
-        {item('/app/hishab', 'spark', <span className="flex items-center gap-0.5">{L('হিসাব', 'Hishab')}<span className="rounded-[4px] bg-[#0b4ea2] px-1 py-[1px] text-[8px] font-bold text-white not-italic shadow-sm">AI</span></span>, (
+        {item('/app/hishab', 'spark', <span className="flex items-center gap-0.5">{L('Upay Prototype', 'Upay Prototype')}<span className="rounded-[4px] bg-[#0b4ea2] px-1 py-[1px] text-[8px] font-bold text-white not-italic shadow-sm">AI</span></span>, (
           <>
             
             
@@ -193,8 +193,8 @@ export default function AppShell() {
       </div>
       <Sheet open={demoName !== null} onClose={() => setDemoName(null)} title={demoName ?? ''}>
         <p className="text-sm text-muted">
-          {L('এই ফিচার demo-তে চালু নেই। Hishab শুধু টাকার হিসাব, সঞ্চয় আর পাঠানোর অংশগুলো দেখায়।',
-            'This feature is not active in the demo. Hishab covers money planning, savings and transfers.')}
+          {L('এই ফিচার demo-তে চালু নেই। Upay Prototype শুধু টাকার Upay Prototype, সঞ্চয় আর পাঠানোর অংশগুলো দেখায়।',
+            'This feature is not active in the demo. Upay Prototype covers money planning, savings and transfers.')}
         </p>
       </Sheet>
     </Ctx.Provider>

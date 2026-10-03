@@ -133,13 +133,13 @@ function GoalPlanner({ pockets, onSaved }: { pockets: Savings['pockets']; onSave
       </div>
       {err && <p className="mt-2 text-sm text-bad" role="alert">{err}</p>}
       <Button full variant="outline" className="mt-3" disabled={busy} onClick={() => void submit()}>
-        {busy ? L('হিসাব হচ্ছে…', 'Working…') : L('হিসাব করুন', 'Work it out')}
+        {busy ? L('Upay Prototype হচ্ছে…', 'Working…') : L('Upay Prototype করুন', 'Work it out')}
       </Button>
       {plan && !plan.insufficient_history && (
         <div className="mt-3 rounded-xl bg-transparent p-3 text-sm">
           <p className="font-semibold">{L(`মাসে ${taka(plan.monthly)} করে রাখতে হবে`, `Save ${taka(plan.monthly)} a month`)}</p>
           <p className={`mt-1 ${feas >= 60 ? 'text-ok' : feas >= 30 ? 'text-warn' : 'text-bad'}`}>
-            {feas >= 60 ? L(`আপনার আগের মাসগুলোর হিসাবে এটি সম্ভব (${num(feas)}%)`, `Likely, based on past months (${feas}%)`)
+            {feas >= 60 ? L(`আপনার আগের মাসগুলোর Upay Prototypeে এটি সম্ভব (${num(feas)}%)`, `Likely, based on past months (${feas}%)`)
               : feas >= 30 ? L(`একটু কঠিন হবে (${num(feas)}%)`, `A stretch (${feas}%)`)
                 : L('এখনকার খরচে এটি কঠিন — সময় বাড়ান বা নিচের কাজগুলো করুন', 'Hard at current spending — add time or try these')}
           </p>
@@ -152,7 +152,7 @@ function GoalPlanner({ pockets, onSaved }: { pockets: Savings['pockets']; onSave
         </div>
       )}
       {plan?.insufficient_history && (
-        <p className="mt-3 text-sm text-muted">{L('আরও কিছু দিনের লেনদেন হলে হিসাব দেখাব।', 'Needs a few more days of activity.')}</p>
+        <p className="mt-3 text-sm text-muted">{L('আরও কিছু দিনের লেনদেন হলে Upay Prototype দেখাব।', 'Needs a few more days of activity.')}</p>
       )}
     </Card>
   )

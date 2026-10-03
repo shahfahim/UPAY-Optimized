@@ -82,7 +82,7 @@ export default function Health() {
           </ul>
         </Card>
         <Card>
-          <div className="mb-2 flex items-center gap-2"><p className="font-semibold">{L('মাসিক হিসাব রিপোর্ট', 'Monthly report')}</p><AiBadge /></div>
+          <div className="mb-2 flex items-center gap-2"><p className="font-semibold">{L('মাসিক Upay Prototype রিপোর্ট', 'Monthly report')}</p><AiBadge /></div>
           <p className="text-sm">✅ {rep.went_well_bn}</p>
           <p className="mt-1 text-sm">💡 {rep.change_bn}</p>
           <p className="mt-2 text-xs text-muted">

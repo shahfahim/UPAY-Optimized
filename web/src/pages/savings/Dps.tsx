@@ -22,8 +22,8 @@ function SmartDpsCard({ a, onPick }: { a: DpsAdvice; onPick: (monthly: number, t
         <p className="mt-1 text-sm text-ink/80">{a.reason_bn}</p>
         {a.naive_monthly ? (
           <p className="mt-2 text-xs text-muted">
-            {L(`সাধারণ নিয়মে (আয়ের ১০%) ${taka(a.naive_monthly)} বলা হতো — হিসাব আপনার মাসের শেষের খরচের কথাও ভাবে।`,
-              `A flat 10%-of-income rule would say ${taka(a.naive_monthly)} — Hishab also checks your month-end squeeze.`)}
+            {L(`সাধারণ নিয়মে (আয়ের ১০%) ${taka(a.naive_monthly)} বলা হতো — Upay Prototype আপনার মাসের শেষের খরচের কথাও ভাবে।`,
+              `A flat 10%-of-income rule would say ${taka(a.naive_monthly)} — Upay Prototype also checks your month-end squeeze.`)}
           </p>
         ) : null}
       </Card>

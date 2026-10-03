@@ -97,7 +97,7 @@ export default function Impact() {
       <header className="bg-upay-blue px-4 py-6 text-white md:px-8">
         <div className="mx-auto max-w-5xl">
           <Link to="/app/more" className="text-sm text-white/80 underline">← Back to app</Link>
-          <h1 className="mt-2 text-2xl font-bold md:text-3xl">Hishab impact — Track 03 cash-flow copilot</h1>
+          <h1 className="mt-2 text-2xl font-bold md:text-3xl">Upay Prototype impact — Track 03 cash-flow copilot</h1>
           <p className="mt-1 text-sm text-white/85">Simulated on synthetic data; assumptions in docs.</p>
         </div>
       </header>
@@ -143,7 +143,7 @@ export default function Impact() {
               <div className="-mx-4 overflow-x-auto md:mx-0">
                 <table className="w-full min-w-[560px] text-left text-sm">
                   <thead className="text-xs uppercase text-muted">
-                    <tr><th className="px-4 py-2 md:px-2">Model</th><th className="px-2 py-2">Metric</th><th className="px-2 py-2 text-right">Hishab</th><th className="px-2 py-2 text-right">Baseline</th><th className="px-2 py-2">Baseline is</th></tr>
+                    <tr><th className="px-4 py-2 md:px-2">Model</th><th className="px-2 py-2">Metric</th><th className="px-2 py-2 text-right">Upay Prototype</th><th className="px-2 py-2 text-right">Baseline</th><th className="px-2 py-2">Baseline is</th></tr>
                   </thead>
                   <tbody>
                     {modelRows(d.models).filter((r) => r.value !== null).map((r) => {

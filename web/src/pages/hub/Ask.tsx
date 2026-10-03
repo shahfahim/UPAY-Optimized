@@ -19,9 +19,9 @@ const SUGGESTED = [
 const MAX = 500
 
 const TOOL_BN: Record<string, string> = {
-  get_home_summary: 'ব্যালেন্স আর সামনের ৩০ দিনের হিসাব', get_shortfall_drivers: 'টাকা কম পড়ার কারণ',
-  list_actions: 'তোমার জন্য পরামর্শ', simulate_action: 'পরামর্শ মানলে কী হবে', plan_goal: 'লক্ষ্যের হিসাব',
-  plan_eid: 'ঈদের হিসাব', find_route: 'টাকা পাঠানোর পথ ও fee',
+  get_home_summary: 'ব্যালেন্স আর সামনের ৩০ দিনের Upay Prototype', get_shortfall_drivers: 'টাকা কম পড়ার কারণ',
+  list_actions: 'তোমার জন্য পরামর্শ', simulate_action: 'পরামর্শ মানলে কী হবে', plan_goal: 'লক্ষ্যের Upay Prototype',
+  plan_eid: 'ঈদের Upay Prototype', find_route: 'টাকা পাঠানোর পথ ও fee',
   get_transactions_summary: 'লেনদেনের সারাংশ', get_health: 'আর্থিক স্বাস্থ্য', get_readiness: 'নিয়মিততার সংকেত',
   get_lessons: 'ছোট পাঠ', get_levels: 'সঞ্চয় লেভেল', emergency_options: 'জরুরি টাকার উপায়',
 }
@@ -98,18 +98,18 @@ export default function Ask() {
   }
 
   return (
-    <div className="flex min-h-[60dvh] flex-col px-3 pb-4">
+    <div className="flex min-h-[60dvh] flex-col px-4 pb-6 bg-slate-50/70">
       <div className="flex-1 space-y-3">
         {msgs.length === 0 && (
-          <div className="rounded-2xl bg-white p-4">
+          <div className="rounded-3xl bg-white p-5 shadow-sm border border-slate-100">
             <p className="flex items-center gap-2 font-semibold"><AiBadge />{L(`${shell?.name.split(' ')[0] ?? ''}, টাকা নিয়ে যা খুশি জিজ্ঞেস করুন`, 'Ask anything about your money')}</p>
-            <p className="mt-1 text-sm text-muted">{L('বাংলায় লিখে বা বলে জিজ্ঞেস করতে পারেন। উত্তর আপনার নিজের লেনদেনের হিসাব থেকে।', 'Type or speak in Bangla. Answers come from your own transactions.')}</p>
+            <p className="mt-1 text-sm text-muted">{L('বাংলায় লিখে বা বলে জিজ্ঞেস করতে পারেন। উত্তর আপনার নিজের লেনদেনের Upay Prototype থেকে।', 'Type or speak in Bangla. Answers come from your own transactions.')}</p>
           </div>
         )}
         {msgs.map((m, i) => m.role === 'user' ? (
-          <div key={i} className="ml-10 rounded-2xl rounded-br-md bg-upay-blue px-3.5 py-2.5 text-white animate-slide-up">{m.text}</div>
+          <div key={i} className="ml-auto max-w-[85%] rounded-3xl rounded-tr-sm bg-upay-blue px-4 py-3 text-white shadow-md shadow-upay-blue/20 animate-slide-up">{m.text}</div>
         ) : (
-          <div key={i} className="mr-6 rounded-2xl rounded-bl-md border border-line bg-white px-3.5 py-2.5 animate-slide-up">
+          <div key={i} className="mr-auto max-w-[85%] rounded-3xl rounded-tl-sm border border-slate-100 bg-white px-4 py-3 text-slate-800 shadow-sm animate-slide-up">
             {m.answer?.ai && <AiBadge className="mb-1" />}
             <p className="whitespace-pre-line leading-relaxed">{m.text}</p>
             {m.answer?.used_tools.map(t => t.name === 'find_route' && t.result ? (
@@ -119,8 +119,8 @@ export default function Ask() {
           </div>
         ))}
         {busy && (
-          <div className="mr-6 flex items-center gap-2 rounded-2xl border border-line bg-white px-3.5 py-3 text-sm text-muted" role="status">
-            <span className="size-4 animate-spin rounded-full border-2 border-upay-blue border-t-transparent" />{L('হিসাব দেখছি…', 'Checking your numbers…')}
+          <div className="mr-auto max-w-[85%] flex items-center gap-2 rounded-3xl rounded-tl-sm border border-slate-100 bg-white px-4 py-3 text-sm text-muted shadow-sm" role="status">
+            <span className="size-4 animate-spin rounded-full border-2 border-upay-blue border-t-transparent" />{L('Upay Prototype দেখছি…', 'Checking your numbers…')}
           </div>
         )}
         <div ref={end} />
@@ -132,8 +132,8 @@ export default function Ask() {
         ))}
       </div>
       {err && <p className="mt-2 text-sm text-bad" role="alert">{err}</p>}
-      <form className="mt-2 flex items-end gap-2" onSubmit={(e) => { e.preventDefault(); void ask(text) }}>
-        <div className="flex-1 rounded-2xl border border-line bg-white px-3 py-1 focus-within:border-upay-blue">
+      <form className="sticky bottom-2 z-10 mt-3 flex items-end gap-2 rounded-3xl bg-white/70 backdrop-blur-lg border border-white/50 p-2 shadow-[0_8px_30px_rgb(0,0,0,0.04)]" onSubmit={(e) => { e.preventDefault(); void ask(text) }}>
+        <div className="flex-1 rounded-2xl bg-white/50 px-4 py-2 focus-within:bg-white focus-within:ring-1 focus-within:ring-upay-blue/50 transition-all border border-transparent">
           <textarea rows={1} value={text} onChange={(e) => setText(e.target.value)} aria-label={L('প্রশ্ন', 'Question')}
             onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); void ask(text) } }}
             placeholder={L('যেমন: ঈদের জন্য ৳৫,০০০ জমাতে পারব?', 'e.g. Can I save ৳5,000 for Eid?')}

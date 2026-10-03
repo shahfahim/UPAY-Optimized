@@ -26,8 +26,8 @@ export function InsufficientHistory() {
       <p className="text-3xl" aria-hidden="true">⏳</p>
       <p className="mt-2 font-semibold">{L('আরও কিছু দিনের লেনদেন লাগবে', 'A few more days of activity needed')}</p>
       <p className="mt-1 text-sm text-muted">
-        {L('৩০ দিনের লেনদেন হলে হিসাব তোমার জন্য পূর্বাভাস আর পরামর্শ দেখাবে।',
-          'After 30 days of activity, Hishab shows your forecast and tips.')}
+        {L('৩০ দিনের লেনদেন হলে Upay Prototype তোমার জন্য পূর্বাভাস আর পরামর্শ দেখাবে।',
+          'After 30 days of activity, Upay Prototype shows your forecast and tips.')}
       </p>
     </div>
   )
