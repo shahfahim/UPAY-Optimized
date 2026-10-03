@@ -6,7 +6,7 @@
 ---
 
 ## 🔴 Live Demo (Hackathon Prototype)
-🔗 **[Test the Live App Here](https://hard-emu-9.loca.lt)**
+🔗 **[Test the Live App Here](https://hishab-ai-demo.loca.lt)**
 
 > **⚠️ IMPORTANT FOR EVALUATORS:** 
 > When accessing the live demo, please ensure you allow the following permissions:
