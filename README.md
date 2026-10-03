@@ -1,4 +1,4 @@
-﻿# 🚀 হিসাব AI (Hishab AI) — AI Cash-flow Copilot
+﻿# 🚀 হিসাব AI (Hishab AI) — An upay Cash-flow Copilot
 **Prototype for AI DEV FEST 2026 · AI Hackathon (DIU CPC × upay)**
 
 **Hishab AI** is an intelligent, voice-enabled financial copilot designed specifically for low-income Mobile Financial Service (MFS) users in Bangladesh. Built as a prototype for the **upay** ecosystem, it acts as a proactive guide to help users understand their spending, predict shortfalls, plan savings, and improve financial literacy—all in native Bangla.
