@@ -23,7 +23,11 @@ export default function Overview() {
 
 
 
+  // Safe parsing for balance
+  const currentBalance = typeof home.balance === 'number' ? home.balance : 0
+
   const monthlyIncomeBase = home.forecast?.monthly_income ?? 12000
+
   const monthlyExpenseBase = home.forecast?.monthly_expense ?? 4500
   const dpsBase = 2000
   const loanBase = 1500
