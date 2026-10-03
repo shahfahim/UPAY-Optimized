@@ -78,7 +78,7 @@ def create_app(settings: Settings | None = None, svc=None, web_dist: Path | None
     from hishab.api.routes import auth, demo, users
     for r in (users.router, auth.router, demo.router):
         app.include_router(r, prefix="/api")
-    for name in ("hub", "savings", "flows", "impact", "chat"):
+    for name in ("hub", "savings", "flows", "impact", "chat", "upay_integration"):
         try:
             mod = __import__(f"hishab.api.routes.{name}", fromlist=["router"])
             app.include_router(mod.router, prefix="/api")

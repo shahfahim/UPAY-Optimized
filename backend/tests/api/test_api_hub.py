@@ -30,15 +30,10 @@ def test_calendar_route(client):
     assert client.get("/api/users/U0001/calendar", params={"month": "2026-13"}).status_code == 422
 
 
-def test_budget_auto_and_manual(client):
-    auto = client.get("/api/users/U0001/budget", params={"period": "month"}).json()
-    assert auto["mode"] == "auto" and auto["items"] and auto["reason_bn"]
-    assert client.put("/api/users/U0001/budget", json={"mode": "manual", "manual": {"food_grocery": 3000}}).status_code == 200
-    man = client.get("/api/users/U0001/budget", params={"period": "week"}).json()
-    food = next(i for i in man["items"] if i["category"] == "food_grocery")
-    assert man["mode"] == "manual" and food["budget"] == 700
-    assert client.put("/api/users/U0001/budget", json={"mode": "manual", "manual": {"food_grocery": -5}}).status_code == 422
-    assert client.get("/api/users/U0001/budget", params={"period": "year"}).status_code == 422
+def test_budget_is_disabled(client):
+    # Budget/salary was removed from the product: the endpoint stays reachable but reports disabled.
+    r = client.get("/api/users/U0001/budget", params={"period": "month"})
+    assert r.status_code == 200 and r.json()["mode"] == "disabled"
 
 
 def test_transactions_route(client):
