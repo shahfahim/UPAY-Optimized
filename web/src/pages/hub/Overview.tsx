@@ -43,7 +43,7 @@ export default function Overview() {
         <div className="flex flex-col items-center justify-center mt-2">
           <p className="text-blue-100 text-sm font-medium mb-1">{L('বর্তমান ব্যালেন্স', 'Current Balance')}</p>
           <h2 className="text-white text-4xl font-bold tracking-tight">
-            ৳{currentBalance.toLocaleString('bn-BD')}
+            ৳{currentBalance.toLocaleString('en-US')}
           </h2>
         </div>
       </div>
@@ -55,13 +55,28 @@ export default function Overview() {
             <h3 className="font-bold text-slate-800">{L('এই মাসের হিসাব', 'This Month')}</h3>
             <AiBadge />
           </div>
-          <div className="h-48 w-full">
+          <div className="h-48 w-full [&_svg]:outline-none select-none">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }} barSize={50}>
-                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#64748b', fontWeight: 600 }} />
-                <YAxis tickFormatter={(v) => `৳${(v / 1000).toFixed(0)}k`} axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: '#94a3b8' }} />
-                <Tooltip cursor={{ fill: 'transparent' }} formatter={(val: number) => [`৳${val.toLocaleString()}`, 'পরিমাণ']} />
-                <Bar dataKey="value" radius={[6, 6, 0, 0]} />
+              <BarChart data={chartData} margin={{ top: 15, right: 10, left: -20, bottom: 0 }} barSize={40}>
+                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 13, fill: '#64748b', fontWeight: 600 }} />
+                <YAxis tickFormatter={(v) => `৳ ${(v / 1000).toFixed(0)}k`} axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#94a3b8' }} />
+                <Tooltip 
+                  cursor={{ fill: '#f1f5f9', opacity: 0.5 }} 
+                  content={({ active, payload, label }: any) => {
+                    if (active && payload && payload.length) {
+                      return (
+                        <div className="bg-slate-800/95 backdrop-blur-md text-white text-[13px] rounded-xl py-2 px-3 shadow-xl border border-slate-700/50">
+                          <p className="font-medium text-slate-300">{label}</p>
+                          <p className="text-white font-bold mt-0.5 tracking-wide">
+                            ৳ {payload[0].value.toLocaleString('en-US')}
+                          </p>
+                        </div>
+                      )
+                    }
+                    return null
+                  }}
+                />
+                <Bar dataKey="value" radius={[8, 8, 8, 8]} background={{ fill: '#f8fafc', radius: [8, 8, 8, 8] }} />
               </BarChart>
             </ResponsiveContainer>
           </div>
