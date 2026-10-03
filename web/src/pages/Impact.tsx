@@ -92,7 +92,7 @@ export default function Impact() {
   const { data: d, error, loading, reload } = useApi(() => api.impact(), [])
 
   return (
-    <div className="min-h-dvh bg-surface font-[Inter]">
+    <div className="min-h-dvh bg-transparent font-[Inter]">
       <PrototypeRibbon />
       <header className="bg-upay-blue px-4 py-6 text-white md:px-8">
         <div className="mx-auto max-w-5xl">
@@ -113,7 +113,7 @@ export default function Impact() {
                   const good = wins(p.with_hishab, p.baseline, h.better)
                   const same = Math.abs(p.with_hishab - p.baseline) < 1e-9
                   return (
-                    <div key={h.key} className="rounded-xl bg-surface p-3">
+                    <div key={h.key} className="rounded-xl bg-transparent p-3">
                       <p className="text-xs text-muted">{h.label}</p>
                       <p className="mt-1 flex items-baseline gap-2">
                         <span className="text-sm text-muted line-through decoration-muted/50">{h.fmt(p.baseline)}</span>
@@ -131,7 +131,7 @@ export default function Impact() {
                   <p>{bdt(Number(d.per_100k.fees_saved_per_month_bdt))} in transfer fees saved</p>
                   <p className="mt-1 text-xs text-muted">{String(d.per_100k.note ?? '')}</p>
                 </div>
-                <div className="rounded-xl bg-surface p-3 text-sm">
+                <div className="rounded-xl bg-transparent p-3 text-sm">
                   <p className="font-semibold">Monthly active rate</p>
                   <p className="mt-1">{pct(d.active_rate.baseline)} → <b>{pct(d.active_rate.with_hishab)}</b></p>
                   <p className="mt-1 text-xs text-muted">Uses the generator's assumed inactivity mechanism.</p>

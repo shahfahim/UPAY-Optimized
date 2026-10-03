@@ -146,7 +146,7 @@ export default function Ask() {
           </button>
         ) : (
           <span title={L('এই ব্রাউজারে ভয়েস চলে না — Chrome ব্যবহার করুন', 'Voice needs Chrome')}
-            className="flex size-11 shrink-0 cursor-help items-center justify-center rounded-full bg-surface text-muted" aria-label={L('ভয়েস নেই', 'Voice unavailable')}>
+            className="flex size-11 shrink-0 cursor-help items-center justify-center rounded-full bg-transparent text-muted" aria-label={L('ভয়েস নেই', 'Voice unavailable')}>
             <Icon name="mic" size={20} />
           </span>
         )}

@@ -65,7 +65,7 @@ export default function History() {
             {data.summary.by_category.map((c) => (
               <div key={c.category_bn}>
                 <div className="flex justify-between text-sm"><span>{c.category_bn}</span><span className="font-semibold">{taka(c.amount)}</span></div>
-                <div className="mt-1 h-2 rounded-full bg-surface"><div className="h-2 rounded-full bg-upay-blue" style={{ width: `${(100 * c.amount) / max}%` }} /></div>
+                <div className="mt-1 h-2 rounded-full bg-transparent"><div className="h-2 rounded-full bg-upay-blue" style={{ width: `${(100 * c.amount) / max}%` }} /></div>
               </div>
             ))}
           </div>

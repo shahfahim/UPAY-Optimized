@@ -69,7 +69,7 @@ export default function Login() {
         <label className="mb-1 block text-sm font-semibold" htmlFor="mobile">{L('মোবাইল নম্বর', 'Mobile number')}</label>
         <input id="mobile" inputMode="numeric" autoComplete="off" placeholder="01XXXXXXXXX" value={mobile}
           onChange={(e) => { setMobile(e.target.value); setErr('') }}
-          className="mb-1 h-12 w-full rounded-xl border border-line bg-surface px-3 font-[Inter] text-lg tracking-wider outline-none focus:border-upay-blue" />
+          className="mb-1 h-12 w-full rounded-xl border border-line bg-transparent px-3 font-[Inter] text-lg tracking-wider outline-none focus:border-upay-blue" />
         {mobile && !mobileOk && <p className="mb-2 text-xs text-bad">{L('সঠিক মোবাইল নম্বর দিন', 'Enter a valid mobile number')}</p>}
         <p className="mb-2 mt-4 text-sm font-semibold">{L('পিন দিন', 'Enter PIN')}</p>
         <PinPad value={pin} onChange={(v) => { setPin(v); setErr('') }} />
@@ -84,7 +84,7 @@ export default function Login() {
           <div className="space-y-2">
             {users.slice(0, 5).map((d) => (
               <button key={d.user_id} disabled={busy} onClick={() => void doLogin(d.phone, '123456')}
-                className="flex w-full items-center gap-3 rounded-xl border border-line px-3 py-2 text-left hover:bg-surface">
+                className="flex w-full items-center gap-3 rounded-xl border border-line px-3 py-2 text-left hover:bg-transparent">
                 <span className="flex size-9 items-center justify-center rounded-full bg-upay-yellow text-sm font-bold">
                   {d.name.slice(0, 1)}
                 </span>

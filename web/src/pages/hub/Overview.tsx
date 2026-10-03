@@ -37,9 +37,9 @@ export default function Overview() {
   ]
 
   return (
-    <div className="min-h-screen bg-slate-50 pb-20">
+    <div className="min-h-screen bg-transparent pb-20">
       {/* Simple Top Section */}
-      <div className="bg-upay-blue px-4 pt-6 pb-12 rounded-b-3xl">
+      <div className="bg-upay-blue px-4 pt-6 pb-12 rounded-b-3xl animate-fade-in">
         <div className="flex flex-col items-center justify-center mt-2">
           <p className="text-blue-100 text-sm font-medium mb-1">{L('বর্তমান ব্যালেন্স', 'Current Balance')}</p>
           <h2 className="text-white text-4xl font-bold tracking-tight">
@@ -49,7 +49,7 @@ export default function Overview() {
       </div>
 
       {/* Simple Bar Chart Card */}
-      <div className="px-4 -mt-6">
+      <div className="px-4 -mt-6 animate-slide-up" style={{ animationDelay: "100ms" }}>
         <Card className="bg-white shadow-sm border border-slate-100">
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-bold text-slate-800">{L('এই মাসের হিসাব', 'This Month')}</h3>
@@ -69,28 +69,28 @@ export default function Overview() {
       </div>
 
       {/* Grid Buttons */}
-      <div className="px-4 mt-4 grid grid-cols-3 gap-3">
-        <Link to="/app/hishab/ask" className="flex flex-col items-center justify-center bg-white rounded-xl p-3 shadow-sm border border-slate-100">
-          <div className="h-10 w-10 rounded-full bg-blue-50 flex items-center justify-center mb-2">
+      <div className="px-4 mt-4 grid grid-cols-3 gap-3 animate-slide-up" style={{ animationDelay: "200ms" }}>
+        <Link to="/app/hishab/ask" className="flex flex-col items-center justify-center bg-white rounded-[20px] p-4 shadow-[0_8px_20px_-4px_rgba(0,0,0,0.05)] border border-slate-100/50 hover:shadow-[0_8px_25px_-4px_rgba(11,78,162,0.15)] transition-all duration-300 active:scale-95">
+          <div className="h-12 w-12 rounded-[14px] bg-blue-50 flex items-center justify-center mb-3">
             <Icon name="spark" size={20} className="text-upay-blue" />
           </div>
           <span className="text-xs font-bold text-slate-700 text-center">Hishab AI</span>
         </Link>
-        <Link to="/app/savings" className="flex flex-col items-center justify-center bg-white rounded-xl p-3 shadow-sm border border-slate-100">
-          <div className="h-10 w-10 rounded-full bg-green-50 flex items-center justify-center mb-2">
+        <Link to="/app/savings" className="flex flex-col items-center justify-center bg-white rounded-[20px] p-4 shadow-[0_8px_20px_-4px_rgba(0,0,0,0.05)] border border-slate-100/50 hover:shadow-[0_8px_25px_-4px_rgba(11,78,162,0.15)] transition-all duration-300 active:scale-95">
+          <div className="h-12 w-12 rounded-[14px] bg-green-50 flex items-center justify-center mb-3">
             <Icon name="chart" size={20} className="text-green-600" />
           </div>
           <span className="text-xs font-bold text-slate-700 text-center">Smart DPS</span>
         </Link>
-        <Link to="/app/hishab/ask" className="flex flex-col items-center justify-center bg-white rounded-xl p-3 shadow-sm border border-slate-100">
-          <div className="h-10 w-10 rounded-full bg-yellow-100 flex items-center justify-center mb-2">
+        <Link to="/app/hishab/ask" className="flex flex-col items-center justify-center bg-white rounded-[20px] p-4 shadow-[0_8px_20px_-4px_rgba(0,0,0,0.05)] border border-slate-100/50 hover:shadow-[0_8px_25px_-4px_rgba(11,78,162,0.15)] transition-all duration-300 active:scale-95">
+          <div className="h-12 w-12 rounded-[14px] bg-[#ffd500] bg-opacity-20 flex items-center justify-center mb-3">
             <Icon name="mic" size={20} className="text-yellow-700" />
           </div>
           <span className="text-xs font-bold text-slate-700 text-center">Ask Hishab</span>
         </Link>
       </div>
 
-      <div className="px-4 mt-4">
+      <div className="px-4 mt-4 animate-slide-up" style={{ animationDelay: "300ms" }}>
         {home.lesson && <LessonCard lesson={home.lesson} onDone={() => reload()} />}
       </div>
     </div>

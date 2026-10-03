@@ -24,7 +24,7 @@ function ReadinessCard({ r }: { r: Readiness }) {
   return (
     <Card>
       <p className="font-semibold">{L('নিয়মিততার signal', 'Consistency signals')}</p>
-      <p className="mt-1 rounded-lg bg-surface p-2 text-xs leading-relaxed text-ink/80">{r.disclaimer_bn}</p>
+      <p className="mt-1 rounded-lg bg-transparent p-2 text-xs leading-relaxed text-ink/80">{r.disclaimer_bn}</p>
       <div className="mt-3 space-y-2">
         {r.signals.map((s) => (
           <div key={s.id} className={`rounded-xl p-3 ${riskClasses(s.state)}`}>

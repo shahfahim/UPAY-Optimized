@@ -24,7 +24,7 @@ function OptionCard({ o, i, amount, onTake, requested, onRequest }: {
   return (
     <Card className={i === 0 ? 'border-ok ring-1 ring-ok' : ''}>
       <div className="flex items-start gap-3">
-        <span className={`flex size-8 shrink-0 items-center justify-center rounded-full text-sm font-bold ${i === 0 ? 'bg-ok text-white' : 'bg-surface text-ink'}`}>{num(i + 1)}</span>
+        <span className={`flex size-8 shrink-0 items-center justify-center rounded-full text-sm font-bold ${i === 0 ? 'bg-ok text-white' : 'bg-transparent text-ink'}`}>{num(i + 1)}</span>
         <div className="flex-1">
           <p className="font-semibold">{title}</p>
           <p className="text-sm text-muted">
@@ -139,7 +139,7 @@ export default function Emergency() {
                 requested={requested} onRequest={() => setRequested(true)} />
             ))}
             {requested && (
-              <p className="rounded-xl bg-surface p-3 text-xs text-muted">
+              <p className="rounded-xl bg-transparent p-3 text-xs text-muted">
                 {L('এটি ডেমো — কোনো ব্যাংকে অনুরোধ পাঠানো হয়নি। আসল সেবায় ব্যাংক নিজস্ব নিয়মে যাচাই করবে।',
                   'Demo only — nothing was sent. In the real service the bank reviews it under its own rules.')}
               </p>

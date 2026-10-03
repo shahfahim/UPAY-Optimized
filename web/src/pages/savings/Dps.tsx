@@ -140,7 +140,7 @@ export default function Dps() {
                   {L(`মেয়াদ শেষে জমা ${taka(m * t)} (আনুমানিক, মুনাফা ছাড়া)`, `Deposits total ${taka(m * t)} (estimate, excluding profit)`)}
                 </p>
               )}
-              <div className="mt-3 flex items-center justify-between rounded-xl bg-surface px-3 py-2 text-sm">
+              <div className="mt-3 flex items-center justify-between rounded-xl bg-transparent px-3 py-2 text-sm">
                 <span className="text-muted">{L('বর্তমান ব্যালেন্স', 'Current balance')}</span>
                 <span className="font-semibold">{taka(savings.balance, { paisa: true })}</span>
               </div>

@@ -4,8 +4,8 @@ import { Button, TextMark } from '../../components/ui'
 import { useLang } from '../../i18n'
 
 const SLIDES = [
-  { bn: 'টাকা আর কত দিন চলবে — আগেই জেনে নিন', en: 'Know how long your money will last — ahead of time', icon: '📅' },
-  { bn: 'সবচেয়ে কম খরচে বাড়িতে টাকা পাঠান', en: 'Send money home the cheapest way', icon: '🧭' },
+  { bn: 'দ্রুত এবং নিরাপদে টাকা লেনদেন করুন', en: 'Fast and secure transactions', icon: '💸' },
+  { bn: 'সবচেয়ে কম খরচে বাড়িতে টাকা পাঠান', en: 'Send money home the cheapest way', icon: '🏠' },
   { bn: 'পয়সা থেকে DPS — ধাপে ধাপে সঞ্চয়', en: 'From paisa to DPS — save step by step', icon: '🌱' },
 ]
 

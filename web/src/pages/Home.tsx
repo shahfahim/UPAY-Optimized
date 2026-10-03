@@ -72,7 +72,7 @@ export default function Home() {
             {shell.recent.map((r) => (
               <button key={r.counterparty_id}
                 onClick={() => navigate(`${payRoute(r.type)}${payRoute(r.type).includes('?') ? '&' : '?'}cp=${encodeURIComponent(r.counterparty_id)}&name=${encodeURIComponent(r.name)}`)}
-                className="flex flex-col items-center gap-1 rounded-xl p-1 text-center hover:bg-surface">
+                className="flex flex-col items-center gap-1 rounded-xl p-1 text-center hover:bg-transparent">
                 <span className="flex size-10 items-center justify-center rounded-full bg-upay-yellow/40 text-sm font-bold">
                   {r.name.slice(0, 1)}
                 </span>
@@ -105,7 +105,7 @@ export default function Home() {
         <div className="grid grid-cols-4 gap-y-3">
           {OTHER.map((o) => (
             <button key={o.bn} onClick={() => demo(L(o.bn, o.en))} className="flex flex-col items-center gap-1">
-              <span className="flex size-11 items-center justify-center rounded-2xl bg-surface text-upay-blue"><Icon name={o.icon} /></span>
+              <span className="flex size-11 items-center justify-center rounded-2xl bg-transparent text-upay-blue"><Icon name={o.icon} /></span>
               <span className="text-[12px]">{L(o.bn, o.en)}</span>
             </button>
           ))}

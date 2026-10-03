@@ -117,7 +117,7 @@ export default function Flow({ cfg }: { cfg: FlowConfig }) {
           <p className="mt-3 text-lg font-bold">{L('সফল হয়েছে', 'Done')}</p>
           <p className="mt-1 text-2xl font-bold">{taka(amount, { paisa: amount % 1 !== 0 })}</p>
           <p className="text-sm text-muted">{recipient.name}</p>
-          <div className="mt-4 space-y-1.5 rounded-2xl bg-surface p-3 text-left text-sm">
+          <div className="mt-4 space-y-1.5 rounded-2xl bg-transparent p-3 text-left text-sm">
             <p className="flex justify-between"><span className="text-muted">{L('খরচ (fee)', 'Fee')}</span><span>{taka(result.fee, { paisa: result.fee % 1 !== 0 })}</span></p>
             <p className="flex justify-between"><span className="text-muted">{L('খরচের ধরন', 'Category')}</span><span>{L(...(CATEGORY_BN[result.category] ?? [result.category, result.category]))}</span></p>
             {result.swept > 0 && (

@@ -78,7 +78,7 @@ export default function Register() {
             <label className="mb-1 block text-sm font-semibold" htmlFor="rmobile">{L('মোবাইল নম্বর', 'Mobile number')}</label>
             <input id="rmobile" inputMode="numeric" placeholder="01XXXXXXXXX" value={mobile}
               onChange={(e) => { setMobile(e.target.value); setErr('') }}
-              className="h-12 w-full rounded-xl border border-line bg-surface px-3 font-[Inter] text-lg tracking-wider outline-none focus:border-upay-blue" />
+              className="h-12 w-full rounded-xl border border-line bg-transparent px-3 font-[Inter] text-lg tracking-wider outline-none focus:border-upay-blue" />
             <Button full className="mt-5" onClick={start} disabled={busy}>{L('এগিয়ে যান', 'Continue')}</Button>
           </>
         )}
@@ -92,7 +92,7 @@ export default function Register() {
             </div>
             <label className="mb-1 block text-sm font-semibold" htmlFor="otp">OTP</label>
             <input id="otp" inputMode="numeric" value={otp} onChange={(e) => { setOtp(e.target.value); setErr('') }}
-              className="h-12 w-full rounded-xl border border-line bg-surface px-3 text-center font-[Inter] text-xl tracking-[0.3em] outline-none focus:border-upay-blue" />
+              className="h-12 w-full rounded-xl border border-line bg-transparent px-3 text-center font-[Inter] text-xl tracking-[0.3em] outline-none focus:border-upay-blue" />
             <Button full className="mt-5" onClick={checkOtp}>{L('যাচাই করুন', 'Verify')}</Button>
           </>
         )}
@@ -100,7 +100,7 @@ export default function Register() {
           <>
             <label className="mb-1 block text-sm font-semibold" htmlFor="rname">{L('আপনার নাম', 'Your name')}</label>
             <input id="rname" value={name} maxLength={40} onChange={(e) => { setName(e.target.value); setErr('') }}
-              className="mb-4 h-12 w-full rounded-xl border border-line bg-surface px-3 outline-none focus:border-upay-blue" />
+              className="mb-4 h-12 w-full rounded-xl border border-line bg-transparent px-3 outline-none focus:border-upay-blue" />
             <p className="mb-2 text-sm font-semibold">{L('৬ ডিজিটের পিন বেছে নিন', 'Choose a 6-digit PIN')}</p>
             <PinPad value={pin} onChange={(v) => { setPin(v); setErr('') }} />
             <Button full className="mt-5" onClick={finish} disabled={busy}>

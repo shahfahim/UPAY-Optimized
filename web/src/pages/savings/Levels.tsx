@@ -75,7 +75,7 @@ export default function Levels() {
               <li>{L('৩ মাস টাকা কম না পড়লে আর ১৫ দিনের জরুরি তহবিল হলে লেভেল ২।', '3 shortfall-free months and a 15-day emergency fund: level 2.')}</li>
               <li>{L('DPS-এর ৩টা কিস্তি সময়মতো দিলে লেভেল ৩।', '3 on-time DPS installments: level 3.')}</li>
             </ul>
-            <p className="mt-3 flex items-center gap-2 rounded-xl bg-surface p-2 text-xs font-semibold text-ink">
+            <p className="mt-3 flex items-center gap-2 rounded-xl bg-transparent p-2 text-xs font-semibold text-ink">
               <Icon name="info" size={16} className="text-upay-blue" />{s.note_bn}
             </p>
           </Card>

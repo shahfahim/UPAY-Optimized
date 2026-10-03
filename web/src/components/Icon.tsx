@@ -34,7 +34,7 @@ const PATHS: Record<string, string> = {
   info: 'M12 16v-5m0-3h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z',
 }
 
-export function Icon({ name, size = 24, className = '', strokeWidth = 1.8 }: {
+export function Icon({ name, size = 24, className = '', strokeWidth = 2 }: {
   name: keyof typeof PATHS | string; size?: number; className?: string; strokeWidth?: number
 }) {
   return (

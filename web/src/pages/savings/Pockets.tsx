@@ -62,7 +62,7 @@ function MoveSheet({ move, onClose, onDone }: { move: Move | null; onClose: () =
       </div>
       <div className="mt-2 flex gap-2">
         {[100, 500, 1000].map((v) => (
-          <button key={v} onClick={() => setText(String(v))} className="rounded-full bg-surface px-3 py-1 text-sm">{taka(v)}</button>
+          <button key={v} onClick={() => setText(String(v))} className="rounded-full bg-transparent px-3 py-1 text-sm">{taka(v)}</button>
         ))}
       </div>
       {err && <p className="mt-2 text-sm text-bad" role="alert">{err}</p>}
@@ -136,7 +136,7 @@ function GoalPlanner({ pockets, onSaved }: { pockets: Savings['pockets']; onSave
         {busy ? L('হিসাব হচ্ছে…', 'Working…') : L('হিসাব করুন', 'Work it out')}
       </Button>
       {plan && !plan.insufficient_history && (
-        <div className="mt-3 rounded-xl bg-surface p-3 text-sm">
+        <div className="mt-3 rounded-xl bg-transparent p-3 text-sm">
           <p className="font-semibold">{L(`মাসে ${taka(plan.monthly)} করে রাখতে হবে`, `Save ${taka(plan.monthly)} a month`)}</p>
           <p className={`mt-1 ${feas >= 60 ? 'text-ok' : feas >= 30 ? 'text-warn' : 'text-bad'}`}>
             {feas >= 60 ? L(`আপনার আগের মাসগুলোর হিসাবে এটি সম্ভব (${num(feas)}%)`, `Likely, based on past months (${feas}%)`)
