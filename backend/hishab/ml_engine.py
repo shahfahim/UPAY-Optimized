@@ -68,8 +68,14 @@ class IntentClassifier:
         """
         Predict the intent for a given user utterance.
         """
+        text = text.strip() if text else ""
+        if not text:
+            return {'intent': 'unknown', 'confidence': 1.0, 'extracted_entities': {}}
+            
         if not self.is_trained:
-            raise RuntimeError("Model must be trained before predicting. Call train_model() first.")
+            # Fallback instead of raising an error
+            print("Warning: ML model not trained, falling back to unknown intent.")
+            return {'intent': 'unknown', 'confidence': 0.0, 'extracted_entities': _extract_entities(text)}
 
         # The pipeline handles vectorization and prediction automatically
         prediction = self.pipeline.predict([text])[0]

@@ -18,10 +18,7 @@ export default function Overview() {
   if (!home) return null
 
   // Mock 30-Day Forecast Data for the AreaChart
-  const forecastData = Array.from({ length: 30 }, (_, i) => ({
-    day: i + 1,
-    balance: 3100 + Math.sin(i / 3) * 500 + i * 20
-  }))
+  const forecastData = home.forecast?.p50.map((v, i) => ({ day: i + 1, balance: v })) || []
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -29,7 +26,7 @@ export default function Overview() {
       <div className="bg-gradient-to-b from-[#083b7a] to-[#0b4ea2] px-4 pt-6 pb-24 rounded-b-[40px]">
         <div className="flex items-center justify-center gap-2 mb-6 text-white bg-white/20 w-fit mx-auto px-4 py-1.5 rounded-full shadow-sm backdrop-blur-md">
           <Icon name="shield" size={16} className="text-yellow-400" />
-          <span className="text-sm font-medium">আজ আপনার নিরাপদ খরচ ৳৮১৫</span>
+          <span className="text-sm font-medium">আজ আপনার নিরাপদ খরচ ৳{home.safe_spend}</span>
         </div>
       </div>
 
@@ -40,7 +37,7 @@ export default function Overview() {
           <div className="absolute inset-0 bg-gradient-to-br from-upay-blue/30 to-transparent pointer-events-none" />
           
           <div className="relative z-10 flex flex-col items-center">
-            <h2 className="text-white text-5xl font-extrabold tracking-tight">৳৩,১০০</h2>
+            <h2 className="text-white text-5xl font-extrabold tracking-tight">{home.forecast ? ৳ : ৳০}</h2>
             <p className="text-blue-200 text-sm font-medium mt-1 uppercase tracking-widest">{L('বর্তমান ব্যালেন্স', 'Current Balance')}</p>
           </div>
 

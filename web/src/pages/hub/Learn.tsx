@@ -15,7 +15,7 @@ export default function Learn() {
       {loading && <Spinner />}
       {error && <ErrorNote message={error} onRetry={reload} />}
       {data?.length === 0 && <p className="rounded-2xl bg-white p-6 text-center text-sm text-muted">{L('এখন নতুন কোনো পাঠ নেই।', 'No new lessons right now.')}</p>}
-      {data?.map((l) => <LessonCard key={l.id} lesson={l} onDone={() => setData(data.filter((x) => x.id !== l.id))} />)}
+      {data?.map((l) => <LessonCard key={l.id} lesson={l} onDone={() => setData(prev => prev?.filter((x) => x.id !== l.id) || [])} />)}
     </div>
   )
 }

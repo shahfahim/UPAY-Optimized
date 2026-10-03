@@ -6,6 +6,7 @@ import { Icon } from '../../components/Icon'
 import { AiBadge } from '../../components/ui'
 import { useLang } from '../../i18n'
 import { isVoiceSupported, listenBn } from '../../lib/voice'
+import { speakBangla } from '../../lib/accessibility'
 import { RouteWidget } from '../../components/RouteWidget'
 import type { RouteResult } from '../../api/types'
 
@@ -70,6 +71,7 @@ export default function Ask() {
     try {
       const a = await api.chat(uid, message)
       setMsgs((m) => [...m, { role: 'bot', text: a.text, answer: a }])
+        speakBangla(a.text)
     } catch (e) {
       setErr(e instanceof ApiError ? e.message : L('উত্তর আনা যায়নি — আবার চেষ্টা করুন', 'Could not get an answer — try again'))
     } finally {

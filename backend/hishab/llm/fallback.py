@@ -22,7 +22,11 @@ from hishab.llm.tools import run_tool
 import logging
 log = logging.getLogger(__name__)
 
-_user_memory: dict[str, dict] = {}
+_user_memory = {}
+def _get_memory(uid: str):
+    if len(_user_memory) > 1000:
+        _user_memory.clear() # Basic OOM protection
+    return _get_memory(uid)
 
 _BN_TO_ASCII = str.maketrans("০১২৩৪৫৬৭৮৯", "0123456789")
 
@@ -137,7 +141,7 @@ _INTENTS: list[tuple[str, str]] = [
      r"|will i have money|month end"),
 
     # ── 24. Product explanation ("what is X?") ───────────────────────────────
-    ("transaction_route", r"(কীভাবে|কিভাবে|কিসে|kishe|kise|কোন ওয়েতে).* (পাঠাব|পাঠাতে|patabo|ট্রান্সফার|transfer|সেন্ড|send|দেয়া যায়)|(নগদ|বিকাশ|npsb|ব্যাংক|bank card|মাকে|maa ke|kakeo).* (কীভাবে|কিভাবে|পাঠাব|patabo|কিসে|kishe|করলে)|পাঠাব.*কিসে|bank card|npsb.*tk|npsb.*taka|npsb korba"),
+    ("transaction_route", r"(কীভাবে|কিভাবে|কিসে|kishe|kise|কোন ওয়েতে).* (পাঠাব|পাঠাতে|patabo|ট্রান্সফার|transfer|সেন্ড|send|দেয়া যায়)|(নগদ|বিকাশ|npsb|ব্যাংক|bank card|মাকে|maa ke|kakeo).* (কীভাবে|কিভাবে|পাঠাব|patabo|কিসে|kishe|করলে)|পাঠাব.*কিসে|bank card|npsb.*????|npsb ???"),
     ("product_explain",
      r"(?:dps|pocket|npsb|upay|hishab|cash.?out|cashout)\s*(?:ki|keno|mane|কী|কেন|মানে)"
      r"|what is (?:dps|pocket|npsb|upay|hishab|cashout)"
@@ -468,9 +472,9 @@ def answer(uid: str, message: str, svc) -> dict:  # noqa: C901 (intentionally lo
     elif intent == "goal":
         target, months = _parse_goal(message)
         if target is not None:
-            _user_memory.setdefault(uid, {})["target"] = target
-        elif uid in _user_memory and "target" in _user_memory[uid]:
-            target = _user_memory[uid]["target"]
+            _get_memory(uid)["target"] = target
+        elif uid in _user_memory and "target" in _get_memory(uid):
+            target = _get_memory(uid)["target"]
 
         if target is None:
             adv = svc.dps_advice(uid)

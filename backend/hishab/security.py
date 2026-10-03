@@ -1,3 +1,4 @@
+import threading
 """
 Security Module for Hishab AI Copilot
 Handles rate limiting and PII (Personally Identifiable Information) stripping to ensure financial data security.
@@ -24,6 +25,7 @@ class RateLimiter:
         self.window_seconds = window_seconds
         # Mapping from client_id (e.g., IP address or user ID) to a list of request timestamps
         self._requests: Dict[str, List[float]] = {}
+        self._lock = threading.Lock()
 
     def is_allowed(self, client_id: str) -> bool:
         """
@@ -37,21 +39,22 @@ class RateLimiter:
         """
         current_time = time.time()
         
-        if client_id not in self._requests:
-            self._requests[client_id] = [current_time]
-            return True
+        with self._lock:
+            if client_id not in self._requests:
+                self._requests[client_id] = [current_time]
+                return True
+                
+            # Clean up old requests outside the current window
+            self._requests[client_id] = [
+                req_time for req_time in self._requests[client_id] 
+                if current_time - req_time <= self.window_seconds
+            ]
             
-        # Clean up old requests outside the current window
-        self._requests[client_id] = [
-            req_time for req_time in self._requests[client_id] 
-            if current_time - req_time <= self.window_seconds
-        ]
-        
-        if len(self._requests[client_id]) < self.max_requests:
-            self._requests[client_id].append(current_time)
-            return True
-            
-        return False
+            if len(self._requests[client_id]) < self.max_requests:
+                self._requests[client_id].append(current_time)
+                return True
+                
+            return False
         
     def get_remaining_requests(self, client_id: str) -> int:
         """
@@ -86,7 +89,7 @@ def PII_Stripper(text: str) -> str:
         
     # Pattern for BD phone numbers: optional +88 or 88, followed by 11 digits starting with 01
     # Example: +8801712345678, 01712345678, 8801712345678
-    phone_pattern = re.compile(r'(?:\+?88)?01[3-9]\d{8}')
+    phone_pattern = re.compile(r'\\b(?:\\+?88)?01[3-9]\\d{8}\\b')
     
     # Pattern for PINs: 4 to 6 consecutive digits that are stand-alone (word boundaries)
     pin_pattern = re.compile(r'\b\d{4,6}\b')
