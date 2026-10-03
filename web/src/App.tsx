@@ -65,10 +65,10 @@ export default function App() {
         <Route path="more" element={<More />} />
         <Route path="payments" element={<Payments />} />
         <Route path="hishab" element={<HubLayout />}>
-          <Route index element={<Overview />} />
+          <Route index element={<Ask />} />
+          <Route path="overview" element={<Overview />} />
           <Route path="calendar" element={<Calendar />} />
           <Route path="learn" element={<Learn />} />
-          <Route path="ask" element={<Ask />} />
         </Route>
         <Route path="hishab/health" element={<Health />} />
         <Route path="savings" element={<SavingsHome />} />
