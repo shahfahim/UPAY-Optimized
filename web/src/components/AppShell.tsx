@@ -48,118 +48,49 @@ function MessageStrip({ shell }: { shell: Shell }) {
 
 function BalanceButton({ shell }: { shell: Shell }) {
   const { L, taka } = useLang()
-  const [animState, setAnimState] = useState<'idle' | 'centering' | 'entering' | 'revealed' | 'returning'>('idle')
-  const buttonRef = useRef<HTMLButtonElement>(null)
-  const [rect, setRect] = useState<DOMRect | null>(null)
-  const [coinStyle, setCoinStyle] = useState<React.CSSProperties>({})
+  const [step, setStep] = useState<'idle' | 'spin-in' | 'hole' | 'spin-out' | 'open'>('idle')
 
   useEffect(() => {
-    if (animState === 'idle') return
-
-    if (animState === 'centering') {
-      const t = window.setTimeout(() => setAnimState('entering'), 800)
-      return () => window.clearTimeout(t)
+    if (step === 'spin-in') {
+      const t = setTimeout(() => setStep('hole'), 300)
+      return () => clearTimeout(t)
     }
-    if (animState === 'entering') {
-      const t = window.setTimeout(() => setAnimState('revealed'), 600)
-      return () => window.clearTimeout(t)
+    if (step === 'hole') {
+      const t = setTimeout(() => setStep('spin-out'), 200)
+      return () => clearTimeout(t)
     }
-    if (animState === 'revealed') {
-      const t = window.setTimeout(() => setAnimState('returning'), 3600)
-      return () => window.clearTimeout(t)
+    if (step === 'spin-out') {
+      const t = setTimeout(() => setStep('open'), 300)
+      return () => clearTimeout(t)
     }
-    if (animState === 'returning') {
-      const t = window.setTimeout(() => setAnimState('idle'), 400)
-      return () => window.clearTimeout(t)
+    if (step === 'open') {
+      const t = setTimeout(() => setStep('idle'), 4000)
+      return () => clearTimeout(t)
     }
-  }, [animState])
-
-  useEffect(() => {
-    if (animState === 'centering' && rect) {
-      setCoinStyle({
-        top: rect.top,
-        left: rect.left,
-        width: rect.width,
-        height: rect.height,
-        borderRadius: '9999px',
-        position: 'absolute',
-        transition: 'none',
-        transform: 'rotateY(0deg)',
-      })
-      
-      const frame = requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          setCoinStyle({
-            top: '50%',
-            left: '50%',
-            width: rect.height,
-            height: rect.height,
-            marginTop: -rect.height / 2,
-            marginLeft: -rect.height / 2,
-            borderRadius: '50%',
-            position: 'absolute',
-            transition: 'all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1)',
-            transform: 'rotateY(1440deg)',
-          })
-        })
-      })
-      return () => cancelAnimationFrame(frame)
-    }
-    if (animState === 'entering') {
-      setCoinStyle(prev => ({
-        ...prev,
-        transition: 'all 0.6s cubic-bezier(0.5, 0, 1, 0.5)',
-        transform: 'rotateY(2160deg) scale(0)',
-        opacity: 0,
-      }))
-    }
-  }, [animState, rect])
-
-  const handleClick = () => {
-    if (animState !== 'idle' || !buttonRef.current) return
-    setRect(buttonRef.current.getBoundingClientRect())
-    setAnimState('centering')
-  }
+  }, [step])
 
   return (
-    <>
-      <button 
-        ref={buttonRef} 
-        onClick={handleClick} 
-        aria-live="polite"
-        className={`min-w-[104px] rounded-full bg-[#ffd500] px-3 py-1.5 text-center text-[#083b7a] font-extrabold shadow-[0_4px_12px_rgba(255,213,0,0.4)] ring-[2px] ring-[#ffd500]/50 transition-all duration-300 ${animState !== 'idle' ? 'opacity-0 scale-90' : 'active:scale-95'}`}
+    <button
+      onClick={() => step === 'idle' && setStep('spin-in')}
+      aria-live="polite"
+      className={`relative flex h-9 items-center justify-center rounded-full bg-[#ffd500] text-[#083b7a] font-extrabold shadow-[0_4px_12px_rgba(255,213,0,0.4)] ring-[2px] ring-[#ffd500]/50 transition-all duration-300 ease-in-out ${
+        (step === 'spin-in' || step === 'hole' || step === 'spin-out') ? 'w-9 px-0' : 'min-w-[104px] px-3'
+      } ${step === 'spin-in' ? 'rotate-180 scale-50 opacity-50' : ''} ${
+        step === 'hole' ? 'scale-0 opacity-0' : ''
+      } ${step === 'spin-out' ? 'rotate-[360deg] scale-100 opacity-100' : ''}`}
+    >
+      <span
+        className={`whitespace-nowrap transition-opacity duration-200 ${
+          (step === 'spin-in' || step === 'hole' || step === 'spin-out') ? 'opacity-0' : 'opacity-100'
+        }`}
       >
-        <span className="text-sm">{L('ব্যালেন্স', 'Balance')}</span>
-      </button>
-
-      {animState !== 'idle' && rect && (
-        <div className="fixed inset-0 z-[100] pointer-events-none">
-          {(animState === 'entering' || animState === 'revealed' || animState === 'returning') && (
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-               <div className={`w-32 h-32 rounded-full bg-gradient-to-tr from-indigo-900 via-purple-900 to-black shadow-[0_0_50px_20px_rgba(139,92,246,0.6)] ${animState === 'entering' ? 'animate-hole-appear' : (animState === 'returning' ? 'animate-hole-disappear' : 'animate-hole-pulse')}`}>
-                 <div className="w-full h-full rounded-full border-4 border-purple-500/50 animate-spin-slow"></div>
-               </div>
-            </div>
-          )}
-
-          <div 
-            style={coinStyle} 
-            className="bg-[#ffd500] shadow-[0_4px_12px_rgba(255,213,0,0.8)] ring-[2px] ring-[#ffd500]/50 flex items-center justify-center overflow-hidden"
-          >
-             <span className="text-transparent">B</span>
-          </div>
-
-          {animState === 'revealed' && (
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full flex justify-center animate-balance-reveal">
-              <div className="bg-white/95 backdrop-blur-xl px-8 py-5 rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.4)] ring-4 ring-white/60 flex flex-col items-center">
-                <span className="text-xs text-slate-500 font-bold mb-1 uppercase tracking-widest">{L('বর্তমান ব্যালেন্স', 'Current Balance')}</span>
-                <span className="text-4xl tracking-tight text-[#0b4ea2] font-black drop-shadow-sm">{taka(shell.balance)}</span>
-              </div>
-            </div>
-          )}
-        </div>
-      )}
-    </>
+        {step === 'open' ? (
+          <span className="text-[15px] tracking-tight">{taka(shell.balance)}</span>
+        ) : (
+          <span className="text-sm">{L('ব্যালেন্স', 'Balance')}</span>
+        )}
+      </span>
+    </button>
   )
 }
 
