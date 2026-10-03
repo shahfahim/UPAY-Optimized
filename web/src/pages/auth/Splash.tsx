@@ -36,8 +36,8 @@ export default function Splash() {
               strokeDasharray="340" className="animate-draw" transform="rotate(-90 60 60)" />
           </svg>
           <div className="flex animate-fade-in flex-col items-center leading-none">
-            <span className="text-5xl font-bold text-upay-blue">হিসাব</span>
-            <span className="mt-2 font-[Inter] text-sm font-semibold tracking-wide text-ink/60">hishab</span>
+            <img src="/upay-logo.png" alt="upay logo" className="h-16 w-auto object-contain" />
+            <span className="mt-2 font-[Inter] text-sm font-semibold tracking-wide text-ink/60">upay prototype</span>
           </div>
         </div>
       )}
