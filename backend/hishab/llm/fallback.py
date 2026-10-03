@@ -26,7 +26,7 @@ _user_memory = {}
 def _get_memory(uid: str):
     if len(_user_memory) > 1000:
         _user_memory.clear() # Basic OOM protection
-    return _get_memory(uid)
+    return _user_memory.setdefault(uid, {})
 
 _BN_TO_ASCII = str.maketrans("০১২৩৪৫৬৭৮৯", "0123456789")
 
