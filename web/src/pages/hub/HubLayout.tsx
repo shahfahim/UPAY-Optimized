@@ -5,9 +5,10 @@ import { useLang } from '../../i18n'
 export default function HubLayout() {
   const { L } = useLang()
   const tabs = [
+    { to: '/app/hishab/ask', bn: 'জিজ্ঞেস', en: 'Ask' },
     { to: '/app/hishab', end: true, bn: 'ওভারভিউ', en: 'Overview' },
     { to: '/app/hishab/learn', bn: 'শেখো', en: 'Learn' },
-    { to: '/app/hishab/ask', bn: 'জিজ্ঞেস', en: 'Ask' },
+    { to: '/app/savings', bn: 'Smart DPS', en: 'Smart DPS' },
   ]
   return (
     <div>
