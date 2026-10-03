@@ -227,6 +227,11 @@ export default function Pockets() {
                     onClick={() => setMove({ pocket: p.name, name: p.name_bn, dir: 'in', max: data.balance })}>{L('রাখুন', 'Add')}</Button>
                   <Button variant="ghost" className="!min-h-9 !px-3 text-sm" disabled={p.balance <= 0}
                     onClick={() => setMove({ pocket: p.name, name: p.name_bn, dir: 'out', max: p.balance })}>{L('তুলুন', 'Take out')}</Button>
+                  <Button variant="ghost" className="!min-h-9 !px-2 text-sm text-slate-400 hover:text-red-500"
+                    onClick={() => setMsg(L('পকেট ডিলিট করা হয়েছে (ডেমো)', 'Pocket deleted (Demo)'))} aria-label="Delete Pocket">
+                    <Icon name="trash" size={18} />
+                  </Button>
+
                 </div>
               </div>
               {p.goal && (
@@ -242,6 +247,9 @@ export default function Pockets() {
           ))}
         </div>
 
+        <Button variant="outline" className="w-full border-dashed border-2 border-slate-300 text-slate-500 hover:bg-slate-50 mb-4" onClick={() => setMsg(L('নতুন পকেট তৈরির ফিচার শীঘ্রই আসছে (ডেমো)', 'New pocket feature coming soon (Demo)'))}>
+          + {L('নতুন পকেট যোগ করুন', 'Add a new pocket')}
+        </Button>
         <Card className="border-upay-yellow bg-upay-yellow/10">
           <div className="mb-1 flex items-center gap-2"><Icon name="gift" size={18} className="text-upay-blue" />
             <p className="font-semibold">{L(`${eid.eid_name_bn} আসছে · ${num(eid.days_left)} দিন বাকি`, `${eid.eid_name} in ${eid.days_left} days`)}</p><AiBadge /></div>

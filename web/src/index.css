@@ -1,5 +1,4 @@
 @import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
 
 @theme {
   --color-upay-yellow: #ffd500;
@@ -16,7 +15,7 @@
   --color-warn-bg: #fdf3e1;
   --color-bad: #c81e1e;
   --color-bad-bg: #fdecec;
-  --font-sans: "Noto Sans Bengali", "Inter", system-ui, sans-serif;
+  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
   --font-en: "Inter", "Noto Sans Bengali", system-ui, sans-serif;
   --animate-fade-in: fade-in 600ms ease-out both;
   --animate-draw: draw 900ms ease-out 300ms both;

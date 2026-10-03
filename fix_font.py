@@ -1,15 +1,20 @@
-﻿# -*- coding: utf-8 -*-
+﻿import re
+
 with open('web/src/index.css', 'r', encoding='utf-8') as f:
-    css = f.read()
+    code = f.read()
 
-# Add font import if not present
-if 'Noto+Sans+Bengali' not in css:
-    css = css.replace('@import "tailwindcss";', "@import \"tailwindcss\";\n@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');")
+# Remove Noto Sans Bengali import
+code = re.sub(r"@import url\('https://fonts\.googleapis\.com/css2\?family=Noto\+Sans\+Bengali.*?swap'\);\n?", "", code)
 
-# Change font variables
-css = css.replace('"Hind Siliguri", "Inter", system-ui, sans-serif', '"Noto Sans Bengali", "Inter", system-ui, sans-serif')
-css = css.replace('"Inter", "Hind Siliguri", system-ui, sans-serif', '"Inter", "Noto Sans Bengali", system-ui, sans-serif')
-
+# Change font-family rule to generic system-ui to perfectly match OS native Bengali (like bKash does)
+code = re.sub(
+    r"font-family:\s*'Noto Sans Bengali',\s*sans-serif;",
+    r"font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';",
+    code
+)
+# Also check if it's applied to body or .app-frame
+# Usually tailwind's sans is used.
 with open('web/src/index.css', 'w', encoding='utf-8') as f:
-    f.write(css)
-print('Font updated to Noto Sans Bengali')
+    f.write(code)
+
+print("Font updated to native system font!")

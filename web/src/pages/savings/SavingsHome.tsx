@@ -23,7 +23,7 @@ export default function SavingsHome() {
       sub: data ? L(`লেভেল ${num(data[1].level)} · ${data[1].name_bn}`, `Level ${data[1].level}`) : '' },
     { icon: 'shield', bn: 'জরুরি টাকা', en: 'Emergency money', ai: true, to: '/app/savings/emergency',
       sub: L('হঠাৎ টাকা লাগলে কোথা থেকে নেবেন', 'Where to find money in a pinch') },
-    { icon: 'bank', bn: 'ডিপিএস', en: 'DPS', ai: false, to: '/app/savings/dps',
+    { icon: 'bank', bn: 'Smart DPS', en: 'Smart DPS', ai: true, to: '/app/savings/dps',
       sub: data?.[0].dps ? L(`মাসে ${taka(data[0].dps.monthly)} চালু`, `${taka(data[0].dps.monthly)}/month active`)
         : L('Smart DPS পরামর্শসহ', 'With Smart DPS advice') },
     { icon: 'bill', bn: 'ই-টিন ও সঞ্চয় বিবরণী', en: 'e-TIN & savings statement', ai: false, to: null,
