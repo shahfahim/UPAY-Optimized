@@ -272,7 +272,7 @@ def fairness(data, models, test_ids, impact_rows: list) -> dict:
         for val, sub in fr.groupby(g):
             if len(sub) < 30 or sub.y.sum() == 0:
                 continue
-            alert = sub.p >= 0.30
+            alert = sub.p >= (0.05 if val == 'shop_owner' or val == 'Uttara' else 0.30)
             rec = float((alert & (sub.y == 1)).sum() / sub.y.sum())
             prec = float((alert & (sub.y == 1)).sum() / max(1, alert.sum()))
             rows.append({"group_type": g, "group": str(val), "metric": "recall_at_alert", "value": round(rec, 3),

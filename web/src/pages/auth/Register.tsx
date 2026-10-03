@@ -26,7 +26,7 @@ export default function Register() {
     try {
       await fn()
     } catch (e) {
-      setErr(e instanceof ApiError ? e.message : L('কিছু একটা ভুল হয়েছে', 'Something went wrong'))
+      setErr(e instanceof ApiError ? e.message : L('কোথাও কোনো সমস্যা হয়েছে', 'Something went wrong'))
     } finally {
       setBusy(false)
     }
@@ -45,8 +45,8 @@ export default function Register() {
     setStep(3)
   }
   const finish = () => {
-    if (name.trim().length < 2) return setErr(L('নাম লিখুন', 'Enter your name'))
-    if (pin.length !== 6) return setErr(L('৬ সংখ্যার PIN দিন', 'Choose a 6-digit PIN'))
+    if (name.trim().length < 2) return setErr(L('আপনার নাম লিখুন', 'Enter your name'))
+    if (pin.length !== 6) return setErr(L('আপনার ৬ ডিজিটের পিন দিন', 'Choose a 6-digit PIN'))
     void run(async () => {
       const r = await api.registerVerify(m, toAsciiDigits(otp), name.trim(), pin)
       setSession({ token: r.token, userId: r.user_id })
@@ -54,7 +54,7 @@ export default function Register() {
     })
   }
 
-  const steps = [L('নম্বর', 'Number'), 'OTP', L('নাম ও PIN', 'Name & PIN')]
+  const steps = [L('নম্বর', 'Number'), 'OTP', L('নাম ও পিন', 'Name & PIN')]
   return (
     <div className="flex flex-1 flex-col">
       <div className="flex items-center gap-3 bg-upay-yellow px-4 py-3">
@@ -71,7 +71,7 @@ export default function Register() {
       </div>
       <div className="flex-1 px-5 py-5">
         <p className="mb-4 rounded-xl bg-warn-bg px-3 py-2 text-xs font-semibold text-warn">
-          {L('Demo — আসল তথ্য দেবেন না। একটা নমুনা ইতিহাস তৈরি হবে।', 'Demo — do not enter real details. A sample history is created.')}
+          {L('ডেমো — আপনার আসল তথ্য দেবেন না। একটি নমুনা ইতিহাস তৈরি হবে।', 'Demo — do not enter real details. A sample history is created.')}
         </p>
         {step === 1 && (
           <>
@@ -101,7 +101,7 @@ export default function Register() {
             <label className="mb-1 block text-sm font-semibold" htmlFor="rname">{L('আপনার নাম', 'Your name')}</label>
             <input id="rname" value={name} maxLength={40} onChange={(e) => { setName(e.target.value); setErr('') }}
               className="mb-4 h-12 w-full rounded-xl border border-line bg-surface px-3 outline-none focus:border-upay-blue" />
-            <p className="mb-2 text-sm font-semibold">{L('৬ সংখ্যার PIN বেছে নিন', 'Choose a 6-digit PIN')}</p>
+            <p className="mb-2 text-sm font-semibold">{L('৬ ডিজিটের পিন বেছে নিন', 'Choose a 6-digit PIN')}</p>
             <PinPad value={pin} onChange={(v) => { setPin(v); setErr('') }} />
             <Button full className="mt-5" onClick={finish} disabled={busy}>
               {busy ? L('অ্যাকাউন্ট তৈরি হচ্ছে…', 'Creating account…') : L('অ্যাকাউন্ট খুলুন', 'Create account')}

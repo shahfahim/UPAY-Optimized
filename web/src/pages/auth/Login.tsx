@@ -45,7 +45,7 @@ export default function Login() {
 
   function submit() {
     if (!mobileOk) return setErr(L('সঠিক মোবাইল নম্বর দিন', 'Enter a valid mobile number'))
-    if (pin.length !== 6) return setErr(L('৬ সংখ্যার PIN দিন', 'Enter your 6-digit PIN'))
+    if (pin.length !== 6) return setErr(L('আপনার ৬ ডিজিটের পিন দিন', 'Enter your 6-digit PIN'))
     void doLogin(toAsciiDigits(mobile), pin)
   }
 
@@ -60,27 +60,27 @@ export default function Login() {
           <TextMark />
           <div>
             <p className="font-semibold">{L('অ্যাকাউন্টে লগইন', 'Account login')}</p>
-            <p className="text-xs text-muted">{L('মোবাইল নম্বর আর PIN দিন', 'Enter your mobile number and PIN')}</p>
+            <p className="text-xs text-muted">{L('আপনার মোবাইল নম্বর এবং পিন দিন', 'Enter your mobile number and PIN')}</p>
           </div>
         </div>
         <p className="mb-4 rounded-xl bg-warn-bg px-3 py-2 text-xs font-semibold text-warn">
-          {L('Demo — আসল PIN দেবেন না', 'Demo — do not enter a real PIN')}
+          {L('ডেমো — আপনার আসল পিন দেবেন না', 'Demo — do not enter a real PIN')}
         </p>
         <label className="mb-1 block text-sm font-semibold" htmlFor="mobile">{L('মোবাইল নম্বর', 'Mobile number')}</label>
         <input id="mobile" inputMode="numeric" autoComplete="off" placeholder="01XXXXXXXXX" value={mobile}
           onChange={(e) => { setMobile(e.target.value); setErr('') }}
           className="mb-1 h-12 w-full rounded-xl border border-line bg-surface px-3 font-[Inter] text-lg tracking-wider outline-none focus:border-upay-blue" />
         {mobile && !mobileOk && <p className="mb-2 text-xs text-bad">{L('সঠিক মোবাইল নম্বর দিন', 'Enter a valid mobile number')}</p>}
-        <p className="mb-2 mt-4 text-sm font-semibold">{L('PIN দিন', 'Enter PIN')}</p>
+        <p className="mb-2 mt-4 text-sm font-semibold">{L('পিন দিন', 'Enter PIN')}</p>
         <PinPad value={pin} onChange={(v) => { setPin(v); setErr('') }} />
         {err && <p className="mt-3 text-center text-sm text-bad" role="alert">{err}</p>}
         <Button full className="mt-4" onClick={submit} disabled={busy}>{busy ? '…' : L('লগইন', 'Log in')}</Button>
         <button className="mt-3 w-full text-center text-sm text-upay-blue" onClick={() => setForgot(true)}>
-          {L('PIN ভুলে গেছেন?', 'Forgot your PIN?')}
+          {L('পিন ভুলে গেছেন?', 'Forgot your PIN?')}
         </button>
 
         <div className="mt-6 border-t border-line pt-4">
-          <p className="mb-2 text-sm font-semibold">{L('Demo user হিসেবে ঢুকুন', 'Enter as a demo user')}</p>
+          <p className="mb-2 text-sm font-semibold">{L('ডেমো ইউজার হিসেবে প্রবেশ করুন', 'Enter as a demo user')}</p>
           <div className="space-y-2">
             {users.slice(0, 5).map((d) => (
               <button key={d.user_id} disabled={busy} onClick={() => void doLogin(d.phone, '123456')}
@@ -98,8 +98,8 @@ export default function Login() {
           </div>
         </div>
       </div>
-      <Sheet open={forgot} onClose={() => setForgot(false)} title={L('PIN ভুলে গেছেন?', 'Forgot your PIN?')}>
-        <p className="text-sm text-muted">{L('এটা demo। সব demo user-এর PIN ১২৩৪৫৬, অথবা উপরের তালিকা থেকে ঢুকুন।',
+      <Sheet open={forgot} onClose={() => setForgot(false)} title={L('পিন ভুলে গেছেন?', 'Forgot your PIN?')}>
+        <p className="text-sm text-muted">{L('এটি ডেমো। সব ডেমো ইউজারের পিন ১২৩৪৫৬, অথবা উপরের তালিকা থেকে প্রবেশ করুন।',
           'This is a demo. Every demo user\'s PIN is 123456, or pick a user from the list.')}</p>
       </Sheet>
     </div>

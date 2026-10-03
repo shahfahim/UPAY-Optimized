@@ -46,7 +46,7 @@ export function RouteWidget({ result, destinationName }: { result: RouteResult; 
 
         {/* Sender */}
         <div className="rounded border border-[#444] bg-[#2a2a2a] px-5 py-1.5 shadow-md">
-          {L('তুমি', 'You')}
+          {L('আপনি', 'You')}
         </div>
 
         {/* Source */}

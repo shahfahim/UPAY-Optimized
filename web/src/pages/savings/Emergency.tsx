@@ -39,12 +39,12 @@ function OptionCard({ o, i, amount, onTake, requested, onRequest }: {
             <>
               <p className="mt-2 rounded-lg bg-warn-bg px-2 py-1 text-xs font-semibold text-warn">{L('চূড়ান্ত সিদ্ধান্ত ব্যাংক নেবে', 'The bank makes the final decision')}</p>
               <Button variant="outline" full className="mt-2" disabled={requested} onClick={onRequest}>
-                {requested ? L('অনুরোধ তৈরি হয়েছে (demo)', 'Request drafted (demo)') : L('ব্যাংকে অনুরোধ পাঠাও (demo)', 'Send request to bank (demo)')}
+                {requested ? L('অনুরোধ তৈরি হয়েছে (ডেমো)', 'Request drafted (demo)') : L('ব্যাংকে অনুরোধ পাঠান (ডেমো)', 'Send request to bank (demo)')}
               </Button>
             </>
           ) : (
             <Button variant={i === 0 ? 'blue' : 'outline'} full className="mt-2" onClick={() => onTake(o)}>
-              {L(`${taka(Math.min(o.available, amount), { paisa: Math.min(o.available, amount) % 1 !== 0 })} তুলে ওয়ালেটে নাও`,
+              {L(`${taka(Math.min(o.available, amount), { paisa: Math.min(o.available, amount) % 1 !== 0 })} তুলে ওয়ালেটে নিন`,
                 `Move ${taka(Math.min(o.available, amount))} to wallet`)}
             </Button>
           )}
@@ -109,7 +109,7 @@ export default function Emergency() {
                 onKeyDown={(e) => e.key === 'Enter' && void check()} placeholder="৩,০০০"
                 className="min-h-11 w-full bg-transparent px-2 font-semibold outline-none" />
             </div>
-            <Button disabled={busy} onClick={() => void check()}>{busy ? '…' : L('দেখাও', 'Show')}</Button>
+            <Button disabled={busy} onClick={() => void check()}>{busy ? '…' : L('দেখান', 'Show')}</Button>
           </div>
           {err && <p className="mt-2 text-sm text-bad" role="alert">{err}</p>}
         </Card>
@@ -120,10 +120,10 @@ export default function Emergency() {
           <Card className="text-sm">
             <p className="font-semibold">{L('এখন পকেটে বা DPS-এ কোনো জমা নেই', 'No pocket or DPS savings yet')}</p>
             <p className="mt-1 text-muted">
-              {L('পরের বার এমন সময়ের জন্য জরুরি পকেটে অল্প অল্প করে রাখা শুরু করো — সপ্তাহে ৳১০০ হলেও চলবে।',
+              {L('পরের বার এমন সময়ের জন্য জরুরি পকেটে অল্প অল্প করে রাখা শুরু করুন — সপ্তাহে ৳১০০ হলেও চলবে।',
                 'Start putting a little into the emergency pocket for next time — even ৳100 a week helps.')}
             </p>
-            <Link to="/app/savings/pockets" className="mt-2 inline-block font-semibold text-upay-blue underline">{L('পকেটে যাও', 'Go to pockets')}</Link>
+            <Link to="/app/savings/pockets" className="mt-2 inline-block font-semibold text-upay-blue underline">{L('পকেটে যান', 'Go to pockets')}</Link>
           </Card>
         )}
 
@@ -131,8 +131,8 @@ export default function Emergency() {
           <>
             <p className="px-1 text-sm text-muted">
               {covered >= res.amount
-                ? L(`তোমার জমানো টাকাতেই ${taka(res.amount)} হয়ে যাবে।`, `Your savings cover ${taka(res.amount)}.`)
-                : L(`জমানো টাকায় ${taka(covered)} হবে; বাকিটার জন্য নিচের বিকল্প দেখো।`, `Savings cover ${taka(covered)}; see below for the rest.`)}
+                ? L(`আপনার জমানো টাকাতেই ${taka(res.amount)} হয়ে যাবে।`, `Your savings cover ${taka(res.amount)}.`)
+                : L(`জমানো টাকায় ${taka(covered)} হবে; বাকিটার জন্য নিচের বিকল্প দেখুন।`, `Savings cover ${taka(covered)}; see below for the rest.`)}
             </p>
             {res.options.map((o, i) => (
               <OptionCard key={`${o.kind}-${o.pocket}`} o={o} i={i} amount={res.amount} onTake={(x) => void take(x)}
@@ -140,7 +140,7 @@ export default function Emergency() {
             ))}
             {requested && (
               <p className="rounded-xl bg-surface p-3 text-xs text-muted">
-                {L('এটা demo — কোনো ব্যাংকে অনুরোধ পাঠানো হয়নি। আসল সেবায় ব্যাংক নিজের নিয়মে যাচাই করবে।',
+                {L('এটি ডেমো — কোনো ব্যাংকে অনুরোধ পাঠানো হয়নি। আসল সেবায় ব্যাংক নিজস্ব নিয়মে যাচাই করবে।',
                   'Demo only — nothing was sent. In the real service the bank reviews it under its own rules.')}
               </p>
             )}

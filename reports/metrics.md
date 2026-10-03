@@ -16,11 +16,11 @@ Forecasts evaluated: 1285
 
 | Metric | Model | Rule baseline |
 |---|---|---|
-| PR-AUC | 0.912 | 0.53 |
-| Precision at alert (amber+) | 0.81 | 0.568 |
-| Recall at alert | 0.894 | 0.759 |
-| ROC-AUC | 0.942 | – |
-| Brier | 0.0923 | – |
+| PR-AUC | 0.914 | 0.53 |
+| Precision at alert (amber+) | 0.792 | 0.568 |
+| Recall at alert | 0.902 | 0.759 |
+| ROC-AUC | 0.944 | – |
+| Brier | 0.0917 | – |
 | Median warning lead time, all alerted positives (days) | 3.0 | – |
 | Median warning lead time, new shortfalls only (days) | 6.0 | – |
 
@@ -48,11 +48,11 @@ Observations: 1814, positive rate 0.41
 | Metric | Value |
 |---|---|
 | n_dps_holders | 153 |
-| smart_missed_rate | 0.14 |
+| smart_missed_rate | 0.144 |
 | naive_10pct_missed_rate | 0.127 |
-| smart_avg_monthly | 4367.0 |
+| smart_avg_monthly | 4411.0 |
 | naive_avg_monthly | 2474.0 |
-| not_now_share | 0.51 |
+| not_now_share | 0.523 |
 
 ## E8 Eid planner
 

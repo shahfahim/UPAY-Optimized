@@ -23,7 +23,7 @@ FEATURE_KEYS = [
     "balance", "days_since_income", "days_to_income", "income_amount", "income_regularity",
     "out_7d", "out_30d", "cashout_share_30d", "depletion_days", "cashout_3d_after_income_share",
     "remittance_share", "other_wallet_share", "pocket_total", "days_to_eid", "month_end", "dom", "dow",
-    "shortfall_days_90d", "min_balance_30d", "tenure_days", "persona_code",
+    "shortfall_days_90d", "min_balance_30d", "tenure_days", "persona_code", "recent_income_days",
 ] + [f"out_30d_{c}" for c in CATEGORIES]
 
 _EPOCH = date(2000, 1, 1)
@@ -112,6 +112,7 @@ def features_at(a: UserArrays, user: dict, as_of: date, pocket_total: float | No
     reg = a.is_regular_income[:end] & (day > t - 183)
     reg_idx = np.flatnonzero(reg)
     recent_income_days = int(np.unique(day[inc & w30]).size)
+    f["recent_income_days"] = float(recent_income_days)
     if len(reg_idx) >= 2:
         payday = int(np.median(a.dom[:end][reg_idx]))
         nxt = _next_payday(as_of, payday)
@@ -123,7 +124,7 @@ def features_at(a: UserArrays, user: dict, as_of: date, pocket_total: float | No
         win = (day >= day[last_i]) & (day <= day[last_i] + 3) & (typ == "cash_out")
         f["cashout_3d_after_income_share"] = float(amt[win].sum()) / max(a.amount[last_i], 1.0)
     else:
-        f["days_to_income"] = 1.0 if recent_income_days >= 8 else 30.0
+        f["days_to_income"] = float("nan") if recent_income_days >= 8 else 30.0
         f["depletion_days"] = 30.0
         f["cashout_3d_after_income_share"] = 0.0
 

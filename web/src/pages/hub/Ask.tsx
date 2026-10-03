@@ -99,8 +99,8 @@ export default function Ask() {
       <div className="flex-1 space-y-3">
         {msgs.length === 0 && (
           <div className="rounded-2xl bg-white p-4">
-            <p className="flex items-center gap-2 font-semibold"><AiBadge />{L(`${shell?.name.split(' ')[0] ?? ''}, টাকা নিয়ে যা খুশি জিজ্ঞেস করো`, 'Ask anything about your money')}</p>
-            <p className="mt-1 text-sm text-muted">{L('বাংলায় লিখে বা বলে জিজ্ঞেস করতে পারো। উত্তর তোমার নিজের লেনদেনের হিসাব থেকে।', 'Type or speak in Bangla. Answers come from your own transactions.')}</p>
+            <p className="flex items-center gap-2 font-semibold"><AiBadge />{L(`${shell?.name.split(' ')[0] ?? ''}, টাকা নিয়ে যা খুশি জিজ্ঞেস করুন`, 'Ask anything about your money')}</p>
+            <p className="mt-1 text-sm text-muted">{L('বাংলায় লিখে বা বলে জিজ্ঞেস করতে পারেন। উত্তর আপনার নিজের লেনদেনের হিসাব থেকে।', 'Type or speak in Bangla. Answers come from your own transactions.')}</p>
           </div>
         )}
         {msgs.map((m, i) => m.role === 'user' ? (
@@ -138,7 +138,7 @@ export default function Ask() {
           {text.length > MAX - 50 && <p className={`text-right text-[11px] ${text.length > MAX ? 'text-bad' : 'text-muted'}`}>{text.length}/{MAX}</p>}
         </div>
         {voice ? (
-          <button type="button" onClick={() => void mic()} disabled={busy || listening} aria-label={L('বলে জিজ্ঞেস করো', 'Ask by voice')}
+          <button type="button" onClick={() => void mic()} disabled={busy || listening} aria-label={L('বলে জিজ্ঞেস করুন', 'Ask by voice')}
             className={`flex size-11 shrink-0 items-center justify-center rounded-full ${listening ? 'animate-pulse bg-bad text-white' : 'bg-upay-yellow text-upay-blue'}`}>
             <Icon name="mic" size={20} />
           </button>
@@ -148,7 +148,7 @@ export default function Ask() {
             <Icon name="mic" size={20} />
           </span>
         )}
-        <button type="submit" disabled={busy} aria-label={L('পাঠাও', 'Send')} className="flex size-11 shrink-0 items-center justify-center rounded-full bg-upay-blue text-white disabled:opacity-50">
+        <button type="submit" disabled={busy} aria-label={L('পাঠান', 'Send')} className="flex size-11 shrink-0 items-center justify-center rounded-full bg-upay-blue text-white disabled:opacity-50">
           <Icon name="send" size={18} />
         </button>
       </form>

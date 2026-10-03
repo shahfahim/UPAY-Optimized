@@ -19,8 +19,52 @@ from datetime import date
 from hishab.engine.text import bn_digits, bn_num
 from hishab.llm.normalizer import normalize
 from hishab.llm.tools import run_tool
+import logging
+log = logging.getLogger(__name__)
+
+_user_memory: dict[str, dict] = {}
 
 _BN_TO_ASCII = str.maketrans("০১২৩৪৫৬৭৮৯", "0123456789")
+
+# ─────────────────────────────────────────────────────────────────────────────
+# ML SECOND OPINION
+# ─────────────────────────────────────────────────────────────────────────────
+_ML_THRESHOLD = 0.6
+_ml_predictor = None
+
+def _load_ml():
+    global _ml_predictor
+    if _ml_predictor is False: return
+    try:
+        from hishab.ml_engine import predict_intent
+        _ml_predictor = predict_intent
+    except Exception as e:
+        log.warning(f"ML engine not available: {e}")
+        _ml_predictor = False
+
+def _ml_intent(text: str) -> str | None:
+    if _ml_predictor is None: _load_ml()
+    if not _ml_predictor: return None
+    try:
+        res = _ml_predictor(text)
+        if res.get("confidence", 0) >= _ML_THRESHOLD:
+            return res.get("intent")
+    except Exception:
+        pass
+    return None
+
+_ML_TO_INTENT: dict[str, str] = {
+    "status": "status",
+    "health": "status",
+    "advice": "advice",
+    "goal": "goal",
+    "savings": "goal",
+    "send_money": "transaction_route",
+    "route_planner": "transaction_route",
+    "cashout": "cashout",
+    "emergency": "emergency",
+    "balance": "balance",
+}
 
 # ─────────────────────────────────────────────────────────────────────────────
 # INTENT TABLE  (first match wins — order matters)
@@ -69,20 +113,6 @@ _INTENTS: list[tuple[str, str]] = [
      r"|আমার প্রগতি|আমার আর্থিক অবস্থা|kemon cholche|কেমন চলছে"
      r"|am i doing (well|ok|good)|how am i doing|amar ki khobor"),
 
-    # ── 7. Advice / "ki korbo?" ───────────────────────────────────────────────
-    ("advice",
-     r"ki korbo|কী করব|ki korle|কী করলে|ki kora uchit|কী করা উচিত"
-     r"|porামর্শ|পরামর্শ|tips?|suggestion|ki korbo ekhon"
-     r"|what should i do|what to do|help me|help koro|ekhon ki|এখন কী"
-     r"|taka bachate|টাকা বাঁচাতে|kharoch komabe kivabe|খরচ কমাব কীভাবে"),
-
-    # ── 8. Safe spend (today's limit) ────────────────────────────────────────
-    ("safe_spend",
-     r"নিরাপদ খরচ|safe.?spend|aaj koto|আজ কত|আজকে কত"
-     r"|kharoch korte parbo|খরচ করতে পারব|daily limit|দৈনিক সীমা"
-     r"|aaj ki kharoch|আজ কি খরচ|today.*spend|spend.*today"
-     r"|koto taka kharoch kora jai|কত টাকা খরচ করা যাই"
-     r"|aaj er limit|আজকের সীমা"),
 
     # ── 9. Amount-specific safe-spend check ("can I spend 500?") ─────────────
     ("specific_amount",
@@ -141,7 +171,7 @@ _INTENTS: list[tuple[str, str]] = [
     ("goal",
      r"জমাতে চাই|সঞ্চয় করতে চাই|সঞ্চয় করব|বাঁচাব|save korbo"
      r"|jomate parbo|jomate পারব|jomate chai|জমাতে পারব"
-     r"|goal|লক্ষ্য|target|bachabo|bachaibo"
+     r"|goal|লক্ষ্য|target|bachabo|bachaibo|jomate|joma|jomabo|jomano|save"
      r"|(?:\d[\d,]*).*(?:joma|save|সঞ্চয়|জমা|month|mase)"
      r"|(?:joma|সঞ্চয়|জমা).*(?:\d[\d,]*|mase|month)"
      r"|koto save|কত সঞ্চয়|ki vabe save|কীভাবে জমাব"),
@@ -207,7 +237,7 @@ def _numbers(text: str) -> list[tuple[float, int]]:
 def _parse_goal(text: str) -> tuple[float | None, int]:
     t = text.translate(_BN_TO_ASCII).replace(",", "")
     months = 6
-    m = re.search(r"(\d+)\s*(?:মাস|month)", t)
+    m = re.search(r"(\d+)\s*(?:মাস|মাসে|month|months|mas|mash|mashe)", t, re.IGNORECASE)
     if m:
         months = int(m.group(1))
     amounts = [n for n, _ in _numbers(text) if n >= 100]
@@ -235,7 +265,13 @@ def answer(uid: str, message: str, svc) -> dict:  # noqa: C901 (intentionally lo
     text_l = normalized.lower().strip()
 
     # ── Detect intent ─────────────────────────────────────────────────────────
-    intent = next((name for name, pat in _INTENTS if re.search(pat, text_l)), "unknown")
+    intent = next((name for name, pat in _INTENTS if re.search(pat, text_l)), None)
+    if not intent:
+        ml_label = _ml_intent(text_l)
+        if ml_label and ml_label in _ML_TO_INTENT:
+            intent = _ML_TO_INTENT[ml_label]
+    if not intent:
+        intent = "unknown"
 
     used: list[dict] = []
     cache: dict = {}
@@ -431,6 +467,11 @@ def answer(uid: str, message: str, svc) -> dict:  # noqa: C901 (intentionally lo
     # ── Savings goal ──────────────────────────────────────────────────────────
     elif intent == "goal":
         target, months = _parse_goal(message)
+        if target is not None:
+            _user_memory.setdefault(uid, {})["target"] = target
+        elif uid in _user_memory and "target" in _user_memory[uid]:
+            target = _user_memory[uid]["target"]
+
         if target is None:
             adv = svc.dps_advice(uid)
             used.append({"name": "dps_advice", "result": adv})

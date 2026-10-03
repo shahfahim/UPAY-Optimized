@@ -22,7 +22,7 @@ export default function SavingsHome() {
     { icon: 'chart', bn: 'সঞ্চয় লেভেল', en: 'Savings level', ai: true, to: '/app/savings/levels',
       sub: data ? L(`লেভেল ${num(data[1].level)} · ${data[1].name_bn}`, `Level ${data[1].level}`) : '' },
     { icon: 'shield', bn: 'জরুরি টাকা', en: 'Emergency money', ai: true, to: '/app/savings/emergency',
-      sub: L('হঠাৎ টাকা লাগলে কোথা থেকে নেবে', 'Where to find money in a pinch') },
+      sub: L('হঠাৎ টাকা লাগলে কোথা থেকে নেবেন', 'Where to find money in a pinch') },
     { icon: 'bank', bn: 'ডিপিএস', en: 'DPS', ai: false, to: '/app/savings/dps',
       sub: data?.[0].dps ? L(`মাসে ${taka(data[0].dps.monthly)} চালু`, `${taka(data[0].dps.monthly)}/month active`)
         : L('Smart DPS পরামর্শসহ', 'With Smart DPS advice') },
@@ -62,7 +62,7 @@ export default function SavingsHome() {
       </div>
       <Sheet open={etin} onClose={() => setEtin(false)} title={L('ই-টিন ও সঞ্চয় বিবরণী', 'e-TIN & savings statement')}>
         <p className="text-sm text-muted">
-          {L('এই অংশ upay-এর বর্তমান সেবার মতোই থাকবে — demo-তে চালু নেই।',
+          {L('এই অংশ upay-এর বর্তমান সেবার মতোই থাকবে — ডেমোতে চালু নেই।',
             'This stays as in the current upay app — not active in the demo.')}
         </p>
       </Sheet>

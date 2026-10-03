@@ -130,7 +130,7 @@ export default function Flow({ cfg }: { cfg: FlowConfig }) {
         {nudge && (
           <Card className="mx-3 mt-3 border-upay-blue/30">
             <p className="flex gap-2 text-sm"><AiBadge className="mt-0.5" />{nudge.text_bn}</p>
-            <button className="mt-2 text-sm font-semibold text-upay-blue underline" onClick={() => navigate(nudge.link)}>{L('দেখো', 'Show me')}</button>
+            <button className="mt-2 text-sm font-semibold text-upay-blue underline" onClick={() => navigate(nudge.link)}>{L('দেখুন', 'Show me')}</button>
           </Card>
         )}
         <div className="mx-3 mt-4 grid grid-cols-2 gap-2">

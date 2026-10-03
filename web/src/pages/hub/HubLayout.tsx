@@ -6,7 +6,6 @@ export default function HubLayout() {
   const { L } = useLang()
   const tabs = [
     { to: '/app/hishab', end: true, bn: 'ওভারভিউ', en: 'Overview' },
-    { to: '/app/hishab/calendar', bn: 'ক্যালেন্ডার', en: 'Calendar' },
     { to: '/app/hishab/learn', bn: 'শেখো', en: 'Learn' },
     { to: '/app/hishab/ask', bn: 'জিজ্ঞেস', en: 'Ask' },
   ]

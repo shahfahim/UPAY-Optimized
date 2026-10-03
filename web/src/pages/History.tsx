@@ -5,6 +5,7 @@ import { ErrorNote, Spinner } from '../components/ui'
 import { useLang } from '../i18n'
 import { useApi } from '../lib/useApi'
 import { PageTitle } from './common'
+import Calendar from './hub/Calendar'
 
 const TYPE_BN: Record<string, [string, string]> = {
   salary_in: ['আয়', 'Income'], bonus_in: ['বোনাস', 'Bonus'], cash_in: ['ক্যাশ ইন', 'Cash in'],
@@ -16,17 +17,17 @@ const TYPE_BN: Record<string, [string, string]> = {
 export default function History() {
   const { L, taka, date } = useLang()
   const { uid } = useShell()
-  const [tab, setTab] = useState<'list' | 'summary'>('list')
+  const [tab, setTab] = useState<'list' | 'summary' | 'calendar'>('list')
   const { data, error, loading, reload } = useApi(() => api.transactions(uid, 60), [uid])
   const max = data ? Math.max(1, ...data.summary.by_category.map((c) => c.amount)) : 1
   return (
     <div>
       <PageTitle bn="হিস্টরি" en="History" back={false} />
       <div className="mx-3 mb-3 flex rounded-xl bg-white p-1">
-        {(['list', 'summary'] as const).map((t) => (
+        {(['list', 'summary', 'calendar'] as const).map((t) => (
           <button key={t} onClick={() => setTab(t)}
-            className={`flex-1 rounded-lg py-2 text-sm font-semibold ${tab === t ? 'bg-upay-yellow' : 'text-muted'}`}>
-            {t === 'list' ? L('লেনদেন বিবরণী', 'Transactions') : L('লেনদেন সারসংক্ষেপ', 'Summary')}
+            className={`flex-1 rounded-lg py-2 text-[13px] font-semibold ${tab === t ? 'bg-upay-yellow' : 'text-muted'}`}>
+            {t === 'list' ? L('তালিকা', 'List') : t === 'summary' ? L('সারসংক্ষেপ', 'Summary') : L('ক্যালেন্ডার', 'Calendar')}
           </button>
         ))}
       </div>
@@ -68,6 +69,11 @@ export default function History() {
               </div>
             ))}
           </div>
+        </div>
+      )}
+      {tab === 'calendar' && (
+        <div className="mt-3">
+          <Calendar />
         </div>
       )}
     </div>

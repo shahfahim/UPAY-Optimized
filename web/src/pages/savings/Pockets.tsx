@@ -49,10 +49,10 @@ function MoveSheet({ move, onClose, onDone }: { move: Move | null; onClose: () =
   }
   return (
     <Sheet open onClose={onClose}
-      title={move.dir === 'in' ? L(`${move.name} পকেটে রাখো`, `Add to ${move.name}`) : L(`${move.name} পকেট থেকে তোলো`, `Take out of ${move.name}`)}>
+      title={move.dir === 'in' ? L(`${move.name} পকেটে রাখুন`, `Add to ${move.name}`) : L(`${move.name} পকেট থেকে তুলুন`, `Take out of ${move.name}`)}>
       <p className="mb-2 text-sm text-muted">
         {move.dir === 'in' ? L(`ওয়ালেটে আছে ${taka(move.max)}`, `Wallet: ${taka(move.max)}`)
-          : L(`পকেটে আছে ${taka(move.max, { paisa: true })} — যখন খুশি তুলতে পারো`, `In pocket: ${taka(move.max, { paisa: true })} — withdraw any time`)}
+          : L(`পকেটে আছে ${taka(move.max, { paisa: true })} — যখন খুশি তুলতে পারেন`, `In pocket: ${taka(move.max, { paisa: true })} — withdraw any time`)}
       </p>
       <label className="block text-sm font-semibold" htmlFor="move-amount">{L('পরিমাণ', 'Amount')}</label>
       <div className="mt-1 flex items-center rounded-xl border border-line px-3 focus-within:border-upay-blue">
@@ -109,10 +109,10 @@ function GoalPlanner({ pockets, onSaved }: { pockets: Savings['pockets']; onSave
   return (
     <Card>
       <div className="mb-2 flex items-center gap-2"><Icon name="spark" size={18} className="text-upay-blue" />
-        <p className="font-semibold">{L('লক্ষ্য ঠিক করো', 'Set a goal')}</p><AiBadge /></div>
+        <p className="font-semibold">{L('লক্ষ্য ঠিক করুন', 'Set a goal')}</p><AiBadge /></div>
       <div className="grid grid-cols-2 gap-2">
         <label className="col-span-2 text-sm">
-          <span className="text-muted">{L('কত টাকা জমাতে চাও', 'How much to save')}</span>
+          <span className="text-muted">{L('কত টাকা জমাতে চান', 'How much to save')}</span>
           <input inputMode="decimal" value={target} onChange={(e) => setTarget(e.target.value)} placeholder="৳৫,০০০"
             className="mt-1 min-h-11 w-full rounded-xl border border-line px-3 outline-none focus:border-upay-blue" />
         </label>
@@ -133,15 +133,15 @@ function GoalPlanner({ pockets, onSaved }: { pockets: Savings['pockets']; onSave
       </div>
       {err && <p className="mt-2 text-sm text-bad" role="alert">{err}</p>}
       <Button full variant="outline" className="mt-3" disabled={busy} onClick={() => void submit()}>
-        {busy ? L('হিসাব হচ্ছে…', 'Working…') : L('হিসাব করো', 'Work it out')}
+        {busy ? L('হিসাব হচ্ছে…', 'Working…') : L('হিসাব করুন', 'Work it out')}
       </Button>
       {plan && !plan.insufficient_history && (
         <div className="mt-3 rounded-xl bg-surface p-3 text-sm">
           <p className="font-semibold">{L(`মাসে ${taka(plan.monthly)} করে রাখতে হবে`, `Save ${taka(plan.monthly)} a month`)}</p>
           <p className={`mt-1 ${feas >= 60 ? 'text-ok' : feas >= 30 ? 'text-warn' : 'text-bad'}`}>
-            {feas >= 60 ? L(`তোমার আগের মাসগুলোর হিসাবে এটা সম্ভব (${num(feas)}%)`, `Likely, based on past months (${feas}%)`)
+            {feas >= 60 ? L(`আপনার আগের মাসগুলোর হিসাবে এটি সম্ভব (${num(feas)}%)`, `Likely, based on past months (${feas}%)`)
               : feas >= 30 ? L(`একটু কঠিন হবে (${num(feas)}%)`, `A stretch (${feas}%)`)
-                : L('এখনকার খরচে এটা কঠিন — সময় বাড়াও বা নিচের কাজগুলো করো', 'Hard at current spending — add time or try these')}
+                : L('এখনকার খরচে এটি কঠিন — সময় বাড়ান বা নিচের কাজগুলো করুন', 'Hard at current spending — add time or try these')}
           </p>
           {plan.enabling_actions.length > 0 && (
             <ul className="mt-2 list-disc pl-5 text-ink/80">
@@ -152,7 +152,7 @@ function GoalPlanner({ pockets, onSaved }: { pockets: Savings['pockets']; onSave
         </div>
       )}
       {plan?.insufficient_history && (
-        <p className="mt-3 text-sm text-muted">{L('আরও কিছু দিনের লেনদেন হলে হিসাব দেখাবো।', 'Needs a few more days of activity.')}</p>
+        <p className="mt-3 text-sm text-muted">{L('আরও কিছু দিনের লেনদেন হলে হিসাব দেখাব।', 'Needs a few more days of activity.')}</p>
       )}
     </Card>
   )
@@ -207,7 +207,7 @@ export default function Pockets() {
         {data.paisa.total > 0 && (
           <button className="text-sm font-semibold text-upay-blue underline"
             onClick={() => setMove({ pocket: 'paisa', name: L('পয়সা', 'Paisa'), dir: 'out', max: data.paisa.total })}>
-            {L('পয়সা-সঞ্চয় থেকে তোলো', 'Withdraw paisa savings')}
+            {L('পয়সা-সঞ্চয় থেকে তুলুন', 'Withdraw paisa savings')}
           </button>
         )}
 
@@ -224,9 +224,9 @@ export default function Pockets() {
                 </div>
                 <div className="flex gap-1.5">
                   <Button variant="outline" className="!min-h-9 !px-3 text-sm"
-                    onClick={() => setMove({ pocket: p.name, name: p.name_bn, dir: 'in', max: data.balance })}>{L('রাখো', 'Add')}</Button>
+                    onClick={() => setMove({ pocket: p.name, name: p.name_bn, dir: 'in', max: data.balance })}>{L('রাখুন', 'Add')}</Button>
                   <Button variant="ghost" className="!min-h-9 !px-3 text-sm" disabled={p.balance <= 0}
-                    onClick={() => setMove({ pocket: p.name, name: p.name_bn, dir: 'out', max: p.balance })}>{L('তোলো', 'Take out')}</Button>
+                    onClick={() => setMove({ pocket: p.name, name: p.name_bn, dir: 'out', max: p.balance })}>{L('তুলুন', 'Take out')}</Button>
                 </div>
               </div>
               {p.goal && (
@@ -254,7 +254,7 @@ export default function Pockets() {
               <p className="mt-1 text-sm font-semibold">
                 {L(`বাকি ${taka(eid.need)} — সপ্তাহে ${taka(eid.weekly)} রাখলেই হবে`, `Short by ${taka(eid.need)} — save ${taka(eid.weekly)} a week`)}
               </p>
-              <Button variant="yellow" full className="mt-3" onClick={() => void setEidGoal()}>{L('ঈদ pocket-এ লক্ষ্য বসাও', 'Set the Eid pocket goal')}</Button>
+              <Button variant="yellow" full className="mt-3" onClick={() => void setEidGoal()}>{L('ঈদ পকেটে লক্ষ্য বসান', 'Set the Eid pocket goal')}</Button>
             </>
           ) : (
             <p className="mt-1 text-sm font-semibold text-ok">{L('বোনাসেই ঈদের খরচ চলে যাওয়ার কথা', 'Your bonus should cover Eid')}</p>

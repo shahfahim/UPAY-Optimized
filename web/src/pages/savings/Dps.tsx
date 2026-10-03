@@ -22,7 +22,7 @@ function SmartDpsCard({ a, onPick }: { a: DpsAdvice; onPick: (monthly: number, t
         <p className="mt-1 text-sm text-ink/80">{a.reason_bn}</p>
         {a.naive_monthly ? (
           <p className="mt-2 text-xs text-muted">
-            {L(`সাধারণ নিয়মে (আয়ের ১০%) ${taka(a.naive_monthly)} বলা হতো — হিসাব তোমার মাসের শেষের টানাটানিও দেখে।`,
+            {L(`সাধারণ নিয়মে (আয়ের ১০%) ${taka(a.naive_monthly)} বলা হতো — হিসাব আপনার মাসের শেষের খরচের কথাও ভাবে।`,
               `A flat 10%-of-income rule would say ${taka(a.naive_monthly)} — Hishab also checks your month-end squeeze.`)}
           </p>
         ) : null}
@@ -50,7 +50,7 @@ function SmartDpsCard({ a, onPick }: { a: DpsAdvice; onPick: (monthly: number, t
         </p>
       ) : null}
       <Button full className="mt-3" onClick={() => onPick(a.safe_monthly ?? 500, a.tenure_months ?? 12)}>
-        {L('এই পরিমাণ বেছে নাও', 'Use this amount')}
+        {L('এই পরিমাণ বেছে নিন', 'Use this amount')}
       </Button>
     </Card>
   )
@@ -60,14 +60,14 @@ function ActiveDps({ dps }: { dps: NonNullable<Savings['dps']> }) {
   const { L, taka, num, date } = useLang()
   return (
     <Card className="border-ok/40">
-      <p className="flex items-center gap-2 font-semibold"><Icon name="check" className="text-ok" />{L('তোমার DPS চালু আছে', 'Your DPS is active')}</p>
+      <p className="flex items-center gap-2 font-semibold"><Icon name="check" className="text-ok" />{L('আপনার DPS চালু আছে', 'Your DPS is active')}</p>
       <div className="mt-2 grid grid-cols-2 gap-2 text-sm">
         <p>{L('মাসিক জমা', 'Monthly')}: <b>{taka(dps.monthly)}</b></p>
         <p>{L('সময়কাল', 'Tenure')}: <b>{L(`${num(dps.tenure_months)} মাস`, `${dps.tenure_months} months`)}</b></p>
         <p>{L('কিস্তির দিন', 'Day')}: <b>{L(`${num(dps.day)} তারিখ`, `${dps.day}th`)}</b></p>
         <p>{L('শুরু', 'Opened')}: <b>{date(dps.opened)}</b></p>
       </div>
-      {dps.simulated && <p className="mt-2 text-xs text-muted">{L('demo — আসল DPS খোলা হয়নি', 'demo — no real DPS was opened')}</p>}
+      {dps.simulated && <p className="mt-2 text-xs text-muted">{L('ডেমো — আসল DPS খোলা হয়নি', 'demo — no real DPS was opened')}</p>}
     </Card>
   )
 }
@@ -110,7 +110,7 @@ export default function Dps() {
     <div className="pb-6">
       <PageTitle bn="ইসলামিক ডিপিএস" en="Islamic DPS" />
       <div className="space-y-3 px-3">
-        {done && <p className="rounded-xl bg-ok-bg p-3 text-sm font-semibold text-ok" role="status">{L('DPS চালু হয়েছে (demo)', 'DPS opened (demo)')}</p>}
+        {done && <p className="rounded-xl bg-ok-bg p-3 text-sm font-semibold text-ok" role="status">{L('DPS চালু হয়েছে (ডেমো)', 'DPS opened (demo)')}</p>}
         {savings.dps ? <ActiveDps dps={savings.dps} /> : (
           <>
             <SmartDpsCard a={advice} onPick={(mm, tt) => { setMonthly(mm); setTenure(tt) }} />
@@ -131,7 +131,7 @@ export default function Dps() {
               </select>
               {overSafe && (
                 <p className="mt-2 rounded-lg bg-warn-bg px-2 py-1.5 text-xs text-warn">
-                  {L('এটা হিসাবের নিরাপদ সীমার বেশি — মাসের শেষে টাকা কম পড়তে পারে। চাইলে তবুও বেছে নিতে পারো।',
+                  {L('এটি নিরাপদ সীমার বেশি — মাসের শেষে টাকা কম পড়তে পারে। চাইলে তবুও বেছে নিতে পারেন।',
                     'Above the safe amount — you may run short at month end. You can still choose it.')}
                 </p>
               )}
@@ -153,10 +153,11 @@ export default function Dps() {
       </div>
       <Sheet open={confirm} onClose={() => setConfirm(false)} title={L('DPS নিশ্চিত করুন', 'Confirm DPS')}>
         <p className="text-sm">{m !== null && t !== null && L(`মাসে ${taka(m)} · ${num(t)} মাস`, `${taka(m)} a month · ${t} months`)}</p>
-        <p className="mt-1 text-xs font-semibold text-bad">{L('Demo — আসল PIN দেবেন না', 'Demo — do not use a real PIN')}</p>
+        <p className="mt-1 text-xs font-semibold text-bad">{L('ডেমো — আসল পিন দেবেন না', 'Demo — do not use a real PIN')}</p>
         <PinPad value={pin} onChange={(v) => { setPin(v); if (v.length === 6) { setPin(''); void open(v) } }} />
         {err && <p className="mt-2 text-sm text-bad" role="alert">{err}</p>}
       </Sheet>
     </div>
   )
 }
+

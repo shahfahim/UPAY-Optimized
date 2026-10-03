@@ -65,7 +65,7 @@ export function ErrorNote({ message, onRetry }: { message: string; onRetry?: () 
       {message}
       {onRetry && (
         <button className="ml-2 font-semibold underline" onClick={onRetry}>
-          {L('আবার চেষ্টা', 'Retry')}
+          {L('আবার চেষ্টা করুন', 'Retry')}
         </button>
       )}
     </div>

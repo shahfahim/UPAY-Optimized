@@ -11,7 +11,7 @@ export default function Learn() {
   const { data, error, loading, reload, setData } = useApi(() => api.lessons(uid), [uid])
   return (
     <div className="space-y-3 px-3 pb-6">
-      <p className="px-1 text-sm text-muted">{L('তোমার নিজের লেনদেন দেখে বাছাই করা ছোট পাঠ।', 'Short lessons picked from your own activity.')}</p>
+      <p className="px-1 text-sm text-muted">{L('আপনার নিজের লেনদেন দেখে বাছাই করা ছোট পাঠ।', 'Short lessons picked from your own activity.')}</p>
       {loading && <Spinner />}
       {error && <ErrorNote message={error} onRetry={reload} />}
       {data?.length === 0 && <p className="rounded-2xl bg-white p-6 text-center text-sm text-muted">{L('এখন নতুন কোনো পাঠ নেই।', 'No new lessons right now.')}</p>}

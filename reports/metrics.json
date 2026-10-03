@@ -13,11 +13,11 @@
   "E3": {
     "n_obs": 1814,
     "positive_rate": 0.41,
-    "pr_auc": 0.912,
-    "roc_auc": 0.942,
-    "brier": 0.0923,
-    "precision_at_alert": 0.81,
-    "recall_at_alert": 0.894,
+    "pr_auc": 0.914,
+    "roc_auc": 0.944,
+    "brier": 0.0917,
+    "precision_at_alert": 0.792,
+    "recall_at_alert": 0.902,
     "median_lead_days": 3.0,
     "median_lead_days_new_shortfalls": 6.0,
     "baseline_rule_pr_auc": 0.53,
@@ -37,11 +37,11 @@
   },
   "E16": {
     "n_dps_holders": 153,
-    "smart_missed_rate": 0.14,
+    "smart_missed_rate": 0.144,
     "naive_10pct_missed_rate": 0.127,
-    "smart_avg_monthly": 4367.0,
+    "smart_avg_monthly": 4411.0,
     "naive_avg_monthly": 2474.0,
-    "not_now_share": 0.51
+    "not_now_share": 0.523
   },
   "E8": {
     "n_users": 273,
