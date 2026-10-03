@@ -107,7 +107,7 @@ _INTENTS: list[tuple[str, str]] = [
      r"|will i have money|month end"),
 
     # ── 24. Product explanation ("what is X?") ───────────────────────────────
-    ("transaction_route", r"(কীভাবে|কিভাবে).* (পাঠাব|পাঠাতে|ট্রান্সফার|transfer|সেন্ড|send)|(নগদ|বিকাশ|npsb|ব্যাংক).* (কীভাবে|কিভাবে|পাঠাব)"),
+    ("transaction_route", r"(কীভাবে|কিভাবে|কিসে|kishe|kise|কোন ওয়েতে).* (পাঠাব|পাঠাতে|patabo|ট্রান্সফার|transfer|সেন্ড|send|দেয়া যায়)|(নগদ|বিকাশ|npsb|ব্যাংক|bank card|মাকে|maa ke|kakeo).* (কীভাবে|কিভাবে|পাঠাব|patabo|কিসে|kishe|করলে)|পাঠাব.*কিসে|bank card|npsb.*tk|npsb.*taka|npsb korba"),
     ("product_explain",
      r"(?:dps|pocket|npsb|upay|hishab|cash.?out|cashout)\s*(?:ki|keno|mane|কী|কেন|মানে)"
      r"|what is (?:dps|pocket|npsb|upay|hishab|cashout)"
@@ -251,7 +251,7 @@ def answer(uid: str, message: str, svc) -> dict:  # noqa: C901 (intentionally lo
 
     # ── Greeting ──────────────────────────────────────────────────────────────
     if intent == "greeting":
-        text = "হ্যালো! আমি উপায় 'হিসাব'। তোমার বাজেট বা জমানো নিয়ে কোনো সাহায্য লাগবে?"
+        text = "হ্যালো! আমি উপায় 'হিসাব'। তোমার আয়-ব্যয় বা জমানো নিয়ে কোনো সাহায্য লাগবে?"
 
     # ── Acknowledgment ────────────────────────────────────────────────────────
     elif intent == "ack":
@@ -509,12 +509,7 @@ def answer(uid: str, message: str, svc) -> dict:  # noqa: C901 (intentionally lo
 
     # ── Budget overview ───────────────────────────────────────────────────────
     elif intent == "budget":
-        tx = tool("get_transactions_summary", period="month")
-        diff = tx.get("income_total", 0) - tx.get("spend_total", 0)
-        text = (f"এই মাসে আয় ৳{bn_num(tx['income_total'])}, "
-                f"খরচ ৳{bn_num(tx['spend_total'])}। ")
-        text += (f"এখন পর্যন্ত ৳{bn_num(diff)} সাশ্রয় — চালিয়ে যাও!"
-                 if diff > 0 else "খরচ একটু বেশি হয়েছে — বাকি মাসে সামলে চলো।")
+        text = "এই বিষয়টি এখন আমার কাছে নেই। তোমার আয়-খরচের হিসাব জানতে চাইলে বলো।"
 
     # ── Notification explanation ──────────────────────────────────────────────
     elif intent == "notification":

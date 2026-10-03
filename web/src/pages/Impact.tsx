@@ -16,7 +16,7 @@ const HEADLINES: { key: string; label: string; better: Better; fmt: (x: number) 
   { key: 'cash_dependency', label: 'Cash dependency (cash-out / income)', better: 'lower', fmt: pct },
   { key: 'shortfall_free_months', label: 'Shortfall-free months', better: 'higher', fmt: pct },
   { key: 'emergency_days', label: 'Emergency buffer (days of living cost)', better: 'higher', fmt: n1 },
-  { key: 'salary_retained_d10', label: 'Salary left on day 10', better: 'higher', fmt: pct },
+  { key: 'salary_retained_d10', label: 'Income left on day 10', better: 'higher', fmt: pct },
 ]
 
 type Row = { model: string; metric: string; value: number | null; baseline: number | null; baselineLabel: string; better: Better; fmt: (x: number) => string }

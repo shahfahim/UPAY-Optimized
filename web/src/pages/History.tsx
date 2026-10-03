@@ -7,7 +7,7 @@ import { useApi } from '../lib/useApi'
 import { PageTitle } from './common'
 
 const TYPE_BN: Record<string, [string, string]> = {
-  salary_in: ['বেতন', 'Salary'], bonus_in: ['বোনাস', 'Bonus'], cash_in: ['ক্যাশ ইন', 'Cash in'],
+  salary_in: ['আয়', 'Income'], bonus_in: ['বোনাস', 'Bonus'], cash_in: ['ক্যাশ ইন', 'Cash in'],
   cash_out: ['ক্যাশ আউট', 'Cash out'], send_money: ['সেন্ড মানি', 'Send money'], receive_money: ['রিসিভড মানি', 'Received'],
   merchant_pay: ['পেমেন্ট', 'Payment'], bill_pay: ['পে বিল', 'Bill'], mobile_recharge: ['মোবাইল রিচার্জ', 'Recharge'],
   pocket_in: ['পকেটে জমা', 'To pocket'], pocket_out: ['পকেট থেকে', 'From pocket'], dps_installment: ['ডিপিএস কিস্তি', 'DPS'],

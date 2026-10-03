@@ -9,7 +9,7 @@ import { useApi } from '../lib/useApi'
 import { PageTitle } from './common'
 
 const ICONS: Record<string, string> = {
-  risk_red: 'info', bill_due: 'bill', salary_plan: 'wallet', level_milestone: 'spark', pocket_80: 'pig', reengage: 'bell',
+  risk_red: 'info', bill_due: 'bill', income_plan: 'wallet', level_milestone: 'spark', pocket_80: 'pig', reengage: 'bell',
 }
 
 export default function Notifications() {

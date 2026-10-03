@@ -60,7 +60,7 @@ export default function Calendar() {
           <div className="mt-3 flex flex-wrap gap-3 px-1 text-[11px] text-muted">
             <span><span className="mr-1 inline-block size-3 rounded bg-upay-blue/30 align-middle" />{L('খরচ (অতীত)', 'Spending (past)')}</span>
             <span><span className="mr-1 inline-block size-3 rounded bg-bad-bg align-middle" />{L('ঝুঁকি (পূর্বাভাস)', 'Risk (forecast)')}</span>
-            <span><span className="mr-1 inline-block size-1.5 rounded-full bg-upay-yellow-dark align-middle" />{L('বেতন/ভাড়া/বিল', 'Salary/rent/bills')}</span>
+            <span><span className="mr-1 inline-block size-1.5 rounded-full bg-upay-yellow-dark align-middle" />{L('ভাড়া/বিল', 'Rent/bills')}</span>
           </div>
         </div>
       )}

@@ -117,51 +117,11 @@ class HubMixin:
         return jsonable({"month": month, "today": ctx.today, "days": out})
 
     def budget(self, uid, period: str):
-        if period not in PERIOD_DAYS:
-            raise UserError("সময়কাল সঠিক নয়")
-        ctx = self.ctx(uid)
-        n = PERIOD_DAYS[period]
-        sp = ctx.tx[(ctx.tx.direction == -1) & ctx.tx.type.isin(SPEND_TYPES)]
-        d = _dates(sp)
-        cur = sp[(d > ctx.today - timedelta(days=n)) & (d <= ctx.today)]
-        spent = cur.groupby("category")["amount"].sum().to_dict()
-        manual = ctx.state.budget_mode == "manual"
-        risk_hi = (not manual and not ctx.insufficient_history
-                   and self._core(ctx)["risk"].level in ("amber", "red"))
-        items = []
-        for c in [c for c in CATEGORIES if c not in ("rent", "family_support")]:
-            if manual:
-                budget = round(float(ctx.state.manual_budget.get(c, 0.0)) * n / 30.0)
-            else:
-                k_windows = range(1, 4) if n > 1 else range(1, 31)
-                windows = [float(sp[(d > ctx.today - timedelta(days=n * (k + 1)))
-                                    & (d <= ctx.today - timedelta(days=n * k)) & (sp.category == c)]["amount"].sum())
-                           for k in k_windows]
-                budget = round(float(np.median(windows)) * (0.9 if risk_hi else 1.0))
-            s = round(float(spent.get(c, 0.0)))
-            if budget <= 0 and s <= 0:
-                continue
-            pct = round(100 * s / budget) if budget > 0 else 100
-            items.append({"category": c, "category_bn": CATEGORY_BN.get(c, c), "budget": budget, "spent": s,
-                          "pct": pct, "status": "over" if pct >= 100 else ("warn" if pct >= 80 else "ok")})
-        reason = "তুমি নিজে যে বাজেট বসিয়েছ" if manual else "গত ৩ মাসের হিসাব আর সামনের পূর্বাভাস থেকে"
-        return {"period": period, "mode": ctx.state.budget_mode, "items": items, "reason_bn": reason}
+        return {"period": period, "mode": "disabled", "items": [], "reason_bn": "বাজেট ফিচারটি এখন বন্ধ আছে"}
 
     @locked
     def set_budget(self, uid, mode, manual):
-        ctx = self.ctx(uid)
-        clean = {}
-        for c, v in (manual or {}).items():
-            if c not in CATEGORIES:
-                raise UserError("ক্যাটাগরি সঠিক নয়")
-            if v is None or not (0 <= float(v) <= load_rules("guardrails")["max_amount"]):
-                raise UserError("বাজেটের পরিমাণ সঠিক নয়")
-            clean[c] = float(v)
-        ctx.state.budget_mode = mode
-        if clean:
-            ctx.state.manual_budget = clean
-        self.store.save_state(uid, ctx.state)
-        return {"mode": mode, "manual": ctx.state.manual_budget}
+        return {"mode": "disabled", "manual": {}}
 
     # --- savings --------------------------------------------------------------------------------------------
     def savings(self, uid):

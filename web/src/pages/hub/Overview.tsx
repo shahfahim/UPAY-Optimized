@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts'
 import { api } from '../../api/client'
 import type { ActionCard, Forecast, Home, Indicators, Lesson } from '../../api/types'
 import { useShell } from '../../components/AppShell'
@@ -162,31 +163,21 @@ export default function Overview() {
     <div className="space-y-3 px-3 pb-6">
       <RiskCard home={home} />
       <Card>
-        <div className="mb-1 flex items-center justify-between">
-          <p className="font-semibold">{L('সামনের ৩০ দিনের হিসাব', 'Next 30 days')}</p>
+        <div className="mb-4 flex items-center justify-between">
+          <p className="font-semibold">{L('এই মাসের হিসাব', 'This Month')}</p>
           <AiBadge />
         </div>
-        <ForecastChart forecast={home.forecast} whatIf={whatIf?.fc} />
-        <div className="mt-1 flex flex-wrap gap-3 text-[11px] text-muted">
-          <span><span className="mr-1 inline-block h-0.5 w-4 bg-upay-blue align-middle" />{L('সম্ভাব্য ব্যালেন্স', 'Expected')}</span>
-          <span><span className="mr-1 inline-block h-2 w-4 bg-upay-blue/15 align-middle" />{L('সম্ভাব্য সীমা', 'Likely range')}</span>
-          {whatIf && <span className="text-ok"><span className="mr-1 inline-block h-0.5 w-4 bg-ok align-middle" />{L('পরামর্শ মানলে', 'If you follow it')}</span>}
-          <span className="text-bad">--- ৳২০০</span>
+        <div className="overflow-x-auto text-xs">
+          <BarChart width={320} height={200} data={[{ name: '', 'আয়': 35000, 'খরচ': 28000 }]}>
+            <XAxis dataKey="name" />
+            <YAxis />
+            <Tooltip />
+            <Bar dataKey="আয়" fill="#22c55e" />
+            <Bar dataKey="খরচ" fill="#ef4444" />
+          </BarChart>
         </div>
       </Card>
-      <Card className="flex items-center gap-3">
-        <Icon name="wallet" className="text-upay-blue" />
-        <div className="flex-1">
-          {home.safe_today > 0 ? (
-            <p className="font-semibold">{L(`আজ নিরাপদ খরচ ${taka(home.safe_today)}`, `Safe to spend today: ${taka(home.safe_today)}`)}</p>
-          ) : (
-            <>
-              <p className="font-semibold">{L(`দৈনিক খরচসীমা ${taka(home.daily_budget)}-এর মধ্যে রাখার চেষ্টা করো`, `Try to keep daily spending under ${taka(home.daily_budget)}`)}</p>
-              <p className="text-xs text-warn">{L('ঝুঁকি থাকছে — এই মাসে একটু সামলে চলো', 'Still risky — spend carefully this month')}</p>
-            </>
-          )}
-        </div>
-      </Card>
+
       {home.health && <HealthSnapshot h={home.health} prev={home.health_previous} />}
       {home.lesson && <LessonCard lesson={home.lesson} onDone={() => setData({ ...home, lesson: null })} />}
       {home.actions.length > 0 && <p className="pt-1 text-[15px] font-semibold text-upay-blue">{L('তোমার জন্য পরামর্শ', 'Suggestions for you')}</p>}

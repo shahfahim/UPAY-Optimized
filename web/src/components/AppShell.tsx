@@ -63,7 +63,7 @@ function BalanceButton({ shell }: { shell: Shell }) {
           <span className="block text-[10px] opacity-90">
             {shell.safe_today > 0
               ? L(`আজ নিরাপদ খরচ ${taka(shell.safe_today)}`, `Safe today ${taka(shell.safe_today)}`)
-              : L(`দৈনিক সীমা ${taka(shell.daily_budget)}`, `Daily limit ${taka(shell.daily_budget)}`)}
+              : L(`সাবধানে খরচ করুন`, `Spend carefully`)}
           </span>
         </span>
       ) : (

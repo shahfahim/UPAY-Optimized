@@ -36,6 +36,23 @@ _PHRASE_MAP: list[tuple[str, str]] = [
     ("kemne pathabo", "কীভাবে পাঠাব"),
     ("npsb theke", "npsb থেকে"),
     ("send money", "সেন্ড মানি"),
+    # ─── Recent Chat Fixes ──────────────────────────────
+    ("patabo", "পাঠাব"),
+    ("kase", "কাছে"),
+    ("bank card", "ব্যাংক কার্ড"),
+    ("npsb korba", "npsb করব"),
+    # ─── New Natural Vibes (Tour, Family, etc) ──────────────────────────────
+    ("kishe", "কীভাবে"),
+    ("kise", "কীভাবে"),
+    ("krbo", "করব"),
+    ("korbo", "করব"),
+    ("maa ke", "মাকে"),
+    ("ma ke", "মাকে"),
+    ("tour", "ট্যুর"),
+    ("tk", "টাকা"),
+    ("jomabo", "জমাব"),
+    ("save", "সঞ্চয়"),
+    ("save krbo", "সঞ্চয় করব"),
     # ─── extreme typos (low literacy) ──────────────────────────────────────
     ("csh out", "ক্যাশ আউট"), ("cash ot", "ক্যাশ আউট"), ("kesh out", "ক্যাশ আউট"),
     ("casout", "ক্যাশ আউট"), ("kashout", "ক্যাশ আউট"), ("kyashout", "ক্যাশ আউট"),

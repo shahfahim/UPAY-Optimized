@@ -10,7 +10,7 @@ import { useApi } from '../../lib/useApi'
 import { PageTitle } from '../common'
 
 const ACTION_BN: Record<string, [string, string]> = {
-  save_on_payday: ['বেতনের দিন কিছু টাকা পকেটে রাখা', 'Set money aside on payday'],
+  save_first: ['টাকা এলে আগে কিছু পকেটে রাখা', 'Set money aside when paid'],
   split_remittance: ['বাড়িতে টাকা দুই ভাগে পাঠানো', 'Split money sent home in two'],
   digital_pay_instead_of_cashout: ['cash-out কমিয়ে wallet দিয়ে পেমেন্ট', 'Pay by wallet instead of cash-out'],
   cheaper_route: ['কম খরচের পথে টাকা পাঠানো', 'Send through the cheaper route'],
@@ -199,7 +199,7 @@ export default function Pockets() {
             </p>
             <p className="mt-1 text-sm font-semibold">{L('জমেছে', 'Saved')} {taka(data.paisa.total, { paisa: true })}</p>
             {data.paisa.on && data.paisa.paused && (
-              <p className="mt-1 text-xs font-semibold text-warn">{L('ঝুঁকির কারণে সাময়িক বন্ধ — বেতন এলে আবার চালু হবে', 'Paused for now due to risk — resumes after payday')}</p>
+              <p className="mt-1 text-xs font-semibold text-warn">{L('ঝুঁকির কারণে সাময়িক বন্ধ — পরের মাসে আবার চালু হবে', 'Paused for now due to risk — resumes next month')}</p>
             )}
           </div>
           <Toggle on={data.paisa.on} onChange={(v) => void togglePaisa(v)} label={L('পয়সা-সঞ্চয়', 'Paisa saving')} />
