@@ -64,6 +64,7 @@ export default function More() {
       <div className="mx-3 overflow-hidden rounded-2xl bg-white">
         {row('book', lang === 'bn' ? 'ভাষা: English' : 'Language: বাংলা', lang === 'bn' ? 'ভাষা: English' : 'Language: বাংলা',
           () => setLang(lang === 'bn' ? 'en' : 'bn'))}
+                {row('bell', 'নোটিফিকেশন সেটিং', 'Notification settings', () => demo(L('নোটিফিকেশন সেটিং', 'Notification settings')))}
         {row('shield', 'পিন পরিবর্তন', 'Change PIN', () => demo(L('পিন পরিবর্তন', 'Change PIN')))}
         {row('info', 'অনুমতি পরিবর্তন', 'Permissions', () => demo(L('অনুমতি পরিবর্তন', 'Permissions')))}
         {row('chat', '২৪x৭ সেবা', '24x7 support', () => demo(L('২৪x৭ সেবা', '24x7 support')))}

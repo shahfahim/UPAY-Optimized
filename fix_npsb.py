@@ -1,15 +1,17 @@
-import { useShell } from '../../components/AppShell'
-import { useLang } from '../../i18n'
-import Flow from './Flow'
+﻿import re
 
-export default function Npsb() {
-  const { uid } = useShell()
-  const { L } = useLang()
-  const contacts = [
-    { id: `FAM-${uid}`, name: L('মা (bKash)', 'Mother (bKash)'), sub: L('bKash wallet (demo)', 'bKash wallet (demo)'), destination: 'other_mfs_wallet' },
+with open('web/src/pages/flows/Npsb.tsx', 'r', encoding='utf-8') as f:
+    code = f.read()
+
+new_contacts = '''const contacts = [
+    { id: FAM-, name: L('মা (bKash)', 'Mother (bKash)'), sub: L('bKash wallet (demo)', 'bKash wallet (demo)'), destination: 'other_mfs_wallet' },
     { id: 'P-BRO', name: L('ভাই (Nagad)', 'Brother (Nagad)'), sub: L('Nagad wallet (demo)', 'Nagad wallet (demo)'), destination: 'other_mfs_wallet' },
     { id: 'P-FRND', name: L('বন্ধু (Rocket)', 'Friend (Rocket)'), sub: L('Rocket wallet (demo)', 'Rocket wallet (demo)'), destination: 'other_mfs_wallet' },
     { id: 'BANK-OWN', name: L('নিজের ব্যাংক অ্যাকাউন্ট', 'My bank account'), sub: L('ব্যাংক (demo)', 'Bank (demo)'), destination: 'bank_account' },
-  ]
-  return <Flow cfg={{ type: 'npsb', titleBn: 'এনপিএসবি', titleEn: 'NPSB transfer', contacts, routed: true }} />
-}
+  ]'''
+
+code = re.sub(r'const contacts = \[.*?\]', new_contacts, code, flags=re.DOTALL)
+
+with open('web/src/pages/flows/Npsb.tsx', 'w', encoding='utf-8') as f:
+    f.write(code)
+print('Npsb updated')
