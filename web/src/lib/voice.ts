@@ -23,13 +23,13 @@ export function isVoiceSupported(): boolean {
 }
 
 /** Listen once in Bangla (bn-BD); resolves with the transcript, rejects with an error code. */
-export function listenBn(): Promise<string> {
+export function listenVoice(lang: string = 'bn-BD'): Promise<string> {
   const C = ctor()
   if (!C) return Promise.reject(new Error('unsupported'))
   return new Promise((resolve, reject) => {
     const r = new C()
     let done = false
-    r.lang = 'bn-BD'
+    r.lang = lang
     r.interimResults = false
     r.maxAlternatives = 1
     r.onresult = (e) => {

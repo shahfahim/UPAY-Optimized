@@ -5,7 +5,7 @@ import { useShell } from '../../components/AppShell'
 import { Icon } from '../../components/Icon'
 import { AiBadge } from '../../components/ui'
 import { useLang } from '../../i18n'
-import { isVoiceSupported, listenBn } from '../../lib/voice'
+import { isVoiceSupported, listenVoice } from '../../lib/voice'
 import { speakBangla } from '../../lib/accessibility'
 import { RouteWidget } from '../../components/RouteWidget'
 import type { RouteResult } from '../../api/types'
@@ -55,6 +55,7 @@ export default function Ask() {
   const [err, setErr] = useState('')
   const [busy, setBusy] = useState(false)
   const [listening, setListening] = useState(false)
+  const [micLang, setMicLang] = useState<'bn-BD' | 'en-US'>('bn-BD')
   const voice = isVoiceSupported()
   const end = useRef<HTMLDivElement>(null)
 
@@ -82,7 +83,7 @@ export default function Ask() {
     setErr('')
     setListening(true)
     try {
-      const said = await listenBn()
+      const said = await listenVoice(micLang)
       if (said) {
         setText(said)
         await ask(said)
