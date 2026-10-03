@@ -162,6 +162,7 @@ export default function Overview() {
         day: `${day} তারিখ`,
         আয়: v.in,
         খরচ: v.out,
+        সঞ্চয়: Math.max(0, v.in - v.out),
       }))
   })()
 
@@ -198,7 +199,7 @@ export default function Overview() {
             <p className="text-xs text-muted mt-0.5">
               {dailyChartData?.length
                 ? L(`${dailyChartData.length} দিনের লেনদেন`, `${dailyChartData.length} days with activity`)
-                : L('আয় ও খরচের তুলনা', 'Income vs Expense')}
+                : L('আয়, খরচ ও সঞ্চয়', 'Income, Expense & Savings')}
             </p>
           </div>
           <AiBadge />
@@ -221,7 +222,8 @@ export default function Overview() {
               </div>
               {saved > 0 && (
                 <div className="flex items-center gap-1.5 rounded-full bg-blue-50 border border-blue-100 px-3 py-1 ml-auto">
-                  <span className="text-xs font-semibold text-blue-700">✦ ৳{(saved/1000).toFixed(1)}k {L('সঞ্চয়', 'saved')}</span>
+                  <span className="h-2 w-2 rounded-full bg-blue-500" />
+                  <span className="text-xs font-semibold text-blue-700">৳{(saved/1000).toFixed(1)}k {L('সঞ্চয়', 'saved')}</span>
                 </div>
               )}
             </div>
@@ -265,6 +267,7 @@ export default function Overview() {
                     />
                     <Bar dataKey="আয়" fill="#22c55e" radius={[6, 6, 0, 0]} maxBarSize={20} />
                     <Bar dataKey="খরচ" fill="#f87171" radius={[6, 6, 0, 0]} maxBarSize={20} />
+                    <Bar dataKey="সঞ্চয়" fill="#3b82f6" radius={[6, 6, 0, 0]} maxBarSize={20} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
@@ -278,6 +281,7 @@ export default function Overview() {
                     day: L('এই মাস', 'This Month'),
                     আয়: home.forecast?.monthly_income ?? 0,
                     খরচ: home.forecast?.monthly_expense ?? 0,
+                    সঞ্চয়: Math.max(0, (home.forecast?.monthly_income ?? 0) - (home.forecast?.monthly_expense ?? 0)),
                   }]}
                   margin={{ top: 5, right: 10, left: -10, bottom: 5 }}
                   barCategoryGap="40%" barGap={8}
@@ -288,6 +292,7 @@ export default function Overview() {
                     contentStyle={{ borderRadius: '12px', border: '1px solid #e2e8f0', fontSize: '12px', boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }} />
                   <Bar dataKey="আয়" fill="#22c55e" radius={[8, 8, 0, 0]} maxBarSize={80} />
                   <Bar dataKey="খরচ" fill="#f87171" radius={[8, 8, 0, 0]} maxBarSize={80} />
+                  <Bar dataKey="সঞ্চয়" fill="#3b82f6" radius={[8, 8, 0, 0]} maxBarSize={80} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
