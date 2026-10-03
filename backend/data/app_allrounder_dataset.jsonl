@@ -1,0 +1,100 @@
+{"text": "help me with app crash plz", "intent": "app_crash", "confidence": 0.81}
+{"text": "help me with fraud report plz", "intent": "fraud_report", "confidence": 0.74}
+{"text": "limit issue niye help lagbe", "intent": "limit_issue", "confidence": 0.82}
+{"text": "send money fail niye help lagbe", "intent": "send_money_fail", "confidence": 0.63}
+{"text": "amar fraud report er somossa hocche, ki korbo?", "intent": "fraud_report", "confidence": 0.9}
+{"text": "send money fail niye help lagbe", "intent": "send_money_fail", "confidence": 0.73}
+{"text": "bhai add money bank kivabe solve korbo?", "intent": "add_money_bank", "confidence": 0.6}
+{"text": "bhai send money fail kivabe solve korbo?", "intent": "send_money_fail", "confidence": 0.83}
+{"text": "app e limit issue niye kothay jabo?", "intent": "limit_issue", "confidence": 0.72}
+{"text": "fraud report niye help lagbe", "intent": "fraud_report", "confidence": 0.76}
+{"text": "help me with cashout agent not found plz", "intent": "cashout_agent_not_found", "confidence": 0.83}
+{"text": "bhai fraud report kivabe solve korbo?", "intent": "fraud_report", "confidence": 0.73}
+{"text": "bhai tariff fee query kivabe solve korbo?", "intent": "tariff_fee_query", "confidence": 0.68}
+{"text": "app e loan apply niye kothay jabo?", "intent": "loan_apply", "confidence": 0.66}
+{"text": "help me with fraud report plz", "intent": "fraud_report", "confidence": 0.67}
+{"text": "app e limit issue niye kothay jabo?", "intent": "limit_issue", "confidence": 0.72}
+{"text": "bhai loan apply kivabe solve korbo?", "intent": "loan_apply", "confidence": 0.83}
+{"text": "amar app crash er somossa hocche, ki korbo?", "intent": "app_crash", "confidence": 0.84}
+{"text": "send money fail niye help lagbe", "intent": "send_money_fail", "confidence": 0.9}
+{"text": "app e tariff fee query niye kothay jabo?", "intent": "tariff_fee_query", "confidence": 0.67}
+{"text": "app e fraud report niye kothay jabo?", "intent": "fraud_report", "confidence": 0.75}
+{"text": "amar add money bank er somossa hocche, ki korbo?", "intent": "add_money_bank", "confidence": 0.84}
+{"text": "help me with tariff fee query plz", "intent": "tariff_fee_query", "confidence": 0.83}
+{"text": "amar limit issue er somossa hocche, ki korbo?", "intent": "limit_issue", "confidence": 0.71}
+{"text": "help me with fraud report plz", "intent": "fraud_report", "confidence": 0.68}
+{"text": "amar app crash er somossa hocche, ki korbo?", "intent": "app_crash", "confidence": 0.66}
+{"text": "amar tariff fee query er somossa hocche, ki korbo?", "intent": "tariff_fee_query", "confidence": 0.85}
+{"text": "app e account block niye kothay jabo?", "intent": "account_block", "confidence": 0.77}
+{"text": "amar add money bank er somossa hocche, ki korbo?", "intent": "add_money_bank", "confidence": 0.81}
+{"text": "cashout agent not found niye help lagbe", "intent": "cashout_agent_not_found", "confidence": 0.73}
+{"text": "app e fraud report niye kothay jabo?", "intent": "fraud_report", "confidence": 0.65}
+{"text": "app e pin reset niye kothay jabo?", "intent": "pin_reset", "confidence": 0.73}
+{"text": "app e loan apply niye kothay jabo?", "intent": "loan_apply", "confidence": 0.9}
+{"text": "app e add money bank niye kothay jabo?", "intent": "add_money_bank", "confidence": 0.71}
+{"text": "app e limit issue niye kothay jabo?", "intent": "limit_issue", "confidence": 0.61}
+{"text": "help me with pin reset plz", "intent": "pin_reset", "confidence": 0.62}
+{"text": "help me with loan apply plz", "intent": "loan_apply", "confidence": 0.85}
+{"text": "cashout agent not found niye help lagbe", "intent": "cashout_agent_not_found", "confidence": 0.68}
+{"text": "help me with limit issue plz", "intent": "limit_issue", "confidence": 0.89}
+{"text": "cashout agent not found niye help lagbe", "intent": "cashout_agent_not_found", "confidence": 0.83}
+{"text": "app e add money bank niye kothay jabo?", "intent": "add_money_bank", "confidence": 0.74}
+{"text": "app e app crash niye kothay jabo?", "intent": "app_crash", "confidence": 0.69}
+{"text": "app e account block niye kothay jabo?", "intent": "account_block", "confidence": 0.81}
+{"text": "help me with send money fail plz", "intent": "send_money_fail", "confidence": 0.76}
+{"text": "add money bank niye help lagbe", "intent": "add_money_bank", "confidence": 0.65}
+{"text": "amar dps info er somossa hocche, ki korbo?", "intent": "dps_info", "confidence": 0.83}
+{"text": "cashout agent not found niye help lagbe", "intent": "cashout_agent_not_found", "confidence": 0.67}
+{"text": "loan apply niye help lagbe", "intent": "loan_apply", "confidence": 0.75}
+{"text": "bhai cashout agent not found kivabe solve korbo?", "intent": "cashout_agent_not_found", "confidence": 0.88}
+{"text": "help me with add money bank plz", "intent": "add_money_bank", "confidence": 0.88}
+{"text": "amar add money bank er somossa hocche, ki korbo?", "intent": "add_money_bank", "confidence": 0.7}
+{"text": "amar send money fail er somossa hocche, ki korbo?", "intent": "send_money_fail", "confidence": 0.79}
+{"text": "bhai loan apply kivabe solve korbo?", "intent": "loan_apply", "confidence": 0.76}
+{"text": "loan apply niye help lagbe", "intent": "loan_apply", "confidence": 0.8}
+{"text": "amar app crash er somossa hocche, ki korbo?", "intent": "app_crash", "confidence": 0.63}
+{"text": "app e loan apply niye kothay jabo?", "intent": "loan_apply", "confidence": 0.65}
+{"text": "help me with loan apply plz", "intent": "loan_apply", "confidence": 0.86}
+{"text": "bhai add money bank kivabe solve korbo?", "intent": "add_money_bank", "confidence": 0.75}
+{"text": "app e limit issue niye kothay jabo?", "intent": "limit_issue", "confidence": 0.84}
+{"text": "amar add money bank er somossa hocche, ki korbo?", "intent": "add_money_bank", "confidence": 0.8}
+{"text": "app e dps info niye kothay jabo?", "intent": "dps_info", "confidence": 0.89}
+{"text": "app e app crash niye kothay jabo?", "intent": "app_crash", "confidence": 0.63}
+{"text": "bhai loan apply kivabe solve korbo?", "intent": "loan_apply", "confidence": 0.73}
+{"text": "help me with loan apply plz", "intent": "loan_apply", "confidence": 0.83}
+{"text": "app e loan apply niye kothay jabo?", "intent": "loan_apply", "confidence": 0.9}
+{"text": "amar fraud report er somossa hocche, ki korbo?", "intent": "fraud_report", "confidence": 0.75}
+{"text": "help me with limit issue plz", "intent": "limit_issue", "confidence": 0.89}
+{"text": "tariff fee query niye help lagbe", "intent": "tariff_fee_query", "confidence": 0.75}
+{"text": "bhai tariff fee query kivabe solve korbo?", "intent": "tariff_fee_query", "confidence": 0.9}
+{"text": "amar fraud report er somossa hocche, ki korbo?", "intent": "fraud_report", "confidence": 0.66}
+{"text": "app e app crash niye kothay jabo?", "intent": "app_crash", "confidence": 0.86}
+{"text": "help me with limit issue plz", "intent": "limit_issue", "confidence": 0.78}
+{"text": "send money fail niye help lagbe", "intent": "send_money_fail", "confidence": 0.72}
+{"text": "limit issue niye help lagbe", "intent": "limit_issue", "confidence": 0.81}
+{"text": "bhai loan apply kivabe solve korbo?", "intent": "loan_apply", "confidence": 0.74}
+{"text": "bhai app crash kivabe solve korbo?", "intent": "app_crash", "confidence": 0.65}
+{"text": "help me with fraud report plz", "intent": "fraud_report", "confidence": 0.8}
+{"text": "bhai account block kivabe solve korbo?", "intent": "account_block", "confidence": 0.71}
+{"text": "amar cashout agent not found er somossa hocche, ki korbo?", "intent": "cashout_agent_not_found", "confidence": 0.82}
+{"text": "app e loan apply niye kothay jabo?", "intent": "loan_apply", "confidence": 0.88}
+{"text": "send money fail niye help lagbe", "intent": "send_money_fail", "confidence": 0.79}
+{"text": "amar add money bank er somossa hocche, ki korbo?", "intent": "add_money_bank", "confidence": 0.71}
+{"text": "help me with loan apply plz", "intent": "loan_apply", "confidence": 0.81}
+{"text": "bhai cashout agent not found kivabe solve korbo?", "intent": "cashout_agent_not_found", "confidence": 0.61}
+{"text": "app e fraud report niye kothay jabo?", "intent": "fraud_report", "confidence": 0.63}
+{"text": "amar account block er somossa hocche, ki korbo?", "intent": "account_block", "confidence": 0.75}
+{"text": "help me with pin reset plz", "intent": "pin_reset", "confidence": 0.88}
+{"text": "send money fail niye help lagbe", "intent": "send_money_fail", "confidence": 0.62}
+{"text": "app e add money bank niye kothay jabo?", "intent": "add_money_bank", "confidence": 0.76}
+{"text": "bhai add money bank kivabe solve korbo?", "intent": "add_money_bank", "confidence": 0.85}
+{"text": "help me with pin reset plz", "intent": "pin_reset", "confidence": 0.67}
+{"text": "help me with add money bank plz", "intent": "add_money_bank", "confidence": 0.89}
+{"text": "bhai cashout agent not found kivabe solve korbo?", "intent": "cashout_agent_not_found", "confidence": 0.68}
+{"text": "loan apply niye help lagbe", "intent": "loan_apply", "confidence": 0.63}
+{"text": "account block niye help lagbe", "intent": "account_block", "confidence": 0.74}
+{"text": "amar dps info er somossa hocche, ki korbo?", "intent": "dps_info", "confidence": 0.61}
+{"text": "bhai tariff fee query kivabe solve korbo?", "intent": "tariff_fee_query", "confidence": 0.9}
+{"text": "app e limit issue niye kothay jabo?", "intent": "limit_issue", "confidence": 0.73}
+{"text": "help me with app crash plz", "intent": "app_crash", "confidence": 0.61}
+{"text": "bhai add money bank kivabe solve korbo?", "intent": "add_money_bank", "confidence": 0.76}
