@@ -81,7 +81,7 @@ export function Sheet({ open, onClose, title, children }: { open: boolean; onClo
   }, [open, onClose])
   if (!open) return null
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/40" onClick={onClose}>
+    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 animate-backdrop" onClick={onClose}>
       <div
         role="dialog"
         aria-modal="true"

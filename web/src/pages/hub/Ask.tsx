@@ -106,9 +106,9 @@ export default function Ask() {
           </div>
         )}
         {msgs.map((m, i) => m.role === 'user' ? (
-          <div key={i} className="ml-10 rounded-2xl rounded-br-md bg-upay-blue px-3.5 py-2.5 text-white">{m.text}</div>
+          <div key={i} className="ml-10 rounded-2xl rounded-br-md bg-upay-blue px-3.5 py-2.5 text-white animate-slide-up">{m.text}</div>
         ) : (
-          <div key={i} className="mr-6 rounded-2xl rounded-bl-md border border-line bg-white px-3.5 py-2.5">
+          <div key={i} className="mr-6 rounded-2xl rounded-bl-md border border-line bg-white px-3.5 py-2.5 animate-slide-up">
             {m.answer?.ai && <AiBadge className="mb-1" />}
             <p className="whitespace-pre-line leading-relaxed">{m.text}</p>
             {m.answer?.used_tools.map(t => t.name === 'find_route' && t.result ? (

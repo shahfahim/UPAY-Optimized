@@ -54,7 +54,7 @@ export default function Home() {
   return (
     <div className="space-y-3 pt-3">
       <section className="relative mx-3 rounded-2xl bg-white px-1 py-4">
-        <div className={`grid grid-cols-4 gap-y-4 ${expanded ? '' : 'overflow-hidden max-h-[170px]'}`}>
+        <div className={`grid grid-cols-4 gap-y-4 transition-all duration-500 ease-in-out ${expanded ? 'max-h-[500px]' : 'overflow-hidden max-h-[170px]'}`}>
           {TILES.map((t, i) => {
             const isHidden = !expanded && i >= 8;
             return (
