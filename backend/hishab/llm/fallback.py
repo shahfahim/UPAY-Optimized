@@ -141,7 +141,7 @@ _INTENTS: list[tuple[str, str]] = [
      r"|will i have money|month end"),
 
     # ── 24. Product explanation ("what is X?") ───────────────────────────────
-    ("transaction_route", r"(কীভাবে|কিভাবে|কিসে|kishe|kise|কোন ওয়েতে).* (পাঠাব|পাঠাতে|patabo|ট্রান্সফার|transfer|সেন্ড|send|দেয়া যায়)|(নগদ|বিকাশ|npsb|ব্যাংক|bank card|মাকে|maa ke|kakeo).* (কীভাবে|কিভাবে|পাঠাব|patabo|কিসে|kishe|করলে)|পাঠাব.*কিসে|bank card|npsb.*????|npsb ???"),
+    ("transaction_route", r"(কীভাবে|কিভাবে|কিসে|kishe|kise|কোন ওয়েতে).* (পাঠাব|পাঠাতে|patabo|ট্রান্সফার|transfer|সেন্ড|send|দেয়া যায়)|(নগদ|বিকাশ|npsb|ব্যাংক|bank card|মাকে|maa ke|kakeo).* (কীভাবে|কিভাবে|পাঠাব|patabo|কিসে|kishe|করলে)|পাঠাব.*কিসে|bank card|npsb"),
     ("product_explain",
      r"(?:dps|pocket|npsb|upay|hishab|cash.?out|cashout)\s*(?:ki|keno|mane|কী|কেন|মানে)"
      r"|what is (?:dps|pocket|npsb|upay|hishab|cashout)"
