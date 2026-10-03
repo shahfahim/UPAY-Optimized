@@ -87,7 +87,7 @@ export default function Overview() {
               <button onClick={() => setView('savings_loan')} className={`px-3 py-1.5 rounded-full text-[11px] font-bold whitespace-nowrap transition-colors ${view === 'savings_loan' ? 'bg-slate-800 text-white' : 'bg-slate-100 text-slate-600'}`}>{L('ডিপিএস ও লোন', 'DPS/Loan')}</button>
             </div>
           </div>
-          <div className="h-48 w-full [&_svg]:outline-none select-none">
+          <div className="h-48 w-full select-none" style={{ WebkitTapHighlightColor: 'transparent' }}>
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={chartData} margin={{ top: 15, right: 10, left: -20, bottom: 0 }} barSize={40}>
                 <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 13, fill: '#64748b', fontWeight: 600 }} />

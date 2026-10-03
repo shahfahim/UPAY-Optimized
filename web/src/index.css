@@ -151,3 +151,13 @@ button:active:not(:disabled), a:active:not(:disabled) {
 .animate-coin-hole {
   animation: coin-flip-hole 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
+
+/* Recharts Mobile Focus Outline Fix */
+.recharts-wrapper * {
+  outline: none !important;
+  -webkit-tap-highlight-color: transparent !important;
+}
+.recharts-surface {
+  outline: none !important;
+  -webkit-tap-highlight-color: transparent !important;
+}
