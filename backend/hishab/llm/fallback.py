@@ -696,7 +696,7 @@ def answer(uid: str, message: str, svc) -> dict:  # noqa: C901 (intentionally lo
         if nums: amount = nums[0]
 
         res = tool("find_route", amount=amount, destination=dest)
-        text = "সবচেয়ে ভালো পথ হলো NPSB বা সরাসরি পেমেন্ট। નીચે পুরো হিসাব দেখানো হলো:"
+        text = "সবচেয়ে ভালো পথ হলো NPSB বা সরাসরি পেমেন্ট। নিচে পুরো হিসাব দেখানো হলো:"
         return {"text": text, "used_tools": used, "numbers_source": "", "ai": False}
 
     elif intent == "product_explain":
