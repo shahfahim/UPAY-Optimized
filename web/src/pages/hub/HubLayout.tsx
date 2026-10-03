@@ -13,7 +13,7 @@ export default function HubLayout() {
   return (
     <div>
       <div className="flex items-center gap-2 px-4 pt-3">
-        <h1 className="text-lg font-bold">{L('Upay Prototype', 'Upay Prototype')}</h1>
+        <h1 className="text-lg font-bold">Upay Prototype</h1>
         <AiBadge />
       </div>
       <nav className="no-scrollbar sticky top-0 z-30 mt-2 flex gap-1 overflow-x-auto bg-white/85 backdrop-blur-xl px-3 pb-2 pt-2 border-b border-slate-200/50 shadow-sm transition-all">

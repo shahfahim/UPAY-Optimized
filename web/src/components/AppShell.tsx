@@ -193,8 +193,8 @@ export default function AppShell() {
       </div>
       <Sheet open={demoName !== null} onClose={() => setDemoName(null)} title={demoName ?? ''}>
         <p className="text-sm text-muted">
-          {L('এই ফিচার demo-তে চালু নেই। Upay Prototype শুধু টাকার Upay Prototype, সঞ্চয় আর পাঠানোর অংশগুলো দেখায়।',
-            'This feature is not active in the demo. Upay Prototype covers money planning, savings and transfers.')}
+          {L('এই ফিচার demo-তে চালু নেই। হিসাব শুধু টাকার হিসাব, সঞ্চয় আর পাঠানোর অংশগুলো দেখায়।',
+            'This feature is not active in the demo. হিসাব covers money planning, savings and transfers.')}
         </p>
       </Sheet>
     </Ctx.Provider>

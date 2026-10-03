@@ -99,8 +99,8 @@ export default function Emergency() {
         <Card>
           <p className="flex items-center gap-2 font-semibold">{L('হঠাৎ কত টাকা লাগবে?', 'How much do you need?')}<AiBadge /></p>
           <p className="mt-1 text-sm text-muted">
-            {L('Upay Prototype দেখাবে আগে কোথা থেকে নেওয়া ভালো — নিজের জমানো টাকা আগে, ঋণ শেষে।',
-              'Upay Prototype shows where to take it from first — your own savings before any loan.')}
+            {L('হিসাব দেখাবে আগে কোথা থেকে নেওয়া ভালো — নিজের জমানো টাকা আগে, ঋণ শেষে।',
+              'হিসাব shows where to take it from first — your own savings before any loan.')}
           </p>
           <div className="mt-3 flex gap-2">
             <div className="flex flex-1 items-center rounded-xl border border-line px-3 focus-within:border-upay-blue">
@@ -165,8 +165,8 @@ export default function Emergency() {
 
         <p className="flex items-start gap-2 px-1 text-xs text-muted">
           <Icon name="info" size={14} className="mt-0.5 shrink-0" />
-          {L('Upay Prototype কোনো ঋণ দেয় না, ঋণের সিদ্ধান্তও নেয় না; DPS-ভিত্তিক সীমা ব্যাংকের নির্ধারিত নিয়ম।',
-            'Upay Prototype does not give or decide on loans; the DPS-based limit is a fixed bank rule.')}
+          {L('হিসাব কোনো ঋণ দেয় না, ঋণের সিদ্ধান্তও নেয় না; DPS-ভিত্তিক সীমা ব্যাংকের নির্ধারিত নিয়ম।',
+            'হিসাব does not give or decide on loans; the DPS-based limit is a fixed bank rule.')}
         </p>
       </div>
     </div>

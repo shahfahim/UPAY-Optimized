@@ -24,10 +24,7 @@ export function TextMark({ size = 'md' }: { size?: 'md' | 'lg' }) {
   const big = size === 'lg'
   return (
     <div className="flex flex-col items-center leading-none">
-      <span className={`font-bold text-upay-blue ${big ? 'text-5xl' : 'text-2xl'}`}>Upay Prototype</span>
-      <span className={`mt-1 font-[Inter] font-semibold tracking-wide text-ink/60 ${big ? 'text-sm' : 'text-[10px]'}`}>
-        upay prototype
-      </span>
+      <span className={`font-bold text-upay-blue ${big ? 'text-4xl' : 'text-xl'}`}>Upay Prototype</span>
     </div>
   )
 }

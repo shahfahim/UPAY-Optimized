@@ -13,7 +13,7 @@ export default function Overview() {
   const { uid } = useShell()
   const { data: home, error, loading, reload } = useApi(() => api.home(uid), [uid])
 
-  if (loading && !home) return <Spinner label={L('Upay Prototype করা হচ্ছে…', 'Working it out…')} />
+  if (loading && !home) return <Spinner label={L('হিসাব করা হচ্ছে…', 'Working it out…')} />
   if (error) return <ErrorNote message={error} onRetry={reload} />
   if (!home) return null
 
@@ -52,7 +52,7 @@ export default function Overview() {
       <div className="px-4 -mt-6 animate-slide-up" style={{ animationDelay: "100ms" }}>
         <Card className="bg-white shadow-[0_8px_30px_rgb(0,0,0,0.06)] border-none rounded-2xl">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="font-bold text-slate-800">{L('এই মাসের Upay Prototype', 'This Month')}</h3>
+            <h3 className="font-bold text-slate-800">{L('এই মাসের হিসাব', 'This Month')}</h3>
             <AiBadge />
           </div>
           <div className="h-48 w-full">
