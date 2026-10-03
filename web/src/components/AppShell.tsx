@@ -79,10 +79,7 @@ function Header({ shell }: { shell: Shell | null }) {
             {shell && (shell as any).profile_pic ? (
               <img src={(shell as any).profile_pic} alt="Profile" className="w-full h-full object-cover" />
             ) : (
-              <svg viewBox="0 0 100 100" className="w-full h-full" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect width="100" height="100" fill="#ffffff"/>
-                <text x="50" y="60" fontSize="38" fontWeight="900" fontFamily="Arial, sans-serif" fill="#0b4ea2" textAnchor="middle" letterSpacing="-1.5">upay</text>
-              </svg>
+              <img src="/upay-logo.png" alt="Upay Logo" className="w-full h-full object-contain p-1" />
             )}
           </div>
           <div className="min-w-0 flex-1">
