@@ -23,28 +23,6 @@ export default function Account() {
   return (
     <div className="pb-8">
       <PageTitle bn="অ্যাকাউন্ট" en="Account" back={false} />
-      
-      {/* Profile Card */}
-      <div className="mx-3 mt-2 flex items-center gap-4 rounded-2xl bg-white p-4 shadow-sm border border-slate-100 relative overflow-hidden">
-        {/* Subtle background decoration */}
-        <div className="absolute -right-6 -top-6 size-24 rounded-full bg-upay-blue/5 blur-xl"></div>
-        
-        <div className="flex size-14 shrink-0 items-center justify-center rounded-full bg-white text-[#0b4ea2] ring-4 ring-slate-50 shadow-sm overflow-hidden z-10">
-          {shell && (shell as any).profile_pic ? (
-            <img src={(shell as any).profile_pic} alt="Profile" className="w-full h-full object-cover" />
-          ) : (
-            <img src="/upay-logo.png" alt="Upay Logo" className="w-full h-full object-contain p-1.5" />
-          )}
-        </div>
-        
-        <div className="flex-1 z-10">
-          <div className="flex items-center gap-2">
-            <h2 className="text-lg font-bold text-slate-800">{shell?.name}</h2>
-            <Icon name="check" size={14} className="rounded-full bg-emerald-100 text-emerald-600 p-0.5" strokeWidth={3} />
-          </div>
-          <p className="font-[Inter] text-sm font-medium text-slate-500 mt-0.5">{shell?.phone_masked}</p>
-        </div>
-      </div>
 
       {loading && <div className="mt-6"><Spinner /></div>}
       {error && <div className="mt-4"><ErrorNote message={error} onRetry={reload} /></div>}
