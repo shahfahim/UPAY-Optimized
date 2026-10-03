@@ -50,7 +50,7 @@ export default function Overview() {
 
       {/* Simple Bar Chart Card */}
       <div className="px-4 -mt-6 animate-slide-up" style={{ animationDelay: "100ms" }}>
-        <Card className="bg-white shadow-sm border border-slate-100">
+        <Card className="bg-white shadow-[0_8px_30px_rgb(0,0,0,0.06)] border-none rounded-2xl">
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-bold text-slate-800">{L('এই মাসের হিসাব', 'This Month')}</h3>
             <AiBadge />
@@ -70,19 +70,19 @@ export default function Overview() {
 
       {/* Grid Buttons */}
       <div className="px-4 mt-4 grid grid-cols-3 gap-3 animate-slide-up" style={{ animationDelay: "200ms" }}>
-        <Link to="/app/hishab/ask" className="flex flex-col items-center justify-center bg-white rounded-[20px] p-4 shadow-[0_8px_20px_-4px_rgba(0,0,0,0.05)] border border-slate-100/50 hover:shadow-[0_8px_25px_-4px_rgba(11,78,162,0.15)] transition-all duration-300 active:scale-95">
+        <Link to="/app/hishab/ask" className="flex flex-col items-center justify-center bg-white rounded-[20px] p-4 shadow-[0_8px_30px_rgb(0,0,0,0.06)] border-none hover:shadow-[0_8px_25px_-4px_rgba(11,78,162,0.15)] transition-all duration-300 active:scale-95">
           <div className="h-12 w-12 rounded-[14px] bg-blue-50 flex items-center justify-center mb-3">
             <Icon name="spark" size={20} className="text-upay-blue" />
           </div>
           <span className="text-xs font-bold text-slate-700 text-center">Hishab AI</span>
         </Link>
-        <Link to="/app/savings" className="flex flex-col items-center justify-center bg-white rounded-[20px] p-4 shadow-[0_8px_20px_-4px_rgba(0,0,0,0.05)] border border-slate-100/50 hover:shadow-[0_8px_25px_-4px_rgba(11,78,162,0.15)] transition-all duration-300 active:scale-95">
+        <Link to="/app/savings" className="flex flex-col items-center justify-center bg-white rounded-[20px] p-4 shadow-[0_8px_30px_rgb(0,0,0,0.06)] border-none hover:shadow-[0_8px_25px_-4px_rgba(11,78,162,0.15)] transition-all duration-300 active:scale-95">
           <div className="h-12 w-12 rounded-[14px] bg-green-50 flex items-center justify-center mb-3">
             <Icon name="chart" size={20} className="text-green-600" />
           </div>
           <span className="text-xs font-bold text-slate-700 text-center">Smart DPS</span>
         </Link>
-        <Link to="/app/hishab/ask" className="flex flex-col items-center justify-center bg-white rounded-[20px] p-4 shadow-[0_8px_20px_-4px_rgba(0,0,0,0.05)] border border-slate-100/50 hover:shadow-[0_8px_25px_-4px_rgba(11,78,162,0.15)] transition-all duration-300 active:scale-95">
+        <Link to="/app/hishab/ask" className="flex flex-col items-center justify-center bg-white rounded-[20px] p-4 shadow-[0_8px_30px_rgb(0,0,0,0.06)] border-none hover:shadow-[0_8px_25px_-4px_rgba(11,78,162,0.15)] transition-all duration-300 active:scale-95">
           <div className="h-12 w-12 rounded-[14px] bg-[#ffd500] bg-opacity-20 flex items-center justify-center mb-3">
             <Icon name="mic" size={20} className="text-yellow-700" />
           </div>
@@ -105,7 +105,7 @@ export function LessonCard({ lesson, onDone }: { lesson: Lesson; onDone: () => v
     onDone()
   }
   return (
-    <Card className="border-slate-200 shadow-sm bg-white">
+    <Card className="border-none bg-white shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl">
       <div className="mb-1 flex items-center gap-2">
         <Icon name="book" size={18} className="text-slate-500" />
         <AiBadge />

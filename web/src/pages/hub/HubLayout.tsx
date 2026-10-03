@@ -15,7 +15,7 @@ export default function HubLayout() {
         <h1 className="text-lg font-bold">{L('হিসাব', 'Hishab')}</h1>
         <AiBadge />
       </div>
-      <nav className="no-scrollbar sticky top-0 z-30 mt-2 flex gap-1 overflow-x-auto bg-transparent px-3 pb-2">
+      <nav className="no-scrollbar sticky top-0 z-30 mt-2 flex gap-1 overflow-x-auto bg-white/85 backdrop-blur-xl px-3 pb-2 pt-2 border-b border-slate-200/50 shadow-sm transition-all">
         {tabs.map((t) => (
           <NavLink key={t.to} to={t.to} end={t.end}
             className={({ isActive }) => `shrink-0 rounded-full px-3.5 py-1.5 text-sm font-semibold ${isActive ? 'bg-upay-blue text-white' : 'bg-white text-ink'}`}>
