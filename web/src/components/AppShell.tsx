@@ -35,7 +35,7 @@ function MessageStrip({ shell }: { shell: Shell }) {
   }, [msgs])
   if (!msgs.length) return null
   const m = msgs[i % msgs.length]
-  const tone = m.priority === 1 ? 'bg-bad text-white' : 'bg-[#ffd500] text-slate-800'
+  const tone = m.priority === 1 ? 'bg-bad text-white' : 'bg-[#fff8cc] text-slate-900'
   return (
     <button onClick={() => navigate(m.link)}
       className={`mt-2 flex w-full items-center gap-2 rounded-xl px-3 py-1.5 text-left text-[13px] font-semibold ${tone}`}>
@@ -67,36 +67,43 @@ function BalanceButton({ shell }: { shell: Shell }) {
 }
 
 function Header({ shell }: { shell: Shell | null }) {
-  const { L } = useLang()
-  return (
-    <header className="bg-gradient-to-br from-[#083b7a] via-[#0b4ea2] to-[#083b7a] shadow-[inset_0_1px_1px_rgba(255,255,255,0.2)] px-4 pb-3 pt-3">
-      <div className="flex items-center gap-3">
-        <div className="flex size-11 items-center justify-center rounded-full bg-white text-base font-bold text-upay-blue ring-2 ring-white/70">
-          {shell?.avatar_initials ?? '…'}
+    const { L } = useLang()
+    return (
+      <header className="relative overflow-hidden bg-[#ffd500] px-4 pb-4 pt-4 shadow-sm z-10">
+        <div className="absolute inset-0 pointer-events-none opacity-[0.06]" style={{
+          backgroundImage: `repeating-linear-gradient(45deg, #000 0, #000 1px, transparent 1px, transparent 24px), repeating-linear-gradient(-45deg, #000 0, #000 1px, transparent 1px, transparent 24px), radial-gradient(circle at 20% 50%, #000 0%, transparent 15%), radial-gradient(circle at 80% 50%, #000 0%, transparent 15%)`
+        }}></div>
+        
+        <div className="relative flex items-center gap-3">
+          <div className="flex size-11 items-center justify-center rounded-full bg-white text-base font-bold text-[#0b4ea2] ring-2 ring-white/70 shadow-sm">
+            {shell?.avatar_initials ?? '👤'}
+          </div>
+          <div className="min-w-0 flex-1">
+            <p className="truncate text-[15px] font-bold text-slate-900">{shell?.name ?? ''}</p>
+            <p className="font-[Inter] text-xs text-slate-700">{shell?.phone_masked ?? ''}</p>
+          </div>
+          {shell && <BalanceButton shell={shell} />}
+          <Link to="/app/notifications" className="relative p-1 text-slate-900" aria-label={L('নোটিফিকেশন', 'Notifications')}>
+            <Icon name="bell" size={24} strokeWidth={2} />
+            {shell && shell.unread > 0 && (
+              <span className="absolute -right-0.5 -top-0.5 flex size-4 items-center justify-center rounded-full bg-bad text-[10px] font-bold text-white shadow-sm ring-1 ring-white">
+                {shell.unread}
+              </span>
+            )}
+          </Link>
+          <Link to="/app/more" className="p-1 text-slate-900" aria-label={L('আরও', 'More')}>
+            <Icon name="menu" size={26} strokeWidth={2} />
+          </Link>
         </div>
-        <div className="min-w-0 flex-1">
-          <p className="truncate text-[15px] font-bold text-white">{shell?.name ?? ''}</p>
-          <p className="font-[Inter] text-xs text-blue-50">{shell?.phone_masked ?? ''}</p>
+        
+        <div className="relative mt-4">
+          {shell && <MessageStrip shell={shell} />}
         </div>
-        {shell && <BalanceButton shell={shell} />}
-        <Link to="/app/notifications" className="relative p-1 text-white" aria-label={L('নোটিফিকেশন', 'Notifications')}>
-          <Icon name="bell" size={22} />
-          {shell && shell.unread > 0 && (
-            <span className="absolute -right-0.5 -top-0.5 flex size-4 items-center justify-center rounded-full bg-bad text-[10px] font-bold text-white">
-              {shell.unread}
-            </span>
-          )}
-        </Link>
-        <Link to="/app/more" className="p-1 text-white" aria-label={L('আরো', 'More')}>
-          <Icon name="menu" size={22} />
-        </Link>
-      </div>
-      {shell && <MessageStrip shell={shell} />}
-    </header>
-  )
-}
+      </header>
+    )
+  }
 
-function BottomNav({ shell, onQr }: { shell: Shell | null; onQr: () => void }) {
+  function BottomNav({ shell, onQr }: { shell: Shell | null; onQr: () => void }) {
   const { L, num } = useLang()
   const badge = shell?.nav_badge
   const dot = badge ? { green: 'bg-ok', amber: 'bg-warn', red: 'bg-bad' }[badge.level] : ''
