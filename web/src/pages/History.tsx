@@ -44,7 +44,7 @@ export default function History() {
                   <p className="text-sm font-semibold">{L(bn, en)} · {t.name}</p>
                   <p className="text-[11px] text-muted">{date(t.ts.slice(0, 10))} · {t.category_bn}{t.fee > 0 ? ` · fee ${taka(t.fee, { paisa: true })}` : ''}</p>
                 </div>
-                <p className={`text-sm font-bold ${inflow ? 'text-ok' : ''}`}>{inflow ? '+' : '−'}{taka(t.amount, { paisa: t.amount % 1 !== 0 })}</p>
+                <p className={`text-[15px] font-extrabold tracking-tight ${inflow ? 'text-emerald-600' : 'text-rose-600'}`}>{inflow ? '+' : '-'}{taka(t.amount, { paisa: t.amount % 1 !== 0 })}</p>
               </div>
             )
           })}
