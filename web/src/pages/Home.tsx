@@ -115,8 +115,8 @@ export default function Home() {
 
       <section className="mx-3">
         <button onClick={() => navigate(BANNERS[b].to)}
-          className="relative flex h-[110px] w-full items-center justify-center rounded-2xl bg-white overflow-hidden shadow-sm border border-slate-100 active:scale-[0.98] transition-all">
-          <img key={b} src={BANNERS[b].img} className="animate-fade-in h-full w-full object-contain p-0.5" alt="Offer Banner" />
+          className="relative flex h-24 w-full items-center justify-center rounded-2xl overflow-hidden shadow-[0_3px_10px_-3px_rgba(0,0,0,0.15)] active:scale-[0.98] transition-all bg-upay-blue">
+          <img key={b} src={BANNERS[b].img} className="animate-fade-in h-full w-full object-cover" alt="Offer Banner" />
         </button>
         <div className="mt-3 flex justify-center gap-1.5">
           {BANNERS.map((_, k) => <span key={k} className={`h-1.5 rounded-full transition-all duration-300 ${k === b ? 'w-5 bg-upay-blue' : 'w-1.5 bg-line'}`} />)}
