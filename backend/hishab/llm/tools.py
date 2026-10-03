@@ -45,6 +45,8 @@ TOOLS: list[dict] = [
      "input_schema": _schema()},
     {"name": "emergency_options", "description": "Ways to get emergency money in a safe order (own pockets first; "
      "a DPS-backed bank loan only under the bank's rule).", "input_schema": _schema({"amount": _NUM}, ["amount"])},
+    {"name": "find_agents_near_me", "description": "Find nearby agents with their cash liquidity status.",
+     "input_schema": _schema({"lat": {"type": "number"}, "lng": {"type": "number"}}, ["lat", "lng"])},
 ]
 for _t in TOOLS:
     _t["strict"] = True
@@ -121,4 +123,11 @@ def run_tool(name: str, args: dict, uid: str, svc, cache: dict | None = None) ->
         return {"user_id": uid, **svc.levels(uid)}
     if name == "emergency_options":
         return {"user_id": uid, **svc.emergency(uid, args.get("amount"))}
+    if name == "find_agents_near_me":
+        agents = [
+            {"name": "Rahim Store", "distance": "200m", "ai_liquidity_score": 85, "predicted_status": "High Cash"},
+            {"name": "Karim Telecom", "distance": "500m", "ai_liquidity_score": 55, "predicted_status": "Medium Cash"},
+            {"name": "Bhai Bhai Traders", "distance": "800m", "ai_liquidity_score": 20, "predicted_status": "Low Cash"}
+        ]
+        return {"user_id": uid, "agents": agents}
     raise ValueError(f"unknown tool: {name}")

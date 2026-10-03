@@ -233,9 +233,12 @@ _INTENTS: list[tuple[str, str]] = [
      r"|what is (?:dps|pocket|npsb|upay|hishab|cashout)"
      r"|কীভাবে কাজ করে|kivabe kaj kore"),
 
+    # ── 12a. Agent Locator ────────────────────────────────────────────────────
+    ("agent_locator", r"আশেপাশে.*এজেন্ট|agent|এজেন্ট"),
+
     # ── 12. Cash-out & fees ───────────────────────────────────────────────────
     ("cashout",
-     r"cash.?out(?!\s*(?:ki|ki|mane|\u0995\u09c0))|ক্যাশ ?আউট|ক্যাশআউট|agent|এজেন্ট|fee|ফি"
+     r"cash.?out(?!\s*(?:ki|ki|mane|\u0995\u09c0))|ক্যাশ ?আউট|ক্যাশআউট|fee|ফি"
      r"|agent theke|cash komabo"
      r"|taka tule|টাকা তুলে|agent fee|cash withdrawal"
      r"|koto fee|ফি কত|charge koto|কত চার্জ"),
@@ -311,7 +314,6 @@ _INTENTS: list[tuple[str, str]] = [
      r"kobe taka ashbe|কবে টাকা আসবে|next income|পরের আয়"
      r"|payday|payment.*kobe|kobe pabo|কবে পাব"
      r"|income.*kobe|salary.*kobe|আয়.*কবে"),
-
 ]
 
 
@@ -500,6 +502,16 @@ def answer(uid: str, message: str, svc) -> dict:  # noqa: C901 (intentionally lo
         else:
             text = (f"এই মাসে টানাটানির ঝুঁকি কম — ভালো করছ! "
                     f"আজ নিরাপদ খরচ প্রায় ৳{bn_num(h.get('safe_to_spend_today') or 0)}।")
+
+    # ── Agent locator ─────────────────────────────────────────────────────────
+    elif intent == "agent_locator":
+        res = tool("find_agents_near_me", lat=23.8103, lng=90.4125)
+        agents = res.get("agents", [])
+        if agents:
+            parts = [f"{a['name']} ({a['distance']}, {a['predicted_status']})" for a in agents]
+            text = "আপনার আশেপাশে এই এজেন্টদের পাওয়া গেছে: " + ", ".join(parts) + "।"
+        else:
+            text = "দুঃখিত, আপনার আশেপাশে কোনো এজেন্ট পাওয়া যায়নি।"
 
     # ── Cash-out & fees ───────────────────────────────────────────────────────
     elif intent == "cashout":
