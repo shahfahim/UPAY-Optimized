@@ -16,16 +16,16 @@ export function PinPad({ value, onChange, length = 6 }: { value: string; onChang
       <div className="grid grid-cols-3 gap-2">
         {keys.map((k) => (
           <button key={k} type="button" onClick={() => press(k)}
-            className="h-14 rounded-xl bg-surface text-xl font-semibold active:bg-line">
+            className="h-14 rounded-xl bg-slate-200 border border-slate-300 shadow-sm text-xl font-bold text-slate-800 active:bg-slate-300 active:scale-95 transition-all">
             {lang === 'bn' ? toBnDigits(k) : k}
           </button>
         ))}
         <span />
-        <button type="button" onClick={() => press('0')} className="h-14 rounded-xl bg-surface text-xl font-semibold active:bg-line">
+        <button type="button" onClick={() => press('0')} className="h-14 rounded-xl bg-slate-200 border border-slate-300 shadow-sm text-xl font-bold text-slate-800 active:bg-slate-300 active:scale-95 transition-all">
           {lang === 'bn' ? '০' : '0'}
         </button>
         <button type="button" onClick={() => onChange(value.slice(0, -1))} aria-label={L('মুছুন', 'Delete')}
-          className="h-14 rounded-xl text-lg text-muted active:bg-surface">
+          className="flex items-center justify-center h-14 rounded-xl text-xl text-slate-600 bg-slate-200/60 border border-slate-300 active:bg-slate-300 active:scale-95 transition-all">
           ⌫
         </button>
       </div>
