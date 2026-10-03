@@ -141,3 +141,13 @@ button:active:not(:disabled), a:active:not(:disabled) {
   100% { transform: scale(1) translateY(0); opacity: 1; }
 }
 
+
+@keyframes coin-flip-hole {
+  0% { width: 104px; transform: scale(1) rotateY(0deg); opacity: 1; }
+  49% { width: 36px; transform: scale(0) rotateY(360deg); opacity: 0; }
+  50% { width: 36px; transform: scale(0) rotateY(360deg); opacity: 0; }
+  100% { width: 110px; transform: scale(1) rotateY(720deg); opacity: 1; }
+}
+.animate-coin-hole {
+  animation: coin-flip-hole 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
