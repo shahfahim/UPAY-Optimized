@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts'
 import { api } from '../../api/client'
-import type { ActionCard, Forecast, Home, Indicators, Lesson } from '../../api/types'
+import type { ActionCard, Forecast, Home, Indicators, Lesson, TxItem, TxList } from '../../api/types'
 import { useShell } from '../../components/AppShell'
 import { Icon } from '../../components/Icon'
 import { AiBadge, Button, Card, ErrorNote, riskClasses, Spinner } from '../../components/ui'
@@ -133,8 +133,37 @@ export default function Overview() {
   const { L, taka } = useLang()
   const { uid } = useShell()
   const { data: home, error, loading, reload, setData } = useApi(() => api.home(uid), [uid])
+  const { data: txData } = useApi(() => api.transactions(uid, 60), [uid])
   const [whatIf, setWhatIf] = useState<{ id: string; fc: Forecast } | null>(null)
   const [toast, setToast] = useState('')
+
+  // Build daily chart data from real transactions
+  const dailyChartData = (() => {
+    if (!txData?.items?.length || !home) return null
+    const today = new Date(home.today)
+    const month = today.getMonth()
+    const year = today.getFullYear()
+
+    // Group by day for this month
+    const byDay: Record<number, { in: number; out: number }> = {}
+    txData.items.forEach((tx: TxItem) => {
+      const d = new Date(tx.ts)
+      if (d.getMonth() !== month || d.getFullYear() !== year) return
+      const day = d.getDate()
+      if (!byDay[day]) byDay[day] = { in: 0, out: 0 }
+      if (tx.direction > 0) byDay[day].in += tx.amount
+      else byDay[day].out += Math.abs(tx.amount)
+    })
+
+    // Only return days that have activity
+    return Object.entries(byDay)
+      .sort(([a], [b]) => Number(a) - Number(b))
+      .map(([day, v]) => ({
+        day: `${day} তারিখ`,
+        আয়: v.in,
+        খরচ: v.out,
+      }))
+  })()
 
   if (loading && !home) return <Spinner label={L('হিসাব করা হচ্ছে…', 'Working it out…')} />
   if (error) return <ErrorNote message={error} onRetry={reload} />
@@ -166,7 +195,11 @@ export default function Overview() {
         <div className="flex items-center justify-between px-4 pt-4 pb-2">
           <div>
             <p className="text-[15px] font-bold text-ink">{L('এই মাসের হিসাব', 'This Month')}</p>
-            <p className="text-xs text-muted mt-0.5">{L('আয় ও খরচের তুলনা', 'Income vs Expense')}</p>
+            <p className="text-xs text-muted mt-0.5">
+              {dailyChartData?.length
+                ? L(`${dailyChartData.length} দিনের লেনদেন`, `${dailyChartData.length} days with activity`)
+                : L('আয় ও খরচের তুলনা', 'Income vs Expense')}
+            </p>
           </div>
           <AiBadge />
         </div>
@@ -195,43 +228,70 @@ export default function Overview() {
           )
         })()}
 
-        {/* Bar Chart */}
-        <div className="px-2 pb-4">
-          <ResponsiveContainer width="100%" height={180}>
-            <BarChart
-              data={[{
-                name: '',
-                আয়: home.forecast?.monthly_income ?? 35000,
-                খরচ: home.forecast?.monthly_expense ?? 28000,
-              }]}
-              margin={{ top: 5, right: 10, left: -10, bottom: 5 }}
-              barCategoryGap="40%"
-              barGap={8}
-            >
-              <XAxis dataKey="name" hide />
-              <YAxis
-                tickFormatter={(v) => `৳${(v / 1000).toFixed(0)}k`}
-                tick={{ fontSize: 10, fill: '#94a3b8' }}
-                axisLine={false}
-                tickLine={false}
-              />
-              <Tooltip
-                formatter={(value: number, name: string) => [`৳${value.toLocaleString('bn-BD')}`, name]}
-                contentStyle={{
-                  borderRadius: '12px',
-                  border: '1px solid #e2e8f0',
-                  fontSize: '13px',
-                  boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
-                }}
-              />
-              <Bar dataKey="আয়" radius={[8, 8, 0, 0]} maxBarSize={80}>
-                <Cell fill="#22c55e" />
-              </Bar>
-              <Bar dataKey="খরচ" radius={[8, 8, 0, 0]} maxBarSize={80}>
-                <Cell fill="#f87171" />
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
+        {/* Bar Chart — daily breakdown */}
+        <div className="pb-4">
+          {dailyChartData && dailyChartData.length > 0 ? (
+            <div className="overflow-x-auto">
+              <div style={{ minWidth: Math.max(320, dailyChartData.length * 52) }}>
+                <ResponsiveContainer width="100%" height={190}>
+                  <BarChart
+                    data={dailyChartData}
+                    margin={{ top: 5, right: 12, left: -10, bottom: 20 }}
+                    barCategoryGap="30%"
+                    barGap={3}
+                  >
+                    <XAxis
+                      dataKey="day"
+                      tick={{ fontSize: 9, fill: '#94a3b8' }}
+                      axisLine={false}
+                      tickLine={false}
+                      angle={-35}
+                      textAnchor="end"
+                    />
+                    <YAxis
+                      tickFormatter={(v) => `৳${(v / 1000).toFixed(0)}k`}
+                      tick={{ fontSize: 10, fill: '#94a3b8' }}
+                      axisLine={false}
+                      tickLine={false}
+                    />
+                    <Tooltip
+                      formatter={(value: number, name: string) => [`৳${value.toLocaleString()}`, name]}
+                      contentStyle={{
+                        borderRadius: '12px',
+                        border: '1px solid #e2e8f0',
+                        fontSize: '12px',
+                        boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
+                      }}
+                    />
+                    <Bar dataKey="আয়" fill="#22c55e" radius={[6, 6, 0, 0]} maxBarSize={20} />
+                    <Bar dataKey="খরচ" fill="#f87171" radius={[6, 6, 0, 0]} maxBarSize={20} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+          ) : (
+            /* Fallback: monthly summary if no daily data yet */
+            <div className="px-2">
+              <ResponsiveContainer width="100%" height={180}>
+                <BarChart
+                  data={[{
+                    day: L('এই মাস', 'This Month'),
+                    আয়: home.forecast?.monthly_income ?? 0,
+                    খরচ: home.forecast?.monthly_expense ?? 0,
+                  }]}
+                  margin={{ top: 5, right: 10, left: -10, bottom: 5 }}
+                  barCategoryGap="40%" barGap={8}
+                >
+                  <XAxis dataKey="day" tick={{ fontSize: 11, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
+                  <YAxis tickFormatter={(v) => `৳${(v / 1000).toFixed(0)}k`} tick={{ fontSize: 10, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
+                  <Tooltip formatter={(value: number, name: string) => [`৳${value.toLocaleString()}`, name]}
+                    contentStyle={{ borderRadius: '12px', border: '1px solid #e2e8f0', fontSize: '12px', boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }} />
+                  <Bar dataKey="আয়" fill="#22c55e" radius={[8, 8, 0, 0]} maxBarSize={80} />
+                  <Bar dataKey="খরচ" fill="#f87171" radius={[8, 8, 0, 0]} maxBarSize={80} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          )}
         </div>
       </Card>
 
