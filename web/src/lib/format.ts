@@ -3,7 +3,8 @@ export type Lang = 'bn' | 'en'
 const BN = '০১২৩৪৫৬৭৮৯'
 
 export function toBnDigits(s: string | number): string {
-  return String(s).replace(/[0-9]/g, (d) => BN[Number(d)])
+  // User requested all digits remain in English globally
+  return String(s)
 }
 
 export function toAsciiDigits(s: string): string {
