@@ -32,6 +32,7 @@ CREATE TABLE IF NOT EXISTS extra_tx (id INTEGER PRIMARY KEY AUTOINCREMENT, user_
 class UserState:
     pockets: dict = field(default_factory=lambda: {p: 0.0 for p in POCKETS})
     pocket_goals: dict = field(default_factory=dict)
+    custom_names: dict = field(default_factory=dict)
     paisa_on: bool = False
     paisa_paused: bool = False
     budget_mode: str = "auto"
@@ -53,6 +54,7 @@ class UserState:
         pockets = {p: 0.0 for p in POCKETS}
         pockets.update(d.get("pockets") or {})
         d["pockets"] = pockets
+        d["custom_names"] = d.get("custom_names") or {}
         return cls(**d)
 
 

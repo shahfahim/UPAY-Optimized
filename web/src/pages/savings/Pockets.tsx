@@ -164,10 +164,14 @@ export default function Pockets() {
   const { data, error, loading, reload, setData } = useApi(() => api.savings(uid), [uid])
   const [move, setMove] = useState<Move | null>(null)
   const [msg, setMsg] = useState('')
+  const [deletedPockets, setDeletedPockets] = useState<string[]>([])
+  const [addedPockets, setAddedPockets] = useState<any[]>([])
 
   if (loading && !data) return <><PageTitle bn="আমার পকেট" en="My pockets" /><Spinner /></>
   if (error) return <><PageTitle bn="আমার পকেট" en="My pockets" /><ErrorNote message={error} onRetry={reload} /></>
   if (!data) return null
+
+  const displayPockets = [...data.pockets.filter(p => !deletedPockets.includes(p.name)), ...addedPockets]
 
   const togglePaisa = async (on: boolean) => {
     try {
@@ -212,7 +216,7 @@ export default function Pockets() {
         )}
 
         <div className="grid grid-cols-1 gap-3">
-          {data.pockets.map((p) => (
+          {displayPockets.map((p) => (
             <Card key={p.name}>
               <div className="flex items-center gap-3">
                 <span className="flex size-10 items-center justify-center rounded-xl bg-upay-yellow/30 text-upay-blue">
@@ -228,7 +232,14 @@ export default function Pockets() {
                   <Button variant="ghost" className="!min-h-9 !px-3 text-sm" disabled={p.balance <= 0}
                     onClick={() => setMove({ pocket: p.name, name: p.name_bn, dir: 'out', max: p.balance })}>{L('তুলুন', 'Take out')}</Button>
                   <Button variant="ghost" className="!min-h-9 !px-2 text-sm text-slate-400 hover:text-red-500"
-                    onClick={() => setMsg(L('পকেট ডিলিট করা হয়েছে (ডেমো)', 'Pocket deleted (Demo)'))} aria-label="Delete Pocket">
+                    onClick={async () => { 
+                      try {
+                        setData(await api.deletePocket(uid, p.name)); 
+                        setMsg(L('পকেট ডিলিট করা হয়েছে', 'Pocket deleted'))
+                      } catch (e) {
+                        setMsg('Error')
+                      }
+                    }} aria-label="Delete Pocket">
                     <Icon name="trash" size={18} />
                   </Button>
 
@@ -247,7 +258,17 @@ export default function Pockets() {
           ))}
         </div>
 
-        <Button variant="outline" className="w-full border-dashed border-2 border-slate-300 text-slate-500 hover:bg-slate-50 mb-4" onClick={() => setMsg(L('নতুন পকেট তৈরির ফিচার শীঘ্রই আসছে (ডেমো)', 'New pocket feature coming soon (Demo)'))}>
+        <Button variant="outline" className="w-full border-dashed border-2 border-slate-300 text-slate-500 hover:bg-slate-50 mb-4" onClick={async () => {
+            const name = window.prompt(L('নতুন পকেটের নাম দিন:', 'Enter new pocket name:'))
+            if (name) {
+              try {
+                setData(await api.addPocket(uid, 'custom_' + Date.now(), name))
+                setMsg(L('নতুন পকেট তৈরি হয়েছে', 'New pocket created'))
+              } catch (e) {
+                setMsg('Error')
+              }
+            }
+          }}>
           + {L('নতুন পকেট যোগ করুন', 'Add a new pocket')}
         </Button>
         <Card className="border-upay-yellow bg-upay-yellow/10">
@@ -269,7 +290,7 @@ export default function Pockets() {
           )}
         </Card>
 
-        <GoalPlanner pockets={data.pockets} onSaved={() => void reload()} />
+        <GoalPlanner pockets={displayPockets} onSaved={() => void reload()} />
       </div>
       <MoveSheet move={move} onClose={() => setMove(null)} onDone={(s) => { setData(s); setMove(null); setMsg(L('হয়ে গেছে', 'Done')) }} />
       {msg && (

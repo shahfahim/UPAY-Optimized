@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, Request
+from pydantic import BaseModel
 
 from hishab.api.deps import require_user
 
@@ -40,3 +41,17 @@ def dps_open(uid: str, body: DpsOpenIn, request: Request):
 @router.post("/users/{uid}/emergency/options")
 def emergency(uid: str, body: EmergencyIn, request: Request):
     return request.app.state.svc.emergency(uid, body.amount)
+
+class PocketDeleteIn(BaseModel):
+    pass
+
+class PocketAddIn(BaseModel):
+    name_bn: str
+
+@router.delete("/users/{uid}/savings/pockets/{pocket}")
+def delete_pocket(uid: str, pocket: str, request: Request):
+    return request.app.state.svc.delete_pocket(uid, pocket)
+
+@router.post("/users/{uid}/savings/pockets/{pocket}")
+def add_pocket(uid: str, pocket: str, body: PocketAddIn, request: Request):
+    return request.app.state.svc.add_pocket(uid, pocket, body.name_bn)

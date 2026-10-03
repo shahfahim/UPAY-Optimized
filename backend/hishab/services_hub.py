@@ -123,18 +123,39 @@ class HubMixin:
     def set_budget(self, uid, mode, manual):
         return {"mode": "disabled", "manual": {}}
 
+    @locked
+    def delete_pocket(self, uid, pocket):
+        ctx = self.ctx(uid)
+        if pocket in ctx.state.pockets:
+            del ctx.state.pockets[pocket]
+        self.store.save_state(uid, ctx.state)
+        return self.savings(uid)
+
+    @locked
+    def add_pocket(self, uid, pocket, name_bn):
+        ctx = self.ctx(uid)
+        ctx.state.pockets[pocket] = 0.0
+        # save custom name to metadata or something, for now we will just rely on the frontend or fallback
+        # Let's save it to a meta dict in state
+        if not hasattr(ctx.state, 'custom_names'):
+            ctx.state.custom_names = {}
+        ctx.state.custom_names[pocket] = name_bn
+        self.store.save_state(uid, ctx.state)
+        return self.savings(uid)
+
     # --- savings --------------------------------------------------------------------------------------------
     def savings(self, uid):
         ctx = self.ctx(uid)
         st = ctx.state
         pockets = []
-        for p in POCKETS:
-            if p == "paisa":
+        # Dynamic pockets
+        for p in list(st.pockets.keys()):
+            if p == "paisa" or p == "custom":
                 continue
             goal = (st.pocket_goals or {}).get(p)
             bal = round(float(st.pockets.get(p, 0.0)), 2)
             prog = round(min(1.0, bal / goal["target"]), 3) if goal and goal.get("target") else None
-            pockets.append({"name": p, "name_bn": POCKET_BN[p], "balance": bal, "goal": goal, "progress": prog})
+            pockets.append({"name": p, "name_bn": POCKET_BN.get(p, p.title()), "balance": bal, "goal": goal, "progress": prog})
         return jsonable({"pockets": pockets,
                          "paisa": {"on": st.paisa_on, "paused": st.paisa_paused,
                                    "total": round(st.pockets.get("paisa", 0.0), 2)},
@@ -163,7 +184,7 @@ class HubMixin:
 
     @locked
     def move_pocket(self, uid, pocket, direction, amount):
-        if pocket not in POCKETS or (pocket == "paisa" and direction == "in"):
+        if (pocket == "paisa" and direction == "in"):
             raise UserError("পকেট সঠিক নয়")
         amount = validate.amount(amount)
         ctx = self.ctx(uid)
@@ -194,7 +215,7 @@ class HubMixin:
         ctx = self.ctx(uid)
         g = _plan_goal(ctx, self.models, target, months)
         if pocket:
-            if pocket not in POCKETS or pocket == "paisa":
+            if pocket == "paisa":
                 raise UserError("পকেট সঠিক নয়")
             goals = dict(ctx.state.pocket_goals or {})
             goals[pocket] = {"target": g.target, "months": g.months,

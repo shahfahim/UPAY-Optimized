@@ -66,6 +66,8 @@ export const api = {
   calendar: (uid: string, month: string) => req<Calendar>('GET', `${u(uid)}/calendar?month=${month}`),
 
   savings: (uid: string) => req<Savings>('GET', `${u(uid)}/savings`),
+  addPocket: (uid: string, pocket: string, name_bn: string) => req<Savings>('POST', `${u(uid)}/savings/pockets/${pocket}`, { name_bn }),
+  deletePocket: (uid: string, pocket: string) => req<Savings>('DELETE', `${u(uid)}/savings/pockets/${pocket}`),
   movePocket: (uid: string, pocket: string, direction: 'in' | 'out', amount: number) =>
     req<Savings>('POST', `${u(uid)}/savings/pockets/${pocket}/move`, { direction, amount }),
   setPaisa: (uid: string, on: boolean) => req<Savings>('PUT', `${u(uid)}/savings/paisa`, { on }),
