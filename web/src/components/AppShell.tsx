@@ -207,8 +207,8 @@ export default function AppShell() {
       <div className="app-frame">
         <PrototypeRibbon />
         <Header shell={shell} />
-        <main className="flex-1 bg-surface pb-4 overflow-hidden relative">
-          <div key={location.pathname} className="animate-page-enter w-full min-h-full">
+        <main className="flex flex-col flex-1 bg-surface overflow-y-auto relative">
+          <div key={location.pathname} className="animate-page-enter flex flex-col flex-1 w-full">
             <Outlet />
           </div>
         </main>
