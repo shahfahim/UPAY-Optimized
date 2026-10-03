@@ -51,9 +51,11 @@ export default function Login() {
 
   return (
     <div className="flex flex-1 flex-col">
-      <div className="flex items-center gap-3 bg-upay-yellow px-4 py-3">
-        <Link to="/welcome" aria-label={L('ফিরে যান', 'Back')} className="text-xl">←</Link>
-        <span className="font-semibold">{L('লগইন', 'Log in')}</span>
+      <div className="relative flex items-center gap-3 bg-[#ffd500] px-4 py-3 overflow-hidden shadow-[0_2px_10px_-2px_rgba(0,0,0,0.15)] z-10">
+        <div className="absolute -top-10 -bottom-20 left-[48%] right-0 -skew-x-[24deg] bg-gradient-to-br from-[#083b7a] to-[#0b4ea2] shadow-[-12px_0_25px_rgba(0,0,0,0.3)] z-0 pointer-events-none"></div>
+        <div className="absolute -top-10 -bottom-20 left-[82%] right-0 -skew-x-[24deg] bg-[#1a64c4] shadow-[-6px_0_15px_rgba(0,0,0,0.2)] z-0 pointer-events-none"></div>
+        <Link to="/welcome" aria-label={L('Back', 'Back')} className="relative z-10 text-xl font-bold text-[#083b7a]">←</Link>
+        <span className="relative z-10 font-bold text-[#083b7a]">{L('লগইন', 'Log in')}</span>
       </div>
       <div className="flex-1 overflow-y-auto px-5 py-5">
         <div className="mb-5 flex items-center gap-3">
