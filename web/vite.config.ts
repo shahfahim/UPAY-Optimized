@@ -5,7 +5,6 @@ import path from 'path'
 import { fileURLToPath } from 'url'
 
 export default defineConfig({
-  base: '/UPAY-Optimized/',
   plugins: [react(), tailwindcss()],
   server: {
     proxy: { '/api': 'http://localhost:8000' },
