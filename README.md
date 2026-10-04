@@ -1,6 +1,5 @@
 
 <div align="center">
-  <img src="assets/screenshot_1.jpg" alt="Hishab AI Banner" width="100%" style="border-radius:15px;"/>
   <br/>
   <h1>🚀 Hishab AI — An upay Cash-flow Copilot</h1>
   <p><b>Empowering Low-Income MFS Users with AI-Driven Financial Health (AI DEV FEST 2026 • Track 3)</b></p>
