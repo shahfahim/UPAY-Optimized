@@ -16,7 +16,6 @@
 
 <div align="center">
   <a href="https://youtu.be/EUe-zCwZJgk?si=CNCy9P8Kg2qeqbGK">
-    <img src="https://img.youtube.com/vi/EUe-zCwZJgk/maxresdefault.jpg" width="80%" style="border-radius:10px; margin-bottom:10px;" alt="Hishab AI Demo Video" />
   </a>
   <br/>
   <a href="https://youtu.be/EUe-zCwZJgk?si=CNCy9P8Kg2qeqbGK">
