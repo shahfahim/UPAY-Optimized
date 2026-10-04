@@ -4,11 +4,9 @@ import { defineConfig } from 'vitest/config'
 import path from 'path'
 import { fileURLToPath } from 'url'
 
-// const __dirname = path.dirname(fileURLToPath(import.meta.url))
-
 export default defineConfig({
+  base: '/UPAY-Optimized/',
   plugins: [react(), tailwindcss()],
-
   server: {
     proxy: { '/api': 'http://localhost:8000' },
     watch: {
@@ -16,8 +14,6 @@ export default defineConfig({
         '**/node_modules/**',
         '**/dist/**',
         '**/.git/**',
-        // path.resolve(__dirname, '../backend/**'), // Removing these complex rules to prevent build failure
-        // path.resolve(__dirname, '../**/*.py'),
       ],
       usePolling: false,
     },
