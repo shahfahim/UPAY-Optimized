@@ -13,8 +13,18 @@
 ---
 
 ## 🎥 Watch the Demo Video
-[![Hishab AI Demo Video](https://img.youtube.com/vi/EUe-zCwZJgk/maxresdefault.jpg)](https://youtu.be/EUe-zCwZJgk?si=CNCy9P8Kg2qeqbGK)
-*Click the image above to watch the full demonstration of Hishab AI.*
+
+<div align="center">
+  <a href="https://youtu.be/EUe-zCwZJgk?si=CNCy9P8Kg2qeqbGK">
+    <img src="https://img.youtube.com/vi/EUe-zCwZJgk/maxresdefault.jpg" width="80%" style="border-radius:10px; margin-bottom:10px;" alt="Hishab AI Demo Video" />
+  </a>
+  <br/>
+  <a href="https://youtu.be/EUe-zCwZJgk?si=CNCy9P8Kg2qeqbGK">
+    <img src="https://img.shields.io/badge/▶_WATCH_ON_YOUTUBE-FF0000?style=for-the-badge&logo=youtube&logoColor=white" alt="Watch on YouTube" />
+  </a>
+  <br/>
+  <p><i>Click the button or the image above to watch the full demonstration of Hishab AI.</i></p>
+</div>
 
 ---
 
