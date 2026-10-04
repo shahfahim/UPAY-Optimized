@@ -1,50 +1,53 @@
-﻿# 🚀 হিসাব AI (Hishab AI) — An upay Cash-flow Copilot
-**Prototype for AI DEV FEST 2026 · AI Hackathon (DIU CPC × upay)**
 
-**Hishab AI** is an intelligent, voice-enabled financial copilot designed specifically for low-income Mobile Financial Service (MFS) users in Bangladesh. Built as a prototype for the **upay** ecosystem, it acts as a proactive guide to help users understand their spending, predict shortfalls, plan savings, and improve financial literacy—all in native Bangla.
+<div align="center">
+  <img src="assets/screenshot_1.jpg" alt="Hishab AI Banner" width="100%" style="border-radius:15px;"/>
+  <br/>
+  <h1>🚀 Hishab AI — An upay Cash-flow Copilot</h1>
+  <p><b>Empowering Low-Income MFS Users with AI-Driven Financial Health (AI DEV FEST 2026 • Track 3)</b></p>
 
----
-
-## 🔴 Live Demo (Hackathon Prototype)
-🔗 **[Test the Live App Here](https://hishab-ai-demo.loca.lt)**
-
-> **⚠️ IMPORTANT FOR EVALUATORS:** 
-> When accessing the live demo, please ensure you allow the following permissions:
-> 1. 🎤 **Microphone (Voice) Permission:** Required to interact with the AI assistant using your voice in Bangla.
-> 2. 📍 **Location Permission:** Required for the "Find Nearby Agent" (এজেন্ট খুঁজুন) feature to calculate distances and agent liquidity based on your real-time position.
+  [![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://reactjs.org/)
+  [![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi)](https://fastapi.tiangolo.com/)
+  [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+  [![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
+</div>
 
 ---
 
-## 🌟 Core Features Built for the Hackathon
-
-* 🎙️ **Inclusive Financial Assistant:** Fully functional in Bangla with Voice-to-Text and Text-to-Speech capabilities. Designed with a highly simplified UX for maximum accessibility.
-* 🧠 **AI Financial Health Coach & Spending Companion:** Uses LLM integration (Claude) to explain spending behaviors, cash dependency, and identify unusual spending patterns in plain Bangla.
-* 📈 **Cash-Flow Forecasting:** Powered by **LightGBM & Scikit-learn**, it predicts short-term inflows, outflows, and liquidity pressure, visualizing them in intuitive, interactive charts.
-* 🎯 **Personal Savings & Goal Copilot:** Turns user goals (e.g., Eid shopping, emergencies) into realistic, cash-flow-backed savings plans.
-* 📍 **Smart Agent Locator:** Uses Geolocation to find nearby agents, displaying their "AI Liquidity Score" to ensure they have enough cash for withdrawals.
-* 📚 **Financial Literacy Personalizer:** Adapts educational guidance based on a user’s demonstrated behavior and transaction history rather than generic content.
-* 🛡️ **Responsible Credit Readiness:** Provides explainable signals to help customers understand how their financial behavior affects future eligibility—without making autonomous lending decisions (Strict Responsible AI compliance).
+## 🎥 Watch the Demo Video
+[![Hishab AI Demo Video](https://img.youtube.com/vi/EUe-zCwZJgk/maxresdefault.jpg)](https://youtu.be/EUe-zCwZJgk?si=CNCy9P8Kg2qeqbGK)
+*Click the image above to watch the full demonstration of Hishab AI.*
 
 ---
+
+## 💡 The Vision (Track 3 Solution)
+Developed by **Team RageBait** (Fahim Shahryar, Hasibul Hasib, Abu Nabil Md. Masrur).
+
+Addressing the specific problem statement of **Track 3**, we present **Hishab AI**—an intelligent, voice-enabled financial copilot designed specifically for low-income Mobile Financial Service (MFS) users in Bangladesh. Built as a functional prototype for the **upay** ecosystem, this solution aims to bridge the gap between simple transactional wallets and proactive financial management for marginalized demographics.
+
+## 📱 App Gallery
+<div align="center">
+  <img src="assets/screenshot_2.jpg" width="30%" />
+  <img src="assets/screenshot_3.jpg" width="30%" />
+  <img src="assets/screenshot_4.jpg" width="30%" />
+</div>
+<div align="center">
+  <img src="assets/screenshot_5.jpg" width="30%" />
+  <img src="assets/screenshot_6.jpg" width="30%" />
+  <img src="assets/screenshot_8.jpg" width="30%" />
+</div>
+
+## ✨ Key Features
+1. **📊 AI Cash-Flow Forecasting:** Integrates **LightGBM** and **Scikit-learn** to predict 30-day income/expense trends and alert users of potential liquidity shocks.
+2. **📍 Smart Agent Locator:** Uses Geolocation to find nearby agents and calculates an AI-predicted **"Liquidity Score"** to ensure cash availability.
+3. **🎙️ Inclusive Voice Assistant:** Features a fully native **Bangla Voice-to-Text copilot** powered by Claude AI, removing literacy barriers for rural users.
+4. **🛡️ Responsible AI Readiness:** Acts purely as an explainable financial coach without making autonomous or biased lending decisions.
 
 ## 🛠️ Enterprise-Ready Technology Stack
-
-### Frontend (`web/`)
-* **Framework:** React 19, TypeScript, Vite
-* **Styling:** Tailwind CSS v4 (Mobile-first, 375px optimized upay-wallet layout)
-* **Data Visualization:** Recharts (Dynamic Bar/Area charts)
-
-### Backend (`backend/`)
-* **API Framework:** Python 3.11, FastAPI (Microservice Architecture)
-* **Validation:** Pydantic v2 (Strict Input/Output validation & auto-generated Swagger UI)
-* **Machine Learning:** LightGBM, Scikit-learn, Pandas, NumPy
-* **LLM Integration:** Anthropic API (`claude-opus-5-5`) with robust tool-use and safety template fallbacks.
-
----
+* **Frontend:** React 19, TypeScript, Vite, Tailwind CSS v4 (Mobile-first layout), Recharts.
+* **Backend:** Python 3.11, FastAPI (Microservice Architecture), Pydantic v2.
+* **AI/ML Engine:** LightGBM, Pandas, NumPy (Forecasting) + Anthropic Claude API (Conversational NLP).
 
 ## 🚀 How to Run Locally
-
-If the live tunnel is down, you can easily run this scalable architecture locally:
 
 ### 1. Backend Setup
 ```bash
