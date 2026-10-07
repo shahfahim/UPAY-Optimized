@@ -6,6 +6,7 @@ from datetime import timedelta
 
 import pandas as pd
 
+from hishab.engine.agents import nearby_agents
 from hishab.engine.text import CATEGORY_BN
 
 
@@ -45,7 +46,8 @@ TOOLS: list[dict] = [
      "input_schema": _schema()},
     {"name": "emergency_options", "description": "Ways to get emergency money in a safe order (own pockets first; "
      "a DPS-backed bank loan only under the bank's rule).", "input_schema": _schema({"amount": _NUM}, ["amount"])},
-    {"name": "find_agents_near_me", "description": "Find nearby agents with their cash liquidity status.",
+    {"name": "find_agents_near_me", "description": "Nearby cash-out agents. DEMO SAMPLE DATA ONLY: the cash hint is "
+     "a fixed sample value, not a prediction; always tell the user it is demo data.",
      "input_schema": _schema({"lat": {"type": "number"}, "lng": {"type": "number"}}, ["lat", "lng"])},
 ]
 for _t in TOOLS:
@@ -124,10 +126,6 @@ def run_tool(name: str, args: dict, uid: str, svc, cache: dict | None = None) ->
     if name == "emergency_options":
         return {"user_id": uid, **svc.emergency(uid, args.get("amount"))}
     if name == "find_agents_near_me":
-        agents = [
-            {"name": "Rahim Store", "distance": "200m", "ai_liquidity_score": 85, "predicted_status": "High Cash"},
-            {"name": "Karim Telecom", "distance": "500m", "ai_liquidity_score": 55, "predicted_status": "Medium Cash"},
-            {"name": "Bhai Bhai Traders", "distance": "800m", "ai_liquidity_score": 20, "predicted_status": "Low Cash"}
-        ]
-        return {"user_id": uid, "agents": agents}
+        return {"user_id": uid, "is_demo": True,
+                "agents": nearby_agents(float(args.get("lat", 23.8103)), float(args.get("lng", 90.4125)), limit=3)}
     raise ValueError(f"unknown tool: {name}")

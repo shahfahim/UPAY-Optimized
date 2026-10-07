@@ -6,7 +6,6 @@ import { Icon } from '../../components/Icon'
 import { AiBadge } from '../../components/ui'
 import { useLang } from '../../i18n'
 import { isVoiceSupported, listenVoice } from '../../lib/voice'
-import { speakBangla } from '../../lib/accessibility'
 import { RouteWidget } from '../../components/RouteWidget'
 import type { RouteResult } from '../../api/types'
 
@@ -24,7 +23,7 @@ const TOOL_BN: Record<string, string> = {
   plan_eid: 'ঈদের হিসাব', find_route: 'টাকা পাঠানোর পথ ও fee',
   get_transactions_summary: 'লেনদেনের সারাংশ', get_health: 'আর্থিক স্বাস্থ্য', get_readiness: 'নিয়মিততার সংকেত',
   get_lessons: 'ছোট পাঠ', get_levels: 'সঞ্চয় লেভেল', emergency_options: 'জরুরি টাকার উপায়',
-  find_agents_near_me: 'কাছাকাছি এজেন্ট',
+  find_agents_near_me: 'কাছাকাছি এজেন্ট (ডেমো)',
 }
 
 type Msg = { role: 'user' | 'bot'; text: string; answer?: ChatAnswer }
@@ -48,47 +47,21 @@ function Sources({ a }: { a: ChatAnswer }) {
   )
 }
 
-function AgentWidget({ result }: { result: any }) {
-  const { L } = useLang()
-  if (!Array.isArray(result) || result.length === 0) return null
+type DemoAgent = { name: string; distance_m: number }
 
+function AgentWidget({ result }: { result: unknown }) {
+  const { L } = useLang()
+  const agents = (result as { agents?: DemoAgent[] } | null)?.agents ?? []
+  if (agents.length === 0) return null
   return (
     <div className="mt-3 space-y-2">
-      <div className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">{L('কাছাকাছি এজেন্ট', 'Nearby Agents')}</div>
-      {result.map((agent: any, idx: number) => {
-        let statusColor = 'text-bad bg-bad/10'
-        if (agent.predicted_status === 'High Cash') statusColor = 'text-good bg-good/10'
-        else if (agent.predicted_status === 'Medium Cash' || agent.predicted_status === 'Medium') statusColor = 'text-upay-yellow bg-upay-yellow/10'
-
-        return (
-          <div key={idx} className="flex flex-col gap-2 rounded-xl border border-line bg-slate-50 p-2.5">
-            <div className="flex items-start justify-between gap-2">
-              <div>
-                <div className="font-semibold text-slate-800 text-[13px]">{agent.name}</div>
-                <div className="text-[11px] text-muted flex items-center gap-1 mt-0.5">
-                  <span className="size-1.5 rounded-full bg-slate-300"></span> {agent.distance}
-                </div>
-              </div>
-              <div className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${statusColor} shrink-0`}>
-                {agent.predicted_status}
-              </div>
-            </div>
-            
-            <div className="flex items-center gap-2">
-              <div className="text-[10px] font-semibold text-slate-500 whitespace-nowrap shrink-0">{L('ক্যাশ থাকার সম্ভাবনা', 'Cash Probability')}</div>
-              <div className="flex-1 h-1.5 bg-slate-200 rounded-full overflow-hidden">
-                <div 
-                  className="h-full bg-upay-blue rounded-full transition-all" 
-                  style={{ width: `${(agent.ai_liquidity_score || 0) * 100}%` }}
-                />
-              </div>
-              <div className="text-[10px] font-semibold text-upay-blue shrink-0">
-                {Math.round((agent.ai_liquidity_score || 0) * 100)}%
-              </div>
-            </div>
-          </div>
-        )
-      })}
+      <div className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">{L('কাছাকাছি এজেন্ট (ডেমো তথ্য)', 'Nearby agents (demo data)')}</div>
+      {agents.map((agent) => (
+        <div key={agent.name} className="flex items-center justify-between gap-2 rounded-xl border border-line bg-slate-50 p-2.5">
+          <div className="font-semibold text-slate-800 text-[13px]">{agent.name}</div>
+          <div className="text-[11px] text-muted">{agent.distance_m} m</div>
+        </div>
+      ))}
     </div>
   )
 }
@@ -101,7 +74,7 @@ export default function Ask() {
   const [err, setErr] = useState('')
   const [busy, setBusy] = useState(false)
   const [listening, setListening] = useState(false)
-  const [micLang, setMicLang] = useState<'bn-BD' | 'en-US'>('bn-BD')
+  const [micLang] = useState<'bn-BD' | 'en-US'>('bn-BD')
   const voice = isVoiceSupported()
   const end = useRef<HTMLDivElement>(null)
 

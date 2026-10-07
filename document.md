@@ -20,7 +20,7 @@ Team RageBait developed **Hishab AI**—a proactive financial health companion b
 
 ## 4. Core Features
 * **AI Cash-Flow Forecasting:** Utilizes machine learning to predict 30-day income and expense trends, alerting users of potential cash shortages before they happen.
-* **Smart Agent Locator:** Uses geolocation to map nearby upay agents, displaying an AI-predicted "Liquidity Score" to ensure the agent has enough cash available for withdrawal.
+* **Agent Locator (demo data):** Maps sample agents around the user. The cash hint is a fixed sample value, not a prediction; real agent-liquidity data from upay is required.
 * **Inclusive Voice Assistant:** Features native Bangla Voice-to-Text and Text-to-Speech capabilities, ensuring maximum accessibility for users who cannot type or read complex terms.
 * **Financial Goal Planner:** Turns user aspirations (e.g., saving for Eid, medical emergencies) into actionable, daily cash-flow-backed savings plans.
 
