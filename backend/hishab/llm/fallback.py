@@ -699,8 +699,9 @@ def answer(uid: str, message: str, svc) -> dict:  # noqa: C901 (intentionally lo
 
         # Parse amount (default 500 if not found)
         amount = 500
-        nums = _numbers(text_l)
-        if nums: amount = nums[0]
+        nums = [n for n, _ in _numbers(text_l) if n >= 10]  # _numbers gives (value, end) pairs
+        if nums:
+            amount = nums[0]
 
         res = tool("find_route", amount=amount, destination=dest)
         text = "সবচেয়ে ভালো পথ হলো NPSB বা সরাসরি পেমেন্ট। নিচে পুরো হিসাব দেখানো হলো:"
