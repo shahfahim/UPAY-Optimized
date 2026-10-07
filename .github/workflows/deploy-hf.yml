@@ -3,12 +3,15 @@ name: Deploy to Hugging Face Spaces
 # Pushes main to a Hugging Face Docker Space. Needs repo secret HF_TOKEN (write) and repo variable
 # HF_SPACE (e.g. "username/hishab"). Skipped until both are set.
 on:
-  push:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
     branches: [main]
   workflow_dispatch:
 
 jobs:
   deploy:
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     steps:
       - name: Check configuration

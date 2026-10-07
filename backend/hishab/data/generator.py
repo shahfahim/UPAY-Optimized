@@ -9,7 +9,7 @@ digital merchant payments, health shocks, Eid bonus + festival spending, DPS ins
 from __future__ import annotations
 
 import math
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from datetime import date, datetime, timedelta
 from pathlib import Path
 
@@ -307,7 +307,7 @@ class _Sim:
 
     # --- day --------------------------------------------------------------------------------------
     def run(self) -> None:
-        f, rng = self.f, self.rng
+        f = self.f
         self.emit(self.start, 9, "cash_in", f.opening, 1, "other", "AGENT", "এজেন্ট", "agent")
         base_disc = max(0.25 * f.monthly_income,
                         f.monthly_income * f.spend_ratio

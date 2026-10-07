@@ -1,4 +1,3 @@
-import re
 from dataclasses import asdict
 
 from hishab.engine.context import build_ctx

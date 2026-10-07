@@ -6,7 +6,7 @@ so training and serving cannot drift apart.
 
 from __future__ import annotations
 
-from datetime import date, timedelta
+from datetime import date
 
 import numpy as np
 import pandas as pd
@@ -77,7 +77,7 @@ def features_at(a: UserArrays, user: dict, as_of: date, pocket_total: float | No
                 threshold: float = 200.0) -> dict[str, float]:
     t = _d(as_of)
     end = int(np.searchsorted(a.day, t, side="right"))
-    day, amt, dirn = a.day[:end], a.amount[:end], a.dirn[:end]
+    day, amt = a.day[:end], a.amount[:end]
     f: dict[str, float] = {}
     f["balance"] = float(a.bal[end - 1]) if end else 0.0
 
