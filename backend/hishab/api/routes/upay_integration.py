@@ -1,10 +1,15 @@
+import logging
+
 from fastapi import APIRouter, HTTPException, Depends, Request
 from pydantic import BaseModel
 from typing import Dict, Any
 
+from hishab.api.deps import require_session
 from hishab.security import RateLimiter, PII_Stripper
 
-router = APIRouter(tags=["UPAY Integration"])
+log = logging.getLogger(__name__)
+
+router = APIRouter(tags=["UPAY Integration"], dependencies=[Depends(require_session)])
 
 class PredictRequest(BaseModel):
     query: str
@@ -48,5 +53,6 @@ async def predict_upay_ai(
             confidence=result.get("confidence", 0.0),
             extracted_entities=result.get("extracted_entities", {})
         )
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    except Exception:
+        log.exception("intent prediction failed")
+        raise HTTPException(status_code=500, detail="কিছু একটা ভুল হয়েছে")

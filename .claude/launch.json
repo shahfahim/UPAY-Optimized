@@ -12,7 +12,10 @@
         "--port",
         "8000"
       ],
-      "port": 8000
+      "port": 8000,
+      "env": {
+        "HISHAB_DEMO_MODE": "1"
+      }
     },
     {
       "name": "web",

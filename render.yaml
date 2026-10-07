@@ -6,6 +6,8 @@ services:
     envVars:
       - key: DEMO_TODAY
         value: "2026-09-18"
+      - key: HISHAB_DEMO_MODE
+        value: "1"
       - key: LLM_ENABLED
         value: "auto"
       - key: LLM_MODEL

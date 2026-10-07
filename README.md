@@ -63,7 +63,7 @@ cd backend
 python -m venv .venv
 source .venv/Scripts/activate  # (On Windows: .venv\Scripts\activate)
 pip install -r requirements.txt
-python -m uvicorn hishab.api.main:create_app --factory --host 0.0.0.0 --port 8000 --reload
+HISHAB_DEMO_MODE=1 python -m uvicorn hishab.api.main:create_app --factory --host 0.0.0.0 --port 8000 --reload  # demo users + time travel
 ```
 
 ### 2. Frontend Setup

@@ -8,10 +8,13 @@ RUN npm run build
 
 # Stage 2: Build the production FastAPI backend
 FROM python:3.11-slim
+# This image is the public hackathon demo: seeded users, time travel and reset are on.
+# Set HISHAB_DEMO_MODE=0 (and HISHAB_CORS_ORIGINS) for any non-demo deployment.
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     HISHAB_WEB_DIST=/app/web/dist \
-    HISHAB_DB_PATH=/tmp/hishab.db
+    HISHAB_DB_PATH=/tmp/hishab.db \
+    HISHAB_DEMO_MODE=1
 
 # System dependencies
 # LightGBM needs the OpenMP runtime
