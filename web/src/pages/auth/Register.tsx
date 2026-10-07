@@ -36,12 +36,13 @@ export default function Register() {
     if (!/^01[3-9]\d{8}$/.test(m)) return setErr(L('সঠিক মোবাইল নম্বর দিন', 'Enter a valid mobile number'))
     void run(async () => {
       const r = await api.registerStart(m)
-      setDemoOtp(r.otp)
+      setDemoOtp(r.otp ?? '')
       setStep(2)
     })
   }
   const checkOtp = () => {
-    if (toAsciiDigits(otp) !== demoOtp) return setErr(L('OTP সঠিক নয়', 'Wrong OTP'))
+    // The server checks the code (with expiry and a 3-try limit) when the account is created.
+    if (!/^\d{6}$/.test(toAsciiDigits(otp))) return setErr(L('৬ সংখ্যার OTP দিন', 'Enter the 6-digit OTP'))
     setStep(3)
   }
   const finish = () => {
@@ -86,12 +87,16 @@ export default function Register() {
         )}
         {step === 2 && (
           <>
-            <div className="mb-4 rounded-xl border border-dashed border-upay-blue p-3 text-center">
-              <p className="text-xs text-muted">Demo OTP</p>
-              <p className="font-[Inter] text-2xl font-bold tracking-[0.3em] text-upay-blue">
-                {lang === 'bn' ? toBnDigits(demoOtp) : demoOtp}
-              </p>
-            </div>
+            {demoOtp ? (
+              <div className="mb-4 rounded-xl border border-dashed border-upay-blue p-3 text-center">
+                <p className="text-xs text-muted">Demo OTP</p>
+                <p className="font-[Inter] text-2xl font-bold tracking-[0.3em] text-upay-blue">
+                  {lang === 'bn' ? toBnDigits(demoOtp) : demoOtp}
+                </p>
+              </div>
+            ) : (
+              <p className="mb-4 text-center text-sm text-muted">{L('আপনার নম্বরে SMS-এ OTP পাঠানো হয়েছে', 'We sent an OTP to your number by SMS')}</p>
+            )}
             <label className="mb-1 block text-sm font-semibold" htmlFor="otp">OTP</label>
             <input id="otp" inputMode="numeric" value={otp} onChange={(e) => { setOtp(e.target.value); setErr('') }}
               className="h-12 w-full rounded-xl border border-line bg-transparent px-3 text-center font-[Inter] text-xl tracking-[0.3em] outline-none focus:border-upay-blue" />

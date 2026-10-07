@@ -1,78 +1,72 @@
-
 <div align="center">
   <br/>
-  <h1>🚀 Hishab AI — An upay Cash-flow Copilot</h1>
-  <p><b>Empowering Low-Income MFS Users with AI-Driven Financial Health (AI DEV FEST 2026 • Track 3)</b></p>
+  <h1>হিসাব AI (Hishab AI) — an upay cash-flow copilot</h1>
+  <p><b>Predict and prevent month-end liquidity shortfalls for low-income MFS users (AI DEV FEST 2026 • Track 3)</b></p>
 
-  [![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://reactjs.org/)
-  [![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi)](https://fastapi.tiangolo.com/)
-  [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
-  [![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
+  [![CI](https://github.com/shahfahim/UPAY-Optimized/actions/workflows/ci.yml/badge.svg)](https://github.com/shahfahim/UPAY-Optimized/actions/workflows/ci.yml)
+
+  <a href="https://youtu.be/EUe-zCwZJgk?si=CNCy9P8Kg2qeqbGK">
+    <img src="https://img.shields.io/badge/▶_WATCH_THE_DEMO-FF0000?style=for-the-badge&logo=youtube&logoColor=white" alt="Watch on YouTube" />
+  </a>
 </div>
 
 ---
 
-## 🎥 Watch the Demo Video
+## The problem
 
-<div align="center">
-  <a href="https://youtu.be/EUe-zCwZJgk?si=CNCy9P8Kg2qeqbGK">
-  </a>
-  <br/>
-  <a href="https://youtu.be/EUe-zCwZJgk?si=CNCy9P8Kg2qeqbGK">
-    <img src="https://img.shields.io/badge/▶_WATCH_ON_YOUTUBE-FF0000?style=for-the-badge&logo=youtube&logoColor=white" alt="Watch on YouTube" />
-  </a>
-  <br/>
-  <p><i>Click the button or the image above to watch the full demonstration of Hishab AI.</i></p>
-</div>
+Low-income upay users, led by salaried garment workers, run out of money in the last 7–10 days of the month, then borrow informally or skip essentials. Their wallet shows a balance but never warns them in advance.
 
----
+Evidence we cite and are validating is listed in [docs/evidence.md](docs/evidence.md). Our own user survey and pilot kit is in [docs/validation/](docs/validation/).
 
-## 💡 The Vision (Track 3 Solution)
-Developed by **Team RageBait** (Fahim Shahryar, Hasibul Hasib, Abu Nabil Md. Masrur).
+## How Hishab prevents shortfalls
 
-Addressing the specific problem statement of **Track 3**, we present **Hishab AI**—an intelligent, voice-enabled financial copilot designed specifically for low-income Mobile Financial Service (MFS) users in Bangladesh. Built as a functional prototype for the **upay** ecosystem, this solution aims to bridge the gap between simple transactional wallets and proactive financial management for marginalized demographics.
+1. **Predict.** A LightGBM forecaster projects the next 30 days of balance with a P10–P90 band. A calibrated LightGBM risk model gives the probability of falling below ৳200 in the next 14 days.
+2. **Explain.** "কেন?" shows the top TreeSHAP drivers in plain Bangla.
+3. **Act.** Up to three actions (save on payday, daily limit, pay by wallet instead of cash-out, send home by NPSB), each with a what-if line on the forecast chart. The user accepts or dismisses; nothing moves money automatically.
+4. **Measure.** Shortfall days, fees, and acceptance are tracked on the Impact page, labelled as simulated until pilot data exists.
 
-## 📱 App Gallery
-<div align="center">
-  <img src="assets/screenshot_2.jpg" width="30%" />
-  <img src="assets/screenshot_3.jpg" width="30%" />
-  <img src="assets/screenshot_4.jpg" width="30%" />
-</div>
-<div align="center">
-  <img src="assets/screenshot_5.jpg" width="30%" />
-  <img src="assets/screenshot_6.jpg" width="30%" />
-  <img src="assets/screenshot_8.jpg" width="30%" />
-</div>
+## What is learned and what is rules
 
-## ✨ Key Features
-1. **📊 AI Cash-Flow Forecasting:** Integrates **LightGBM** and **Scikit-learn** to predict 30-day income/expense trends and alert users of potential liquidity shocks.
-2. **📍 Agent Locator (demo data):** Shows nearby cash-out agents from fixed sample data. The cash hint is a sample value, not an AI prediction; a real version needs upay agent-liquidity data.
-3. **🎙️ Inclusive Voice Assistant:** Features a fully native **Bangla Voice-to-Text copilot** powered by Claude AI, removing literacy barriers for rural users.
-4. **🛡️ Responsible AI Readiness:** Acts purely as an explainable financial coach without making autonomous or biased lending decisions.
+| Component | How it works | Held-out result (synthetic test users) |
+|---|---|---|
+| 30-day balance forecast | LightGBM (daily in/out flows) + bootstrap residual band | MAE day 14: ৳1,640 vs ৳2,084 for "same as last month"; P10–P90 coverage 0.77 |
+| 14-day shortfall risk | LightGBM + isotonic calibration, TreeSHAP reasons | PR-AUC 0.914, ROC-AUC 0.944, Brier 0.092 |
+| Bangla/Banglish intent (offline chat fallback) | TF-IDF char n-grams + LinearSVC | Grouped CV accuracy 0.60 (phrasings never seen in training) |
+| Action ranking | Thompson-sampling bandit over a fixed action catalogue | No lift yet over the best fixed card (0.58 vs 0.60); contextual bandit is planned |
+| Actions, what-if transforms, fees, recurring bills | Deterministic rules (`backend/hishab/rules/*.yaml`) | — |
+| Chat with Claude | Claude calls read-only, user-scoped tools; every number comes from the engine | — |
+| Agent locator | **Demo sample data**, no liquidity model | — |
 
-## 🛠️ Enterprise-Ready Technology Stack
-* **Frontend:** React 19, TypeScript, Vite, Tailwind CSS v4 (Mobile-first layout), Recharts.
-* **Backend:** Python 3.11, FastAPI (Microservice Architecture), Pydantic v2.
-* **AI/ML Engine:** LightGBM, Pandas, NumPy (Forecasting) + Anthropic Claude API (Conversational NLP).
+All numbers come from `scripts/evaluate.py` on synthetic data from one generator ([docs/synthetic-data.md](docs/synthetic-data.md)). They show the models work inside the simulator, not on real users. Fairness by persona, gender and area is on the Impact page; the known gap is daily-wage workers (risk AUC 0.71 vs 0.93–0.95 for others).
 
-## 🚀 How to Run Locally
+## Responsible AI and security
 
-### 1. Backend Setup
+- Suggestions only; no lending or credit decisions, no money movement.
+- Hashed, expiring sessions; scrypt-hashed PINs with lockout; OTP limits; CORS allowlist and security headers; an authorization test covers every API route.
+- Demo-only features (seeded users, time travel, on-screen OTP) need `HISHAB_DEMO_MODE=1`.
+
+## Tech stack
+
+React 19 + TypeScript (strict) + Vite + Tailwind, FastAPI + Pydantic v2, LightGBM, scikit-learn, Anthropic Claude API. CI runs ruff, pytest (coverage ≥ 85%), typecheck, lint, vitest, build and a Docker smoke test.
+
+## Run locally
+
 ```bash
 cd backend
 python -m venv .venv
-source .venv/Scripts/activate  # (On Windows: .venv\Scripts\activate)
-pip install -r requirements.txt
-HISHAB_DEMO_MODE=1 python -m uvicorn hishab.api.main:create_app --factory --host 0.0.0.0 --port 8000 --reload  # demo users + time travel
+source .venv/Scripts/activate   # Windows: .venv\Scripts\activate
+pip install -r requirements.lock -e ".[dev]"
+HISHAB_DEMO_MODE=1 python -m uvicorn hishab.api.main:create_app --factory --port 8000 --reload
 ```
 
-### 2. Frontend Setup
 ```bash
 cd web
 npm install
 npm run dev
 ```
-Navigate to `http://localhost:5173` in your browser.
+
+Open `http://localhost:5173`. Plan and status for Phase 2: [development.md](development.md).
 
 ---
-*Disclaimer: This is a hackathon prototype and not an official upay application. It uses exclusively synthetic data to comply with strict data privacy and Responsible AI policies.*
+Team RageBait: Fahim Shahryar, Hasibul Hasib, Abu Nabil Md. Masrur.
+*Hackathon prototype, not an official upay app. Uses synthetic data only.*

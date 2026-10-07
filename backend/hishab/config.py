@@ -25,6 +25,8 @@ class Settings:
     # Demo-only routes (user list, time travel, global reset, OTP echo). Off unless HISHAB_DEMO_MODE=1.
     demo_mode: bool = False
     cors_origins: tuple[str, ...] = ("http://localhost:5173", "http://127.0.0.1:5173")
+    # Server-side secret mixed into PIN/OTP hashes. Set HISHAB_PEPPER in every real deployment.
+    pin_pepper: str = "dev-only-pepper-change-me"
 
 
 def _flag(raw: str | None) -> bool:
@@ -59,4 +61,5 @@ def get_settings() -> Settings:
         anthropic_api_key=key,
         demo_mode=_flag(os.environ.get("HISHAB_DEMO_MODE")),
         cors_origins=_origins(os.environ.get("HISHAB_CORS_ORIGINS")),
+        pin_pepper=os.environ.get("HISHAB_PEPPER") or Settings.pin_pepper,
     )

@@ -115,3 +115,12 @@ def test_chat_works_when_prediction_raises(svc, monkeypatch):
 def test_safe_spend_answers_without_crashing(svc):
     r = answer("U0001", "aaj koto kharoch korte parbo", svc)
     assert r["text"] and "get_home_summary" in _tools(r)
+
+
+@pytest.mark.parametrize("q,amount", [("500tk bkash e pathabo", 500), ("maa ke 1,200 taka kishe pathabo", 1200)])
+def test_route_question_uses_the_typed_amount(svc, monkeypatch, q, amount):
+    seen = {}
+    real = svc.route
+    monkeypatch.setattr(svc, "route", lambda uid, a, dest: seen.setdefault("a", a) and real(uid, a, dest))
+    r = answer("U0001", q, svc)
+    assert seen["a"] == amount and "find_route" in _tools(r) and r["text"]

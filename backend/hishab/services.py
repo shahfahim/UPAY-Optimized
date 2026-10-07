@@ -2,7 +2,8 @@
 
 from __future__ import annotations
 
-import hashlib
+import hmac
+import json
 import re
 import secrets
 import threading
@@ -26,7 +27,8 @@ from hishab.engine.safe_spend import daily_budget, safe_to_spend
 from hishab.engine.shortcuts import recent_payments
 from hishab.engine.features import user_features
 from hishab.engine.models import Models
-from hishab.errors import UserError
+from hishab.errors import LockedOut, UserError
+from hishab.passwords import hash_otp, hash_pin, is_legacy, verify_pin
 from hishab.store.sqlite import Store
 from hishab.jsonable import jsonable
 from hishab.services_hub import HubMixin, InsufficientFunds, locked  # noqa: F401
@@ -106,20 +108,37 @@ class Hishab(HubMixin):
                 return u
         return None
 
-    @staticmethod
-    def _hash(pin: str) -> str:
-        return hashlib.sha256(("hishab-demo:" + pin).encode()).hexdigest()
+    _LOCKED = "অনেকবার ভুল হয়েছে — ১৫ মিনিট পরে আবার চেষ্টা করুন"
+    OTP_TTL_S = 5 * 60
+    OTP_MAX_TRIES = 3
 
-    def login(self, mobile: str, pin: str) -> dict:
+    def login(self, mobile: str, pin: str, ip: str | None = None) -> dict:
         if not _MOBILE.match(mobile or ""):
             raise UserError("সঠিক মোবাইল নম্বর দিন")
+        keys = [f"m:{mobile}"] + ([f"ip:{ip}"] if ip else [])
+        if any(self.store.locked_until(k) for k in keys):
+            raise LockedOut(self._LOCKED)
         u = self._find_by_phone(mobile)
         ok = False
-        if u is not None:
-            ok = (u.get("pin_hash") == self._hash(pin)) if u.get("pin_hash") else (pin == u.get("demo_pin"))
+        if u is not None and u.get("pin_hash"):
+            ok = verify_pin(u["pin_hash"], pin, self.settings.pin_pepper)
+            if ok and is_legacy(u["pin_hash"]):  # upgrade old SHA-256 hashes on first good login
+                self.store.add_user({**u, "pin_hash": hash_pin(pin, self.settings.pin_pepper)}, [])
+        elif u is not None and self.settings.demo_mode:  # seeded synthetic users share a demo PIN, demo only
+            ok = bool(u.get("demo_pin")) and hmac.compare_digest(pin or "", u["demo_pin"])
         if not ok:
-            raise PermissionError("PIN সঠিক নয়")
+            for k in keys:
+                self.store.record_failure(k)
+            raise PermissionError("PIN সঠিক নয়")  # same message for unknown numbers
+        self.store.clear_failures(keys[0])
         return {"token": self.store.create_session(u["user_id"]), "user_id": u["user_id"]}
+
+    def logout(self, token: str) -> dict:
+        self.store.revoke_session(token)
+        return {"ok": True}
+
+    def logout_all(self, uid: str) -> dict:
+        return {"ok": True, "revoked": self.store.revoke_user_sessions(uid)}
 
     def register_start(self, mobile: str) -> dict:
         if not _MOBILE.match(mobile or ""):
@@ -128,27 +147,42 @@ class Hishab(HubMixin):
             raise UserError("এই নম্বরে আগেই অ্যাকাউন্ট আছে")
         self._check_room()
         otp = f"{secrets.randbelow(10**6):06d}"
-        self.store.set_meta(f"otp:{mobile}", otp)
+        rec = {"h": hash_otp(mobile, otp, self.settings.pin_pepper), "exp": self.store.clock() + self.OTP_TTL_S,
+               "tries": 0}
+        self.store.set_meta(f"otp:{mobile}", json.dumps(rec))
         if not self.settings.demo_mode:
             return {"sent": True}  # production sends it by SMS; never echo it back
         return {"otp": otp, "demo": True}
 
+    def _otp_ok(self, mobile: str, otp: str) -> bool:
+        """Checks the OTP; a wrong guess uses up one of OTP_MAX_TRIES, after which the code is void."""
+        raw = self.store.get_meta(f"otp:{mobile}")
+        try:
+            rec = json.loads(raw) if raw else None
+        except ValueError:
+            rec = None
+        if not rec or rec["tries"] >= self.OTP_MAX_TRIES or self.store.clock() > rec["exp"]:
+            return False
+        if hmac.compare_digest(rec["h"], hash_otp(mobile, otp or "", self.settings.pin_pepper)):
+            return True
+        rec["tries"] += 1
+        self.store.set_meta(f"otp:{mobile}", json.dumps(rec))
+        return False
+
     def register_verify(self, mobile: str, otp: str, name: str, pin: str) -> dict:
         from hishab.data.generator import generate_one
-        if self.store.get_meta(f"otp:{mobile}") != otp:
-            raise UserError("OTP সঠিক নয়")
         name = (name or "").strip()
         if not (2 <= len(name) <= 40):
             raise UserError("নাম লিখুন")
         if not _PIN.match(pin or ""):
             raise UserError("৬ সংখ্যার PIN দিন")
         with self._register_lock:  # one at a time: ids are sequential and the OTP is single-use
-            if self.store.get_meta(f"otp:{mobile}") != otp or self._find_by_phone(mobile) is not None:
+            if not self._otp_ok(mobile, otp) or self._find_by_phone(mobile) is not None:
                 raise UserError("OTP সঠিক নয়")
             self._check_room()
             uid = f"N{len(self.store.extra_users()) + 1:04d}"
             user, tx = generate_one(uid, name, "garment_worker", seed=int(mobile[-6:]))
-            user.update(demo_phone=mobile, pin_hash=self._hash(pin))
+            user.update(demo_phone=mobile, pin_hash=hash_pin(pin, self.settings.pin_pepper))
             self.store.add_user(user, tx)
             self.store.set_meta(f"otp:{mobile}", "")
         return {"token": self.store.create_session(uid), "user_id": uid}

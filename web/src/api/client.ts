@@ -46,7 +46,8 @@ const u = (uid: string) => `/users/${encodeURIComponent(uid)}`
 export const api = {
   users: () => req<DemoUser[]>('GET', '/users'),
   login: (mobile: string, pin: string) => req<{ token: string; user_id: string }>('POST', '/auth/login', { mobile, pin }),
-  registerStart: (mobile: string) => req<{ otp: string; demo: boolean }>('POST', '/auth/register/start', { mobile }),
+  registerStart: (mobile: string) => req<{ otp?: string; demo?: boolean; sent?: boolean }>('POST', '/auth/register/start', { mobile }),
+  logout: () => req<{ ok: boolean }>('POST', '/auth/logout'),
   registerVerify: (mobile: string, otp: string, name: string, pin: string) =>
     req<{ token: string; user_id: string }>('POST', '/auth/register/verify', { mobile, otp, name, pin }),
 
