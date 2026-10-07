@@ -89,13 +89,13 @@ def PII_Stripper(text: str) -> str:
         
     # Pattern for BD phone numbers: optional +88 or 88, followed by 11 digits starting with 01
     # Example: +8801712345678, 01712345678, 8801712345678
-    phone_pattern = re.compile(r'\\b(?:\\+?88)?01[3-9]\\d{8}\\b')
-    
-    # Pattern for PINs: 4 to 6 consecutive digits that are stand-alone (word boundaries)
-    pin_pattern = re.compile(r'\b\d{4,6}\b')
-    
+    phone_pattern = re.compile(r'(?<!\d)(?:\+?88)?01[3-9]\d{8}(?!\d)')
+
+    # PINs/OTPs only when a keyword names them, so plain amounts ("5000 tk") are kept
+    pin_pattern = re.compile(r'(?i)((?:pin|পিন|otp|password|pass(?:word)?)\s*(?:is|:|=|হলো|হল|holo)?\s*)[0-9০-৯]{4,6}(?![0-9০-৯])')
+
     # Replace PII with masks
     masked_text = phone_pattern.sub('[PHONE_REDACTED]', text)
-    masked_text = pin_pattern.sub('[PIN_REDACTED]', masked_text)
-    
+    masked_text = pin_pattern.sub(lambda m: m.group(1) + '[PIN_REDACTED]', masked_text)
+
     return masked_text

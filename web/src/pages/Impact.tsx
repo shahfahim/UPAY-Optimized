@@ -170,15 +170,21 @@ export default function Impact() {
               </div>
             </Section>
 
-            <Section title="Fairness" sub="Outcome and alert quality by persona and area. Gaps above 10 pp are flagged.">
+            <Section title="Fairness" sub="Risk-model quality by persona, gender and area at one global alert threshold. Gaps above 10 pp between groups with enough positive cases are flagged.">
               {d.fairness.flags.length > 0 && (
                 <ul className="mb-3 space-y-1.5">
                   {d.fairness.flags.map((f) => (
                     <li key={f.group_type + f.metric} className="rounded-lg bg-warn-bg px-3 py-2 text-sm text-warn">
-                      <b>{f.group_type} · {f.metric.replace(/_/g, ' ')}</b>: gap {(f.gap * 100).toFixed(0)} pp — {f.note}
+                      <b>{f.group_type} · {f.metric.replace(/_/g, ' ')}</b>: gap {(f.gap * 100).toFixed(0)} pp{f.worst_group ? ` (lowest: ${f.worst_group.replace(/_/g, ' ')})` : ''} — {f.note}
                     </li>
                   ))}
                 </ul>
+              )}
+              {d.fairness.too_few_positives && d.fairness.too_few_positives.length > 0 && (
+                <p className="mb-3 text-xs text-muted">
+                  Fewer than {d.fairness.min_positives} shortfall cases, so recall/precision are not judged:{' '}
+                  {d.fairness.too_few_positives.map((g) => g.replace(/_/g, ' ')).join(', ')}. Use AUC and base rate vs mean predicted instead.
+                </p>
               )}
               <div className="-mx-4 overflow-x-auto md:mx-0">
                 <table className="w-full min-w-[480px] text-left text-sm">
@@ -190,7 +196,10 @@ export default function Impact() {
                       <tr key={r.group_type + r.group + r.metric} className="border-t border-line">
                         <td className="px-4 py-1.5 md:px-2">{r.group_type}: <b>{r.group.replace(/_/g, ' ')}</b></td>
                         <td className="px-2 py-1.5">{r.metric.replace(/_/g, ' ')}</td>
-                        <td className="px-2 py-1.5 text-right">{r.metric === 'shortfall_days_reduction' ? `${n1(r.value)} days/month` : pct(r.value)}</td>
+                        <td className="px-2 py-1.5 text-right">
+                          {r.metric === 'shortfall_days_reduction' ? `${n1(r.value)} days/month` : r.metric === 'roc_auc' ? r.value.toFixed(2) : pct(r.value)}
+                          {r.ci95 && <span className="ml-1 text-xs text-muted">({pct(r.ci95[0])}–{pct(r.ci95[1])})</span>}
+                        </td>
                         <td className="px-2 py-1.5 text-right text-muted">{r.n}</td>
                       </tr>
                     ))}

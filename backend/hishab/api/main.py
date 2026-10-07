@@ -17,6 +17,19 @@ from hishab.errors import UserError
 
 log = logging.getLogger(__name__)
 
+SECURITY_HEADERS = {
+    "X-Content-Type-Options": "nosniff",
+    "X-Frame-Options": "DENY",
+    "Referrer-Policy": "no-referrer",
+    "Permissions-Policy": "camera=(), geolocation=(self), microphone=(self)",
+    "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
+    "Content-Security-Policy": (
+        "default-src 'self'; img-src 'self' data: https:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
+        "font-src 'self' data: https://fonts.gstatic.com; script-src 'self'; connect-src 'self'; "
+        "frame-src https://www.google.com; frame-ancestors 'none'"
+    ),
+}
+
 
 def build_service(settings: Settings):
     from hishab.data.loader import DataRepo
@@ -25,7 +38,8 @@ def build_service(settings: Settings):
     from hishab.store.sqlite import Store
 
     store = Store(settings.db_path)
-    store.reset()  # demo state is seeded fresh on every start
+    if settings.demo_mode:
+        store.reset()  # demo deployments start from fresh seeded state; otherwise state persists
     return Hishab(DataRepo.from_dir(settings.data_dir / "serving"), store, load_from(settings.artifacts_dir), settings)
 
 
@@ -35,12 +49,21 @@ def _default_web_dist() -> Path:
 
 
 def create_app(settings: Settings | None = None, svc=None, web_dist: Path | None = None) -> FastAPI:
-    settings = settings or get_settings()
+    settings = settings or (svc.settings if svc is not None else get_settings())
     app = FastAPI(title="Hishab API", version="0.1.0",
                   description="AI cash-flow copilot for upay — demo API on synthetic data.")
     app.state.svc = svc or build_service(settings)
     app.state.settings = settings
-    app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
+    app.add_middleware(CORSMiddleware, allow_origins=list(settings.cors_origins),
+                       allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+                       allow_headers=["Authorization", "Content-Type"])
+
+    @app.middleware("http")
+    async def _security_headers(request: Request, call_next):
+        resp = await call_next(request)
+        for k, v in SECURITY_HEADERS.items():
+            resp.headers.setdefault(k, v)
+        return resp
 
     @app.exception_handler(UserNotFound)
     async def _not_found(_: Request, exc: UserNotFound):
@@ -87,7 +110,8 @@ def create_app(settings: Settings | None = None, svc=None, web_dist: Path | None
 
     @app.get("/api/health")
     def health():
-        return {"status": "ok", "llm": bool(settings.llm_enabled), "demo_today": settings.demo_today.isoformat()}
+        return {"status": "ok", "llm": bool(settings.llm_enabled), "demo_mode": settings.demo_mode,
+                "demo_today": settings.demo_today.isoformat()}
 
     dist = Path(web_dist) if web_dist is not None else _default_web_dist()
     if (dist / "index.html").exists():

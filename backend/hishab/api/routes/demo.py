@@ -1,9 +1,10 @@
 from fastapi import APIRouter, Depends, Request
 
-from hishab.api.deps import require_session
+from hishab.api.deps import require_demo_mode, require_session
 from hishab.api.schemas import TimeTravelIn
 
-router = APIRouter(prefix="/demo", dependencies=[Depends(require_session)])  # shared clock: logged-in users only
+# Shared clock and global reset: demo deployments only, and only for logged-in users.
+router = APIRouter(prefix="/demo", dependencies=[Depends(require_demo_mode), Depends(require_session)])
 
 
 @router.post("/time-travel")

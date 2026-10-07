@@ -50,7 +50,7 @@ def store(tmp_path):
 @pytest.fixture
 def settings():
     get_settings.cache_clear()
-    return replace(get_settings(), llm_enabled=False)
+    return replace(get_settings(), llm_enabled=False, demo_mode=True)
 
 
 @pytest.fixture(scope="session")

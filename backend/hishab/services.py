@@ -92,10 +92,7 @@ class Hishab(HubMixin):
         for u in self.repo.list_users()[:5] + self.repo.list_users()[5:12]:
             out.append({"user_id": u["user_id"], "name": u["synthetic_name"], "persona": u["persona"], "area": u["area"],
                         "phone": demo_phone(u["user_id"])})
-        for u in self.store.extra_users():
-            out.append({"user_id": u["user_id"], "name": u["synthetic_name"], "persona": u["persona"],
-                        "area": u["area"], "phone": u.get("demo_phone", "")})
-        return out
+        return out  # registered users' numbers are never listed
 
     def _find_by_phone(self, mobile: str) -> dict | None:
         for u in self.store.extra_users():
@@ -132,6 +129,8 @@ class Hishab(HubMixin):
         self._check_room()
         otp = f"{secrets.randbelow(10**6):06d}"
         self.store.set_meta(f"otp:{mobile}", otp)
+        if not self.settings.demo_mode:
+            return {"sent": True}  # production sends it by SMS; never echo it back
         return {"otp": otp, "demo": True}
 
     def register_verify(self, mobile: str, otp: str, name: str, pin: str) -> dict:

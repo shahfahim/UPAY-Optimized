@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, Request
 
-from hishab.api.deps import require_user
+from hishab.api.deps import require_demo_mode, require_user
 
 from hishab.api.schemas import RespondIn, SimulateIn
 
@@ -12,8 +12,8 @@ def svc(request: Request):
     return request.app.state.svc
 
 
-@router.get("/users")
-def users(request: Request):
+@router.get("/users", dependencies=[Depends(require_demo_mode)])
+def users(request: Request):  # seeded synthetic demo users only
     return svc(request).users()
 
 
