@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useEffect, useState, useRef, type ReactNode } from 'react'
+import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from 'react'
 import { Link, NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom'
 import { api } from '../api/client'
 import type { Shell } from '../api/types'
@@ -176,8 +176,11 @@ function Header({ shell }: { shell: Shell | null }) {
       {item('/app/history', 'clock', L('হিস্টরি', 'History'))}
         {item('/app/hishab', 'spark', <span className="flex items-center gap-0.5">{L('হিসাব', 'Hishab')}<span className="rounded-[4px] bg-[#0b4ea2] px-1 py-[1px] text-[8px] font-bold text-white not-italic shadow-sm">AI</span></span>, (
           <>
-            
-            
+            {badge ? (
+              <span className={`absolute right-3 top-1 flex items-center gap-0.5 rounded-full px-1 text-[9px] font-bold text-white ${dot}`}>
+                {badge.days_left !== null ? L(`${num(badge.days_left)} দিন`, `${badge.days_left}d`) : '•'}
+              </span>
+            ) : null}
           </>
         ))}
       </nav>
