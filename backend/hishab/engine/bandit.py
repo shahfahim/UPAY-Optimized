@@ -1,6 +1,6 @@
 """E9 — learning nudges: Thompson sampling with Beta(α, β) per (persona, item).
 
-Global priors come from the offline script; each user's own accept/dismiss responses update their posterior.
+Global priors are learned offline from logged train-user responses (scripts/bandit_logs.py); each user's own accept/dismiss responses update their posterior.
 """
 
 from __future__ import annotations
@@ -8,7 +8,6 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-import numpy as np
 import pandas as pd
 
 
@@ -17,10 +16,16 @@ class Bandit:
         self.priors = dict(priors)
 
     @classmethod
-    def from_truth(cls, acceptance_truth: pd.DataFrame, strength: float = 10.0) -> "Bandit":
+    def from_logs(cls, logs: pd.DataFrame, max_n: float = 20.0) -> "Bandit":
+        """Beta priors from logged binary responses (columns persona, item_id, accepted).
+
+        Counts are shrunk to at most `max_n` pseudo-observations per (persona, item) so each user's own
+        responses still move their posterior."""
         pri = {}
-        for r in acceptance_truth.itertuples(index=False):
-            pri[(r.persona, r.item_id)] = (round(r.p_accept * strength + 1, 4), round((1 - r.p_accept) * strength + 1, 4))
+        for (persona, item), g in logs.groupby(["persona", "item_id"]):
+            n, acc = float(len(g)), float(g.accepted.sum())
+            scale = min(1.0, max_n / n) if n else 1.0
+            pri[(persona, item)] = (round(1 + acc * scale, 4), round(1 + (n - acc) * scale, 4))
         return cls(pri)
 
     def posterior(self, persona: str, item_id: str, responses: list[tuple[str, bool]]) -> tuple[float, float]:

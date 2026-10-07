@@ -29,9 +29,15 @@ def test_learns_preference():
     assert a > bb
 
 
-def test_from_truth_and_roundtrip(tmp_path):
-    truth = pd.DataFrame([{"persona": "garment_worker", "item_id": "A", "p_accept": 0.8}])
-    b = Bandit.from_truth(truth, strength=10)
+def test_from_logs_counts_and_roundtrip(tmp_path):
+    logs = pd.DataFrame([{"persona": "garment_worker", "item_id": "A", "accepted": x} for x in [True] * 8 + [False] * 2])
+    b = Bandit.from_logs(logs)
     assert b.posterior("garment_worker", "A", []) == (9.0, 3.0)
     b.save(tmp_path / "p.json")
     assert Bandit.load(tmp_path / "p.json").posterior("garment_worker", "A", []) == (9.0, 3.0)
+
+
+def test_from_logs_shrinks_large_counts():
+    logs = pd.DataFrame([{"persona": "p", "item_id": "A", "accepted": x} for x in [True] * 300 + [False] * 100])
+    a, b = Bandit.from_logs(logs, max_n=20).posterior("p", "A", [])
+    assert (a, b) == (16.0, 6.0)

@@ -184,8 +184,8 @@ def main() -> None:
         print("E8", m["E8"], f"({time.time() - t0:.0f}s)")
         action_ids = [a["id"] for a in load_rules("actions")["actions"]]
         lesson_ids = [x["id"] for x in load_rules("lessons")["lessons"]]
-        bc = EI.bandit_replay(data, test_ids, action_ids)
-        lc = EI.bandit_replay(data, test_ids, lesson_ids)
+        bc = EI.bandit_replay(data, train_ids, test_ids, action_ids)
+        lc = EI.bandit_replay(data, train_ids, test_ids, lesson_ids)
         m["E9"] = {"actions_acceptance_bandit": bc["bandit"][-1], "actions_acceptance_static": bc["static"][-1],
                    "actions_acceptance_random": bc["random"][-1], "lessons_acceptance_bandit": lc["bandit"][-1],
                    "lessons_acceptance_static": lc["static"][-1], "lessons_acceptance_random": lc["random"][-1]}
@@ -209,7 +209,8 @@ def main() -> None:
 
 ASSUMPTIONS = ("Simulated on synthetic data (docs/synthetic-data.md). Impact: the 300 held-out users over Aug–Sep 2026 "
                "are replayed month by month. With Hishab, the top-3 ranked actions are accepted with each persona's "
-               "assumed acceptance probability, and their effect is applied to the month's real flows. The active rate "
+               "assumed acceptance probability (the simulated environment; bandit priors are learned only from "
+               "train-user logs, never from this table), and their effect is applied to the month's real flows. The active rate "
                "re-applies the generator's assumed inactivity mechanism. Fees are placeholders. These are model-based "
                "estimates, not measured outcomes.")
 
