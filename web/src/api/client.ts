@@ -1,5 +1,5 @@
 import type {
-  ActionCard, Budget, Calendar, CategoryOption, ChatAnswer, DemoUser, DpsAdvice, EmergencyResult, GoalPlan,
+  ActionCard, Calendar, CategoryOption, ChatAnswer, DemoUser, DpsAdvice, EmergencyResult, GoalPlan,
   HealthReport, Home, Impact, Lesson, LevelStatus, Notification, Readiness, RouteResult, SendResult, SendType,
   Savings, Shell, Simulation, TxList, NearbyAgent
 } from './types'

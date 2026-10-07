@@ -86,7 +86,6 @@ export default function SendMoney() {
         counterparty_name: recipient.name,
         destination: dest, 
         category: finalCategory,
-        route: type === 'npsb' || type === 'fund_transfer' ? routes?.routes[routeIdx]?.nodes : undefined,
       })
       setResult(r)
       setStep('done')

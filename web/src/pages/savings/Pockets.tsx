@@ -164,14 +164,12 @@ export default function Pockets() {
   const { data, error, loading, reload, setData } = useApi(() => api.savings(uid), [uid])
   const [move, setMove] = useState<Move | null>(null)
   const [msg, setMsg] = useState('')
-  const [deletedPockets, setDeletedPockets] = useState<string[]>([])
-  const [addedPockets, setAddedPockets] = useState<any[]>([])
 
   if (loading && !data) return <><PageTitle bn="আমার পকেট" en="My pockets" /><Spinner /></>
   if (error) return <><PageTitle bn="আমার পকেট" en="My pockets" /><ErrorNote message={error} onRetry={reload} /></>
   if (!data) return null
 
-  const displayPockets = [...data.pockets.filter(p => !deletedPockets.includes(p.name)), ...addedPockets]
+  const displayPockets = data.pockets
 
   const togglePaisa = async (on: boolean) => {
     try {

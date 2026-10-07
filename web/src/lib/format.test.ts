@@ -17,19 +17,20 @@ describe('parseAmount', () => {
 })
 
 describe('fmtTaka', () => {
-  it('uses Indian grouping and Bangla digits in bn', () => {
-    expect(fmtTaka(1800, 'bn')).toBe('৳১,৮০০')
+  // Product decision (commit 3ae731e): digits stay ASCII in both languages.
+  it('uses Indian grouping and ASCII digits in both languages', () => {
+    expect(fmtTaka(1800, 'bn')).toBe('৳1,800')
     expect(fmtTaka(150000, 'en')).toBe('৳1,50,000')
     expect(fmtTaka(-2500.4, 'en')).toBe('-৳2,500')
   })
   it('keeps paisa when asked', () => {
-    expect(fmtTaka(0.35, 'bn', { paisa: true })).toBe('৳০.৩৫')
+    expect(fmtTaka(0.35, 'bn', { paisa: true })).toBe('৳0.35')
   })
 })
 
 describe('toBnDigits', () => {
-  it('converts digits only', () => {
-    expect(toBnDigits('2026-09')).toBe('২০২৬-০৯')
+  it('keeps ASCII digits (global English-digit setting)', () => {
+    expect(toBnDigits('2026-09')).toBe('2026-09')
   })
 })
 
