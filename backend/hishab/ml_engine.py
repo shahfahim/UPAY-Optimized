@@ -18,7 +18,7 @@ from sklearn.pipeline import Pipeline
 MODEL_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "artifacts", "intent_model.pkl")
 
 class IntentClassifier:
-    def __init__(self):
+    def __init__(self, load: bool = True):
         """
         Initialize the intent classifier with a TF-IDF vectorizer and a 
         LinearSVC model wrapped in a scikit-learn Pipeline.
@@ -32,7 +32,8 @@ class IntentClassifier:
             ('clf', calibrated_svc)
         ])
         self.is_trained = False
-        self._load_model()
+        if load:
+            self._load_model()
 
     def _load_model(self):
         if os.path.exists(MODEL_PATH):

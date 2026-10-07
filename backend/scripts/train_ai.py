@@ -163,11 +163,11 @@ def generate_data():
 
     data = []
 
-    # create original and variants
+    # Every typo variant keeps its seed phrase as `group`, so evaluation can hold out whole
+    # phrases (variants of a test phrase never appear in training).
     for text, intent in base_data:
-        data.append({'text': text, 'intent': intent})
+        data.append({'text': text, 'intent': intent, 'group': text})
 
-        # create 10 variants for each base phrase
         for _ in range(10):
             words = text.split()
             new_words = []
@@ -185,44 +185,61 @@ def generate_data():
                         w = w.replace(v, '', 1)
                 final_words.append(w)
 
-            data.append({'text': ' '.join(final_words), 'intent': intent})
+            data.append({'text': ' '.join(final_words), 'intent': intent, 'group': text})
 
-    # Merge the overnight synthetic dataset (deduplicated: 77k rows -> ~1.4k unique)
-    overnight = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'hishab', 'training_data.jsonl')
-    if os.path.exists(overnight):
-        import json
-        seen = set()
-        with open(overnight, encoding='utf-8') as f:
-            for line in f:
-                row = json.loads(line)
-                key = (row['text'], row['intent'])
-                if key not in seen:
-                    seen.add(key)
-                    data.append({'text': row['text'], 'intent': row['intent']})
-        print(f"Merged {len(seen)} unique rows from overnight dataset.")
+    # "unknown": random letter strings, so gibberish is rejected instead of being forced into an intent.
+    letters = 'abcdefghijklmnopqrstuvwxyz'
+    for i in range(GIBBERISH_N):
+        words = [''.join(random.choice(letters) for _ in range(random.randint(3, 7)))
+                 for _ in range(random.randint(1, 3))]
+        data.append({'text': ' '.join(words), 'intent': 'unknown', 'group': f'gibberish-{i}'})
 
-    print(f"Generated {len(data)} training samples.")
+    print(f"Generated {len(data)} training samples from {len(base_data)} seed phrases.")
     return data
 
 
-def evaluate(data):
-    """Honest held-out score: 20% stratified split, model never sees these rows."""
-    from sklearn.model_selection import train_test_split
-    from sklearn.metrics import classification_report
+GIBBERISH_N = 150
+METRICS_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'artifacts', 'intent_metrics.json')
+
+
+def evaluate(data, n_splits=5):
+    """Grouped K-fold: all typo variants of a seed phrase sit in the same fold, so the score
+    measures generalisation to unseen phrasings, not memorised duplicates."""
+    import json
+    from sklearn.model_selection import GroupKFold
+    from sklearn.metrics import accuracy_score, classification_report, f1_score
     from hishab.ml_engine import IntentClassifier
     texts = [d['text'] for d in data]
     labels = [d['intent'] for d in data]
-    xtr, xte, ytr, yte = train_test_split(texts, labels, test_size=0.2, random_state=0, stratify=labels)
-    clf = IntentClassifier.__new__(IntentClassifier)
-    IntentClassifier.__init__(clf)
-    clf.pipeline.fit(xtr, ytr)
-    print(classification_report(yte, clf.pipeline.predict(xte), digits=3))
+    groups = [d['group'] for d in data]
+    y_true, y_pred = [], []
+    for tr, te in GroupKFold(n_splits=n_splits).split(texts, labels, groups):
+        clf = IntentClassifier.__new__(IntentClassifier)
+        IntentClassifier.__init__(clf, load=False)
+        clf.pipeline.fit([texts[i] for i in tr], [labels[i] for i in tr])
+        y_true += [labels[i] for i in te]
+        y_pred += list(clf.pipeline.predict([texts[i] for i in te]))
+    report = classification_report(y_true, y_pred, digits=3, output_dict=True, zero_division=0)
+    metrics = {
+        "method": f"GroupKFold(n_splits={n_splits}) by seed phrase; typo variants never cross folds",
+        "n_samples": len(data),
+        "n_groups": len(set(groups)),
+        "accuracy": round(accuracy_score(y_true, y_pred), 4),
+        "macro_f1": round(f1_score(y_true, y_pred, average='macro'), 4),
+        "per_class_f1": {k: round(v['f1-score'], 4) for k, v in report.items() if isinstance(v, dict) and k not in ('macro avg', 'weighted avg')},
+    }
+    print(classification_report(y_true, y_pred, digits=3, zero_division=0))
+    os.makedirs(os.path.dirname(METRICS_PATH), exist_ok=True)
+    with open(METRICS_PATH, 'w', encoding='utf-8') as f:
+        json.dump(metrics, f, indent=2, ensure_ascii=False)
+    print(f"Saved grouped CV metrics to {METRICS_PATH}")
+    return metrics
 
 
 if __name__ == "__main__":
     print("Generating dataset...")
     data = generate_data()
-    print("Held-out evaluation:")
+    print("Grouped cross-validation (seed phrase held out):")
     evaluate(data)
     print("Training final ML model on all data...")
     train_model(data)
