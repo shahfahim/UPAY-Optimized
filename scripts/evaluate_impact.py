@@ -270,32 +270,59 @@ def impact(data, models, test_ids, seed: int = 11) -> dict:
             "acceptance_mean": round(float(df.accepted.mean()), 2), "group_rows": group_rows}
 
 
+MIN_POSITIVES = 30  # below this, recall/precision gaps are noise and are not flagged
+
+
+def _wilson(k: float, n: float, z: float = 1.96) -> tuple[float, float]:
+    if n <= 0:
+        return 0.0, 1.0
+    p = k / n
+    d = 1 + z * z / n
+    c = (p + z * z / (2 * n)) / d
+    h = z * np.sqrt(p * (1 - p) / n + z * z / (4 * n * n)) / d
+    return round(float(max(0.0, c - h)), 3), round(float(min(1.0, c + h)), 3)
+
+
 def fairness(data, models, test_ids, impact_rows: list) -> dict:
+    """Per-group risk-model quality. Threshold-free metrics (AUC, calibration) for every group; recall and
+    precision at the single global alert threshold with Wilson 95% CIs. Gaps are flagged only between groups
+    with at least MIN_POSITIVES positives."""
+    from sklearn.metrics import roc_auc_score
+
     obs = sorted(o for o in data.labels["obs_date"].unique() if o >= TEST_START)
     fr = risk_frame(data, obs, test_ids)
     fr = fr.assign(p=models.risk.predict_proba(fr[RISK_FEATURES]), y=fr.shortfall_14d.astype(int))
     rows = list(impact_rows)
     for g in GROUPS:
         for val, sub in fr.groupby(g):
-            if len(sub) < 30 or sub.y.sum() == 0:
+            n_pos = int(sub.y.sum())
+            if len(sub) < 30 or n_pos == 0:
                 continue
+            base = {"group_type": g, "group": str(val), "n": int(len(sub)), "n_pos": n_pos}
+            rows.append({**base, "metric": "base_rate", "value": round(float(sub.y.mean()), 3)})
+            rows.append({**base, "metric": "mean_predicted", "value": round(float(sub.p.mean()), 3)})
+            if sub.y.nunique() > 1:
+                rows.append({**base, "metric": "roc_auc", "value": round(float(roc_auc_score(sub.y, sub.p)), 3)})
             alert = sub.p >= ALERT_THRESHOLD  # one threshold for every group
-            rec = float((alert & (sub.y == 1)).sum() / sub.y.sum())
-            prec = float((alert & (sub.y == 1)).sum() / max(1, alert.sum()))
-            rows.append({"group_type": g, "group": str(val), "metric": "recall_at_alert", "value": round(rec, 3),
-                         "n": int(len(sub))})
-            rows.append({"group_type": g, "group": str(val), "metric": "precision_at_alert", "value": round(prec, 3),
-                         "n": int(len(sub))})
+            tp = float((alert & (sub.y == 1)).sum())
+            rows.append({**base, "metric": "recall_at_alert", "value": round(tp / n_pos, 3),
+                         "ci95": _wilson(tp, n_pos)})
+            rows.append({**base, "metric": "precision_at_alert", "value": round(tp / max(1, alert.sum()), 3),
+                         "ci95": _wilson(tp, float(alert.sum()))})
     flags = []
     df = pd.DataFrame(rows)
-    for (g, m), sub in df[df.n >= 30].groupby(["group_type", "metric"]):
-        if m == "shortfall_days_reduction":
+    judged = df[(df.n >= 30) & (df.get("n_pos", 0).fillna(0) >= MIN_POSITIVES)]
+    for (g, m), sub in judged.groupby(["group_type", "metric"]):
+        if m not in ("recall_at_alert", "precision_at_alert", "roc_auc"):
             continue
         gap = float(sub.value.max() - sub.value.min())
         if gap > 0.10:
-            flags.append({"group_type": g, "metric": m, "gap": round(gap, 3),
+            worst = sub.loc[sub.value.idxmin(), "group"]
+            flags.append({"group_type": g, "metric": m, "gap": round(gap, 3), "worst_group": str(worst),
                           "note": "Gap above 10 pp: review before any real-world use."})
-    return {"rows": rows, "flags": flags}
+    small = sorted({r["group"] for r in rows if r.get("n_pos", MIN_POSITIVES) < MIN_POSITIVES})
+    return {"rows": rows, "flags": flags, "alert_threshold": ALERT_THRESHOLD, "min_positives": MIN_POSITIVES,
+            "too_few_positives": small}
 
 
 def readiness_distribution(data, test_ids, as_of: date) -> list:

@@ -156,7 +156,23 @@ def write_markdown(m: dict, notes: list[str] | None = None) -> None:
     (REPORTS / "metrics.md").write_text("\n".join(lines), encoding="utf-8")
 
 
+def refresh_fairness() -> None:
+    """Recompute only the fairness block of the existing impact snapshot (fast; no impact replay)."""
+    import evaluate_impact as EI
+
+    data, models = _load_full(), load_from(ART)
+    _, test_ids = split_users(list(data.users.user_id))
+    path = ART / "impact_snapshot.json"
+    snap = json.loads(path.read_text(encoding="utf-8"))
+    impact_rows = [r for r in snap["fairness"]["rows"] if r["metric"] == "shortfall_days_reduction"]
+    snap["fairness"] = EI.fairness(data, models, test_ids, impact_rows)
+    path.write_text(json.dumps(snap, ensure_ascii=False, indent=1, default=str), encoding="utf-8")
+    print("fairness flags:", snap["fairness"]["flags"])
+
+
 def main() -> None:
+    if "--fairness-only" in sys.argv:
+        return refresh_fairness()
     t0 = time.time()
     data = _load_full()
     models = load_from(ART)

@@ -236,8 +236,11 @@ export type Impact = {
   bandit_curve: { day: number[]; bandit: number[]; static: number[]; random: number[] }
   lesson_curve: { day: number[]; bandit: number[]; static: number[]; random: number[] }
   fairness: {
-    rows: { group_type: string; group: string; metric: string; value: number; n: number }[]
-    flags: { group_type: string; metric: string; gap: number; note: string }[]
+    rows: { group_type: string; group: string; metric: string; value: number; n: number; n_pos?: number; ci95?: [number, number] }[]
+    flags: { group_type: string; metric: string; gap: number; note: string; worst_group?: string }[]
+    alert_threshold?: number
+    min_positives?: number
+    too_few_positives?: string[]
   }
   readiness_distribution: { group_type: string; group: string; signal: string; green_share: number; n: number }[]
   models: Record<string, Record<string, number | string | null>>

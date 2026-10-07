@@ -697,323 +697,1051 @@
    {
     "group_type": "persona",
     "group": "daily_wage",
-    "metric": "recall_at_alert",
-    "value": 0.973,
-    "n": 383
+    "n": 383,
+    "n_pos": 294,
+    "metric": "base_rate",
+    "value": 0.768
    },
    {
     "group_type": "persona",
     "group": "daily_wage",
+    "n": 383,
+    "n_pos": 294,
+    "metric": "mean_predicted",
+    "value": 0.787
+   },
+   {
+    "group_type": "persona",
+    "group": "daily_wage",
+    "n": 383,
+    "n_pos": 294,
+    "metric": "roc_auc",
+    "value": 0.707
+   },
+   {
+    "group_type": "persona",
+    "group": "daily_wage",
+    "n": 383,
+    "n_pos": 294,
+    "metric": "recall_at_alert",
+    "value": 0.973,
+    "ci95": [
+     0.947,
+     0.986
+    ]
+   },
+   {
+    "group_type": "persona",
+    "group": "daily_wage",
+    "n": 383,
+    "n_pos": 294,
     "metric": "precision_at_alert",
     "value": 0.788,
-    "n": 383
+    "ci95": [
+     0.743,
+     0.827
+    ]
    },
    {
     "group_type": "persona",
     "group": "garment_worker",
+    "n": 780,
+    "n_pos": 311,
+    "metric": "base_rate",
+    "value": 0.399
+   },
+   {
+    "group_type": "persona",
+    "group": "garment_worker",
+    "n": 780,
+    "n_pos": 311,
+    "metric": "mean_predicted",
+    "value": 0.396
+   },
+   {
+    "group_type": "persona",
+    "group": "garment_worker",
+    "n": 780,
+    "n_pos": 311,
+    "metric": "roc_auc",
+    "value": 0.945
+   },
+   {
+    "group_type": "persona",
+    "group": "garment_worker",
+    "n": 780,
+    "n_pos": 311,
     "metric": "recall_at_alert",
     "value": 0.875,
-    "n": 780
+    "ci95": [
+     0.833,
+     0.907
+    ]
    },
    {
     "group_type": "persona",
     "group": "garment_worker",
+    "n": 780,
+    "n_pos": 311,
     "metric": "precision_at_alert",
     "value": 0.8,
-    "n": 780
+    "ci95": [
+     0.754,
+     0.839
+    ]
    },
    {
     "group_type": "persona",
     "group": "shop_owner",
+    "n": 406,
+    "n_pos": 11,
+    "metric": "base_rate",
+    "value": 0.027
+   },
+   {
+    "group_type": "persona",
+    "group": "shop_owner",
+    "n": 406,
+    "n_pos": 11,
+    "metric": "mean_predicted",
+    "value": 0.026
+   },
+   {
+    "group_type": "persona",
+    "group": "shop_owner",
+    "n": 406,
+    "n_pos": 11,
+    "metric": "roc_auc",
+    "value": 0.873
+   },
+   {
+    "group_type": "persona",
+    "group": "shop_owner",
+    "n": 406,
+    "n_pos": 11,
     "metric": "recall_at_alert",
     "value": 0.0,
-    "n": 406
+    "ci95": [
+     0.0,
+     0.259
+    ]
    },
    {
     "group_type": "persona",
     "group": "shop_owner",
+    "n": 406,
+    "n_pos": 11,
     "metric": "precision_at_alert",
     "value": 0.0,
-    "n": 406
+    "ci95": [
+     0.0,
+     0.793
+    ]
    },
    {
     "group_type": "persona",
     "group": "student",
+    "n": 245,
+    "n_pos": 127,
+    "metric": "base_rate",
+    "value": 0.518
+   },
+   {
+    "group_type": "persona",
+    "group": "student",
+    "n": 245,
+    "n_pos": 127,
+    "metric": "mean_predicted",
+    "value": 0.509
+   },
+   {
+    "group_type": "persona",
+    "group": "student",
+    "n": 245,
+    "n_pos": 127,
+    "metric": "roc_auc",
+    "value": 0.925
+   },
+   {
+    "group_type": "persona",
+    "group": "student",
+    "n": 245,
+    "n_pos": 127,
     "metric": "recall_at_alert",
     "value": 0.882,
-    "n": 245
+    "ci95": [
+     0.814,
+     0.927
+    ]
    },
    {
     "group_type": "persona",
     "group": "student",
+    "n": 245,
+    "n_pos": 127,
     "metric": "precision_at_alert",
     "value": 0.812,
-    "n": 245
+    "ci95": [
+     0.738,
+     0.868
+    ]
    },
    {
     "group_type": "gender",
     "group": "female",
+    "n": 789,
+    "n_pos": 360,
+    "metric": "base_rate",
+    "value": 0.456
+   },
+   {
+    "group_type": "gender",
+    "group": "female",
+    "n": 789,
+    "n_pos": 360,
+    "metric": "mean_predicted",
+    "value": 0.458
+   },
+   {
+    "group_type": "gender",
+    "group": "female",
+    "n": 789,
+    "n_pos": 360,
+    "metric": "roc_auc",
+    "value": 0.941
+   },
+   {
+    "group_type": "gender",
+    "group": "female",
+    "n": 789,
+    "n_pos": 360,
     "metric": "recall_at_alert",
     "value": 0.9,
-    "n": 789
+    "ci95": [
+     0.865,
+     0.927
+    ]
    },
    {
     "group_type": "gender",
     "group": "female",
+    "n": 789,
+    "n_pos": 360,
     "metric": "precision_at_alert",
     "value": 0.798,
-    "n": 789
+    "ci95": [
+     0.756,
+     0.834
+    ]
    },
    {
     "group_type": "gender",
     "group": "male",
+    "n": 1025,
+    "n_pos": 383,
+    "metric": "base_rate",
+    "value": 0.374
+   },
+   {
+    "group_type": "gender",
+    "group": "male",
+    "n": 1025,
+    "n_pos": 383,
+    "metric": "mean_predicted",
+    "value": 0.374
+   },
+   {
+    "group_type": "gender",
+    "group": "male",
+    "n": 1025,
+    "n_pos": 383,
+    "metric": "roc_auc",
+    "value": 0.943
+   },
+   {
+    "group_type": "gender",
+    "group": "male",
+    "n": 1025,
+    "n_pos": 383,
     "metric": "recall_at_alert",
     "value": 0.903,
-    "n": 1025
+    "ci95": [
+     0.87,
+     0.929
+    ]
    },
    {
     "group_type": "gender",
     "group": "male",
+    "n": 1025,
+    "n_pos": 383,
     "metric": "precision_at_alert",
     "value": 0.794,
-    "n": 1025
+    "ci95": [
+     0.753,
+     0.829
+    ]
    },
    {
     "group_type": "area",
     "group": "Ashulia",
+    "n": 140,
+    "n_pos": 60,
+    "metric": "base_rate",
+    "value": 0.429
+   },
+   {
+    "group_type": "area",
+    "group": "Ashulia",
+    "n": 140,
+    "n_pos": 60,
+    "metric": "mean_predicted",
+    "value": 0.374
+   },
+   {
+    "group_type": "area",
+    "group": "Ashulia",
+    "n": 140,
+    "n_pos": 60,
+    "metric": "roc_auc",
+    "value": 0.95
+   },
+   {
+    "group_type": "area",
+    "group": "Ashulia",
+    "n": 140,
+    "n_pos": 60,
     "metric": "recall_at_alert",
     "value": 0.833,
-    "n": 140
+    "ci95": [
+     0.72,
+     0.907
+    ]
    },
    {
     "group_type": "area",
     "group": "Ashulia",
+    "n": 140,
+    "n_pos": 60,
     "metric": "precision_at_alert",
     "value": 0.893,
-    "n": 140
+    "ci95": [
+     0.785,
+     0.95
+    ]
    },
    {
     "group_type": "area",
     "group": "Chattogram",
+    "n": 133,
+    "n_pos": 33,
+    "metric": "base_rate",
+    "value": 0.248
+   },
+   {
+    "group_type": "area",
+    "group": "Chattogram",
+    "n": 133,
+    "n_pos": 33,
+    "metric": "mean_predicted",
+    "value": 0.257
+   },
+   {
+    "group_type": "area",
+    "group": "Chattogram",
+    "n": 133,
+    "n_pos": 33,
+    "metric": "roc_auc",
+    "value": 0.971
+   },
+   {
+    "group_type": "area",
+    "group": "Chattogram",
+    "n": 133,
+    "n_pos": 33,
     "metric": "recall_at_alert",
     "value": 0.818,
-    "n": 133
+    "ci95": [
+     0.656,
+     0.914
+    ]
    },
    {
     "group_type": "area",
     "group": "Chattogram",
+    "n": 133,
+    "n_pos": 33,
     "metric": "precision_at_alert",
     "value": 0.818,
-    "n": 133
+    "ci95": [
+     0.656,
+     0.914
+    ]
    },
    {
     "group_type": "area",
     "group": "Chattogram EPZ",
+    "n": 126,
+    "n_pos": 51,
+    "metric": "base_rate",
+    "value": 0.405
+   },
+   {
+    "group_type": "area",
+    "group": "Chattogram EPZ",
+    "n": 126,
+    "n_pos": 51,
+    "metric": "mean_predicted",
+    "value": 0.366
+   },
+   {
+    "group_type": "area",
+    "group": "Chattogram EPZ",
+    "n": 126,
+    "n_pos": 51,
+    "metric": "roc_auc",
+    "value": 0.938
+   },
+   {
+    "group_type": "area",
+    "group": "Chattogram EPZ",
+    "n": 126,
+    "n_pos": 51,
     "metric": "recall_at_alert",
     "value": 0.843,
-    "n": 126
+    "ci95": [
+     0.72,
+     0.918
+    ]
    },
    {
     "group_type": "area",
     "group": "Chattogram EPZ",
+    "n": 126,
+    "n_pos": 51,
     "metric": "precision_at_alert",
     "value": 0.827,
-    "n": 126
+    "ci95": [
+     0.703,
+     0.906
+    ]
    },
    {
     "group_type": "area",
     "group": "Dhanmondi",
+    "n": 42,
+    "n_pos": 16,
+    "metric": "base_rate",
+    "value": 0.381
+   },
+   {
+    "group_type": "area",
+    "group": "Dhanmondi",
+    "n": 42,
+    "n_pos": 16,
+    "metric": "mean_predicted",
+    "value": 0.365
+   },
+   {
+    "group_type": "area",
+    "group": "Dhanmondi",
+    "n": 42,
+    "n_pos": 16,
+    "metric": "roc_auc",
+    "value": 0.883
+   },
+   {
+    "group_type": "area",
+    "group": "Dhanmondi",
+    "n": 42,
+    "n_pos": 16,
     "metric": "recall_at_alert",
     "value": 0.812,
-    "n": 42
+    "ci95": [
+     0.57,
+     0.934
+    ]
    },
    {
     "group_type": "area",
     "group": "Dhanmondi",
+    "n": 42,
+    "n_pos": 16,
     "metric": "precision_at_alert",
     "value": 0.65,
-    "n": 42
+    "ci95": [
+     0.433,
+     0.819
+    ]
    },
    {
     "group_type": "area",
     "group": "Gazipur",
+    "n": 189,
+    "n_pos": 56,
+    "metric": "base_rate",
+    "value": 0.296
+   },
+   {
+    "group_type": "area",
+    "group": "Gazipur",
+    "n": 189,
+    "n_pos": 56,
+    "metric": "mean_predicted",
+    "value": 0.302
+   },
+   {
+    "group_type": "area",
+    "group": "Gazipur",
+    "n": 189,
+    "n_pos": 56,
+    "metric": "roc_auc",
+    "value": 0.976
+   },
+   {
+    "group_type": "area",
+    "group": "Gazipur",
+    "n": 189,
+    "n_pos": 56,
     "metric": "recall_at_alert",
     "value": 0.875,
-    "n": 189
+    "ci95": [
+     0.764,
+     0.938
+    ]
    },
    {
     "group_type": "area",
     "group": "Gazipur",
+    "n": 189,
+    "n_pos": 56,
     "metric": "precision_at_alert",
     "value": 0.831,
-    "n": 189
+    "ci95": [
+     0.715,
+     0.905
+    ]
    },
    {
     "group_type": "area",
     "group": "Jatrabari",
+    "n": 49,
+    "n_pos": 42,
+    "metric": "base_rate",
+    "value": 0.857
+   },
+   {
+    "group_type": "area",
+    "group": "Jatrabari",
+    "n": 49,
+    "n_pos": 42,
+    "metric": "mean_predicted",
+    "value": 0.825
+   },
+   {
+    "group_type": "area",
+    "group": "Jatrabari",
+    "n": 49,
+    "n_pos": 42,
+    "metric": "roc_auc",
+    "value": 0.747
+   },
+   {
+    "group_type": "area",
+    "group": "Jatrabari",
+    "n": 49,
+    "n_pos": 42,
     "metric": "recall_at_alert",
     "value": 1.0,
-    "n": 49
+    "ci95": [
+     0.916,
+     1.0
+    ]
    },
    {
     "group_type": "area",
     "group": "Jatrabari",
+    "n": 49,
+    "n_pos": 42,
     "metric": "precision_at_alert",
     "value": 0.875,
-    "n": 49
+    "ci95": [
+     0.753,
+     0.941
+    ]
    },
    {
     "group_type": "area",
     "group": "Khulna",
+    "n": 35,
+    "n_pos": 26,
+    "metric": "base_rate",
+    "value": 0.743
+   },
+   {
+    "group_type": "area",
+    "group": "Khulna",
+    "n": 35,
+    "n_pos": 26,
+    "metric": "mean_predicted",
+    "value": 0.751
+   },
+   {
+    "group_type": "area",
+    "group": "Khulna",
+    "n": 35,
+    "n_pos": 26,
+    "metric": "roc_auc",
+    "value": 0.735
+   },
+   {
+    "group_type": "area",
+    "group": "Khulna",
+    "n": 35,
+    "n_pos": 26,
     "metric": "recall_at_alert",
     "value": 0.962,
-    "n": 35
+    "ci95": [
+     0.811,
+     0.993
+    ]
    },
    {
     "group_type": "area",
     "group": "Khulna",
+    "n": 35,
+    "n_pos": 26,
     "metric": "precision_at_alert",
     "value": 0.833,
-    "n": 35
+    "ci95": [
+     0.664,
+     0.927
+    ]
    },
    {
     "group_type": "area",
     "group": "Mirpur",
+    "n": 203,
+    "n_pos": 96,
+    "metric": "base_rate",
+    "value": 0.473
+   },
+   {
+    "group_type": "area",
+    "group": "Mirpur",
+    "n": 203,
+    "n_pos": 96,
+    "metric": "mean_predicted",
+    "value": 0.466
+   },
+   {
+    "group_type": "area",
+    "group": "Mirpur",
+    "n": 203,
+    "n_pos": 96,
+    "metric": "roc_auc",
+    "value": 0.919
+   },
+   {
+    "group_type": "area",
+    "group": "Mirpur",
+    "n": 203,
+    "n_pos": 96,
     "metric": "recall_at_alert",
     "value": 0.906,
-    "n": 203
+    "ci95": [
+     0.831,
+     0.95
+    ]
    },
    {
     "group_type": "area",
     "group": "Mirpur",
+    "n": 203,
+    "n_pos": 96,
     "metric": "precision_at_alert",
     "value": 0.821,
-    "n": 203
+    "ci95": [
+     0.737,
+     0.882
+    ]
    },
    {
     "group_type": "area",
     "group": "Mohammadpur",
+    "n": 42,
+    "n_pos": 25,
+    "metric": "base_rate",
+    "value": 0.595
+   },
+   {
+    "group_type": "area",
+    "group": "Mohammadpur",
+    "n": 42,
+    "n_pos": 25,
+    "metric": "mean_predicted",
+    "value": 0.502
+   },
+   {
+    "group_type": "area",
+    "group": "Mohammadpur",
+    "n": 42,
+    "n_pos": 25,
+    "metric": "roc_auc",
+    "value": 0.924
+   },
+   {
+    "group_type": "area",
+    "group": "Mohammadpur",
+    "n": 42,
+    "n_pos": 25,
     "metric": "recall_at_alert",
     "value": 0.88,
-    "n": 42
+    "ci95": [
+     0.7,
+     0.958
+    ]
    },
    {
     "group_type": "area",
     "group": "Mohammadpur",
+    "n": 42,
+    "n_pos": 25,
     "metric": "precision_at_alert",
     "value": 0.957,
-    "n": 42
+    "ci95": [
+     0.79,
+     0.992
+    ]
    },
    {
     "group_type": "area",
     "group": "Narayanganj",
+    "n": 208,
+    "n_pos": 99,
+    "metric": "base_rate",
+    "value": 0.476
+   },
+   {
+    "group_type": "area",
+    "group": "Narayanganj",
+    "n": 208,
+    "n_pos": 99,
+    "metric": "mean_predicted",
+    "value": 0.533
+   },
+   {
+    "group_type": "area",
+    "group": "Narayanganj",
+    "n": 208,
+    "n_pos": 99,
+    "metric": "roc_auc",
+    "value": 0.846
+   },
+   {
+    "group_type": "area",
+    "group": "Narayanganj",
+    "n": 208,
+    "n_pos": 99,
     "metric": "recall_at_alert",
     "value": 0.879,
-    "n": 208
+    "ci95": [
+     0.8,
+     0.929
+    ]
    },
    {
     "group_type": "area",
     "group": "Narayanganj",
+    "n": 208,
+    "n_pos": 99,
     "metric": "precision_at_alert",
     "value": 0.654,
-    "n": 208
+    "ci95": [
+     0.57,
+     0.73
+    ]
    },
    {
     "group_type": "area",
     "group": "Rajshahi",
+    "n": 105,
+    "n_pos": 12,
+    "metric": "base_rate",
+    "value": 0.114
+   },
+   {
+    "group_type": "area",
+    "group": "Rajshahi",
+    "n": 105,
+    "n_pos": 12,
+    "metric": "mean_predicted",
+    "value": 0.166
+   },
+   {
+    "group_type": "area",
+    "group": "Rajshahi",
+    "n": 105,
+    "n_pos": 12,
+    "metric": "roc_auc",
+    "value": 0.984
+   },
+   {
+    "group_type": "area",
+    "group": "Rajshahi",
+    "n": 105,
+    "n_pos": 12,
     "metric": "recall_at_alert",
     "value": 1.0,
-    "n": 105
+    "ci95": [
+     0.757,
+     1.0
+    ]
    },
    {
     "group_type": "area",
     "group": "Rajshahi",
+    "n": 105,
+    "n_pos": 12,
     "metric": "precision_at_alert",
     "value": 0.6,
-    "n": 105
+    "ci95": [
+     0.387,
+     0.781
+    ]
    },
    {
     "group_type": "area",
     "group": "Rangpur",
+    "n": 77,
+    "n_pos": 69,
+    "metric": "base_rate",
+    "value": 0.896
+   },
+   {
+    "group_type": "area",
+    "group": "Rangpur",
+    "n": 77,
+    "n_pos": 69,
+    "metric": "mean_predicted",
+    "value": 0.818
+   },
+   {
+    "group_type": "area",
+    "group": "Rangpur",
+    "n": 77,
+    "n_pos": 69,
+    "metric": "roc_auc",
+    "value": 0.806
+   },
+   {
+    "group_type": "area",
+    "group": "Rangpur",
+    "n": 77,
+    "n_pos": 69,
     "metric": "recall_at_alert",
     "value": 0.986,
-    "n": 77
+    "ci95": [
+     0.922,
+     0.997
+    ]
    },
    {
     "group_type": "area",
     "group": "Rangpur",
+    "n": 77,
+    "n_pos": 69,
     "metric": "precision_at_alert",
     "value": 0.907,
-    "n": 77
+    "ci95": [
+     0.82,
+     0.954
+    ]
    },
    {
     "group_type": "area",
     "group": "Savar",
+    "n": 187,
+    "n_pos": 69,
+    "metric": "base_rate",
+    "value": 0.369
+   },
+   {
+    "group_type": "area",
+    "group": "Savar",
+    "n": 187,
+    "n_pos": 69,
+    "metric": "mean_predicted",
+    "value": 0.407
+   },
+   {
+    "group_type": "area",
+    "group": "Savar",
+    "n": 187,
+    "n_pos": 69,
+    "metric": "roc_auc",
+    "value": 0.968
+   },
+   {
+    "group_type": "area",
+    "group": "Savar",
+    "n": 187,
+    "n_pos": 69,
     "metric": "recall_at_alert",
     "value": 0.942,
-    "n": 187
+    "ci95": [
+     0.86,
+     0.977
+    ]
    },
    {
     "group_type": "area",
     "group": "Savar",
+    "n": 187,
+    "n_pos": 69,
     "metric": "precision_at_alert",
     "value": 0.793,
-    "n": 187
+    "ci95": [
+     0.693,
+     0.866
+    ]
    },
    {
     "group_type": "area",
     "group": "Tongi",
+    "n": 152,
+    "n_pos": 83,
+    "metric": "base_rate",
+    "value": 0.546
+   },
+   {
+    "group_type": "area",
+    "group": "Tongi",
+    "n": 152,
+    "n_pos": 83,
+    "metric": "mean_predicted",
+    "value": 0.579
+   },
+   {
+    "group_type": "area",
+    "group": "Tongi",
+    "n": 152,
+    "n_pos": 83,
+    "metric": "roc_auc",
+    "value": 0.917
+   },
+   {
+    "group_type": "area",
+    "group": "Tongi",
+    "n": 152,
+    "n_pos": 83,
     "metric": "recall_at_alert",
     "value": 0.964,
-    "n": 152
+    "ci95": [
+     0.899,
+     0.988
+    ]
    },
    {
     "group_type": "area",
     "group": "Tongi",
+    "n": 152,
+    "n_pos": 83,
     "metric": "precision_at_alert",
     "value": 0.762,
-    "n": 152
+    "ci95": [
+     0.672,
+     0.833
+    ]
    },
    {
     "group_type": "area",
     "group": "Uttara",
+    "n": 91,
+    "n_pos": 6,
+    "metric": "base_rate",
+    "value": 0.066
+   },
+   {
+    "group_type": "area",
+    "group": "Uttara",
+    "n": 91,
+    "n_pos": 6,
+    "metric": "mean_predicted",
+    "value": 0.027
+   },
+   {
+    "group_type": "area",
+    "group": "Uttara",
+    "n": 91,
+    "n_pos": 6,
+    "metric": "roc_auc",
+    "value": 0.816
+   },
+   {
+    "group_type": "area",
+    "group": "Uttara",
+    "n": 91,
+    "n_pos": 6,
     "metric": "recall_at_alert",
     "value": 0.0,
-    "n": 91
+    "ci95": [
+     0.0,
+     0.39
+    ]
    },
    {
     "group_type": "area",
     "group": "Uttara",
+    "n": 91,
+    "n_pos": 6,
     "metric": "precision_at_alert",
     "value": 0.0,
-    "n": 91
+    "ci95": [
+     0.0,
+     1.0
+    ]
    }
   ],
   "flags": [
    {
     "group_type": "area",
     "metric": "precision_at_alert",
-    "gap": 0.957,
+    "gap": 0.253,
+    "worst_group": "Narayanganj",
     "note": "Gap above 10 pp: review before any real-world use."
    },
    {
     "group_type": "area",
     "metric": "recall_at_alert",
-    "gap": 1.0,
+    "gap": 0.182,
+    "worst_group": "Chattogram",
+    "note": "Gap above 10 pp: review before any real-world use."
+   },
+   {
+    "group_type": "area",
+    "metric": "roc_auc",
+    "gap": 0.229,
+    "worst_group": "Jatrabari",
     "note": "Gap above 10 pp: review before any real-world use."
    },
    {
     "group_type": "persona",
-    "metric": "precision_at_alert",
-    "gap": 0.812,
-    "note": "Gap above 10 pp: review before any real-world use."
-   },
-   {
-    "group_type": "persona",
-    "metric": "recall_at_alert",
-    "gap": 0.973,
+    "metric": "roc_auc",
+    "gap": 0.238,
+    "worst_group": "daily_wage",
     "note": "Gap above 10 pp: review before any real-world use."
    }
+  ],
+  "alert_threshold": 0.3,
+  "min_positives": 30,
+  "too_few_positives": [
+   "Dhanmondi",
+   "Khulna",
+   "Mohammadpur",
+   "Rajshahi",
+   "Uttara",
+   "shop_owner"
   ]
  },
  "readiness_distribution": [
