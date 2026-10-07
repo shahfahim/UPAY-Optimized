@@ -9,7 +9,6 @@ import re
 import secrets
 from datetime import date, datetime, timedelta
 
-import numpy as np
 import pandas as pd
 
 from hishab.engine import validate
@@ -30,7 +29,6 @@ from hishab.engine.text import CATEGORY_BN, POCKET_BN, bn_num
 from hishab.errors import UserError
 from hishab.jsonable import jsonable
 from hishab.rules import load_rules
-from hishab.store.sqlite import POCKETS
 
 SPEND_TYPES = ["merchant_pay", "cash_out", "mobile_recharge", "send_money", "bill_pay"]
 PERIOD_DAYS = {"day": 1, "week": 7, "month": 30}
@@ -184,7 +182,7 @@ class HubMixin:
 
     @locked
     def move_pocket(self, uid, pocket, direction, amount):
-        if (pocket == "paisa" and direction == "in"):
+        if pocket not in POCKET_BN or (pocket == "paisa" and direction == "in"):
             raise UserError("পকেট সঠিক নয়")
         amount = validate.amount(amount)
         ctx = self.ctx(uid)

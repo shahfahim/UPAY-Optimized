@@ -1,6 +1,5 @@
 import type { RouteResult } from '../api/types'
 import { useLang } from '../i18n'
-import { Icon } from './Icon'
 
 export function RouteWidget({ result, destinationName }: { result: RouteResult; destinationName?: string }) {
   const { L } = useLang()

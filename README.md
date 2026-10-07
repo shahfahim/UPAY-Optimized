@@ -46,7 +46,7 @@ Addressing the specific problem statement of **Track 3**, we present **Hishab AI
 
 ## ✨ Key Features
 1. **📊 AI Cash-Flow Forecasting:** Integrates **LightGBM** and **Scikit-learn** to predict 30-day income/expense trends and alert users of potential liquidity shocks.
-2. **📍 Smart Agent Locator:** Uses Geolocation to find nearby agents and calculates an AI-predicted **"Liquidity Score"** to ensure cash availability.
+2. **📍 Agent Locator (demo data):** Shows nearby cash-out agents from fixed sample data. The cash hint is a sample value, not an AI prediction; a real version needs upay agent-liquidity data.
 3. **🎙️ Inclusive Voice Assistant:** Features a fully native **Bangla Voice-to-Text copilot** powered by Claude AI, removing literacy barriers for rural users.
 4. **🛡️ Responsible AI Readiness:** Acts purely as an explainable financial coach without making autonomous or biased lending decisions.
 

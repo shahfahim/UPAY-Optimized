@@ -1,4 +1,4 @@
-import { useEffect, type ButtonHTMLAttributes, type ReactNode } from 'react'
+import { useEffect, type ButtonHTMLAttributes, type CSSProperties, type ReactNode } from 'react'
 import { useLang } from '../i18n'
 
 export function AiBadge({ className = '' }: { className?: string }) {
@@ -103,8 +103,8 @@ export function riskClasses(level: 'green' | 'amber' | 'red' | null | undefined)
   return RISK_STYLES[level ?? 'green']
 }
 
-export function Card({ children, className = '' }: { children: ReactNode; className?: string }) {
-  return <div className={`rounded-2xl border border-line bg-white p-4 ${className}`}>{children}</div>
+export function Card({ children, className = '', style }: { children: ReactNode; className?: string; style?: CSSProperties }) {
+  return <div className={`rounded-2xl border border-line bg-white p-4 ${className}`} style={style}>{children}</div>
 }
 
 export function SectionTitle({ children, right }: { children: ReactNode; right?: ReactNode }) {

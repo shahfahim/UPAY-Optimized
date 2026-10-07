@@ -38,7 +38,7 @@ export default function AgentLocator() {
           lng: position.coords.longitude,
         })
       },
-      (error) => {
+      () => {
         fallbackLocation()
       }
     )
@@ -86,6 +86,9 @@ export default function AgentLocator() {
       </div>
 
       <div className="px-4 mt-6">
+        <div className="bg-amber-50 text-amber-700 border border-amber-200 p-3 rounded-xl text-xs mb-4 text-center">
+          {L('ডেমো: এগুলো নমুনা এজেন্ট ও নমুনা মান — আসল upay এজেন্ট বা ক্যাশের তথ্য নয়।', 'Demo: sample agents and sample values — not real upay agent or cash data.')}
+        </div>
         {!location && !geoError && (
           <div className="flex flex-col items-center justify-center py-16 bg-white rounded-2xl shadow-sm">
             <Spinner label={L('আপনার লোকেশন খোঁজা হচ্ছে...', 'Locating you...')} />
@@ -127,20 +130,20 @@ export default function AgentLocator() {
                       <span>{agent.distance_m} m</span>
                     </div>
                   </div>
-                  <div className={`px-2.5 py-1 rounded-full text-xs font-semibold ${getStatusColor(agent.predicted_status)}`}>
-                    {agent.predicted_status === 'green' ? L('উচ্চ', 'High') : agent.predicted_status === 'amber' ? L('মাঝারি', 'Medium') : L('নিম্ন', 'Low')}
+                  <div className={`px-2.5 py-1 rounded-full text-xs font-semibold ${getStatusColor(agent.cash_status)}`}>
+                    {agent.cash_status === 'green' ? L('উচ্চ', 'High') : agent.cash_status === 'amber' ? L('মাঝারি', 'Medium') : L('নিম্ন', 'Low')}
                   </div>
                 </div>
                 
                 <div className="mt-4 bg-slate-50 rounded-xl p-3 border border-slate-100">
                   <div className="flex justify-between items-center mb-1.5">
-                    <span className="text-xs font-medium text-slate-600">{L('এআই তারল্য স্কোর', 'AI Liquidity Score')}</span>
-                    <span className="text-xs font-bold text-slate-700">{(agent.ai_liquidity_score * 100).toFixed(0)}%</span>
+                    <span className="text-xs font-medium text-slate-600">{L('ক্যাশ থাকার নমুনা মান (ডেমো)', 'Cash hint (demo sample)')}</span>
+                    <span className="text-xs font-bold text-slate-700">{(agent.cash_hint * 100).toFixed(0)}%</span>
                   </div>
                   <div className="w-full bg-slate-200 rounded-full h-1.5 overflow-hidden">
                     <div 
-                      className={`h-1.5 rounded-full ${agent.predicted_status === 'green' ? 'bg-green-500' : agent.predicted_status === 'amber' ? 'bg-amber-500' : 'bg-red-500'}`}
-                      style={{ width: `${agent.ai_liquidity_score * 100}%` }}
+                      className={`h-1.5 rounded-full ${agent.cash_status === 'green' ? 'bg-green-500' : agent.cash_status === 'amber' ? 'bg-amber-500' : 'bg-red-500'}`}
+                      style={{ width: `${agent.cash_hint * 100}%` }}
                     />
                   </div>
                 </div>

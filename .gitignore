@@ -22,3 +22,10 @@ docs/reference/
 # Plan-execution scratch workspace
 .superpowers/
 .pytest_tmp/
+
+# test/coverage output
+.coverage
+coverage.xml
+junit.xml
+htmlcov/
+.ruff_cache/

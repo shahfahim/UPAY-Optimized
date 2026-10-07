@@ -260,6 +260,7 @@ export type NearbyAgent = {
   lat: number
   lng: number
   distance_m: number
-  ai_liquidity_score: number
-  predicted_status: RiskLevel // Reusing RiskLevel for color coding ('green' | 'amber' | 'red')
+  cash_hint: number // fixed sample value, not a prediction
+  cash_status: RiskLevel
+  is_demo: boolean
 }

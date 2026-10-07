@@ -40,8 +40,8 @@ function modelRows(m: ImpactData['models']): Row[] {
     { model: 'E8 Eid planner', metric: 'Eid spend MAE', value: g('E8', 'mae'), baseline: g('E8', 'baseline_global_mean_mae'), baselineLabel: 'global mean', better: 'lower', fmt: bdt },
     { model: 'E16 Smart DPS', metric: 'Missed-installment rate', value: g('E16', 'smart_missed_rate'), baseline: g('E16', 'naive_10pct_missed_rate'), baselineLabel: '10% of income', better: 'lower', fmt: pct },
     { model: 'E16 Smart DPS', metric: 'Average monthly installment', value: g('E16', 'smart_avg_monthly'), baseline: g('E16', 'naive_avg_monthly'), baselineLabel: '10% of income', better: 'higher', fmt: bdt },
-    { model: 'E9 Bandit', metric: 'Action acceptance (day 60)', value: g('E9', 'actions_acceptance_bandit'), baseline: g('E9', 'actions_acceptance_static'), baselineLabel: 'static ranking', better: 'higher', fmt: pct },
-    { model: 'E9 Bandit', metric: 'Lesson acceptance (day 60)', value: g('E9', 'lessons_acceptance_bandit'), baseline: g('E9', 'lessons_acceptance_static'), baselineLabel: 'static ranking', better: 'higher', fmt: pct },
+    { model: 'E9 Bandit', metric: 'Action acceptance (day 60)', value: g('E9', 'actions_acceptance_bandit'), baseline: g('E9', 'actions_acceptance_static'), baselineLabel: 'best fixed card (train logs)', better: 'higher', fmt: pct },
+    { model: 'E9 Bandit', metric: 'Lesson acceptance (day 60)', value: g('E9', 'lessons_acceptance_bandit'), baseline: g('E9', 'lessons_acceptance_static'), baselineLabel: 'best fixed card (train logs)', better: 'higher', fmt: pct },
   ]
 }
 
@@ -69,11 +69,11 @@ function Curve({ c, title }: { c: ImpactData['bandit_curve']; title: string }) {
           <LineChart data={data} margin={{ top: 5, right: 8, left: -18, bottom: 0 }}>
             <CartesianGrid stroke="#eef0f4" vertical={false} />
             <XAxis dataKey="day" tick={{ fontSize: 11 }} interval={9} />
-            <YAxis tick={{ fontSize: 11 }} domain={[0.3, 0.6]} ticks={[0.3, 0.4, 0.5, 0.6]} tickFormatter={(v: number) => `${Math.round(v * 100)}%`} />
+            <YAxis tick={{ fontSize: 11 }} domain={['auto', 'auto']} tickFormatter={(v: number) => `${Math.round(v * 100)}%`} />
             <Tooltip formatter={(v) => pct(Number(v))} labelFormatter={(d) => `Day ${d}`} />
             <Legend wrapperStyle={{ fontSize: 12 }} />
             <Line type="monotone" dataKey="bandit" name="Thompson bandit" stroke="#0b4ea2" strokeWidth={2.5} dot={false} />
-            <Line type="monotone" dataKey="static" name="Static ranking" stroke="#d97706" strokeWidth={1.5} dot={false} />
+            <Line type="monotone" dataKey="static" name="Best fixed card (train logs)" stroke="#d97706" strokeWidth={1.5} dot={false} />
             <Line type="monotone" dataKey="random" name="Random" stroke="#9ca3af" strokeWidth={1.5} dot={false} strokeDasharray="4 3" />
           </LineChart>
         </ResponsiveContainer>

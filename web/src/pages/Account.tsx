@@ -9,7 +9,7 @@ import { useApi } from '../lib/useApi'
 
 export default function Account() {
   const { L, taka } = useLang()
-  const { uid, shell, demo } = useShell()
+  const { uid, demo } = useShell()
   const navigate = useNavigate()
   const { data, error, loading, reload } = useApi(() => api.savings(uid), [uid])
 

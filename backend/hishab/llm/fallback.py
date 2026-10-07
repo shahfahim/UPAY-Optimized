@@ -205,6 +205,13 @@ _INTENTS: list[tuple[str, str]] = [
 
 
     # ── 9. Amount-specific safe-spend check ("can I spend 500?") ─────────────
+    # ── Safe spend (today's limit) ───────────────────────────────────────────
+    ("safe_spend",
+     r"নিরাপদ খরচ|safe.?spend|aaj koto|আজ কত|আজকে কত"
+     r"|kharoch korte parbo|খরচ করতে পারব|daily limit|দৈনিক সীমা"
+     r"|aaj ki kharoch|আজ কি খরচ|today.*spend|spend.*today"
+     r"|koto taka kharoch kora jai|কত টাকা খরচ করা যাই"
+     r"|aaj er limit|আজকের সীমা"),
     ("specific_amount",
      r"\d[\d,]*\s*(?:\u099f\u09be\u0995\u09be|taka|\u09f3)\s*(?:\u0996\u09b0\u099a|kharoch|spend|\u0995\u09bf\u09a8\u09a4\u09c7|\u0995\u09bf\u09a8\u09ac|\u09a8\u09c7\u09ac|\u09a6\u09bf\u09a4\u09c7)"
      r"|(?:\u0996\u09b0\u099a|kharoch|spend|\u0995\u09bf\u09a8\u09a4\u09c7)\s*\d[\d,]*"
@@ -426,7 +433,6 @@ def answer(uid: str, message: str, svc) -> dict:  # noqa: C901 (intentionally lo
     elif intent == "advice":
         h  = tool("get_home_summary")
         tx = tool("get_transactions_summary", period="month")
-        top_cat = tx["by_category"][0]["category_bn"] if tx.get("by_category") else None
         if h["insufficient_history"]:
             text = "হিসাব দেখাতে আরও কিছু দিনের লেনদেন লাগবে।"
         elif h.get("risk_level", "green") == "green":
@@ -450,6 +456,7 @@ def answer(uid: str, message: str, svc) -> dict:  # noqa: C901 (intentionally lo
         h = tool("get_home_summary")
         if h["insufficient_history"]:
             text = "হিসাব দেখাতে আরও কিছু দিনের লেনদেন লাগবে।"
+        else:
             safe = h.get("safe_to_spend_today") or 0
             risk = h.get("risk_level", "green")
             if safe <= 0:
@@ -508,8 +515,8 @@ def answer(uid: str, message: str, svc) -> dict:  # noqa: C901 (intentionally lo
         res = tool("find_agents_near_me", lat=23.8103, lng=90.4125)
         agents = res.get("agents", [])
         if agents:
-            parts = [f"{a['name']} ({a['distance']}, {a['predicted_status']})" for a in agents]
-            text = "আপনার আশেপাশে এই এজেন্টদের পাওয়া গেছে: " + ", ".join(parts) + "।"
+            parts = [f"{a['name']} ({bn_num(a['distance_m'])} মি.)" for a in agents]
+            text = "ডেমো তথ্য, আসল এজেন্ট ডেটা নয় — আশেপাশের নমুনা এজেন্ট: " + ", ".join(parts) + "।"
         else:
             text = "দুঃখিত, আপনার আশেপাশে কোনো এজেন্ট পাওয়া যায়নি।"
 

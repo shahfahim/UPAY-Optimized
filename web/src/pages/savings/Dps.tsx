@@ -82,7 +82,6 @@ export default function Dps() {
   const [err, setErr] = useState('')
   const [done, setDone] = useState(false)
   const [pin, setPin] = useState('')
-  const [dpsType, setDpsType] = useState<'normal'|'islamic'>('islamic')
 
 
   if (loading && !data) return <><PageTitle bn="সঞ্চয় (DPS)" en="Savings (DPS)" /><Spinner /></>

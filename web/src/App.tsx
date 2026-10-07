@@ -19,7 +19,7 @@ import Health from './pages/Health'
 import Calendar from './pages/hub/Calendar'
 import HubLayout from './pages/hub/HubLayout'
 import Learn from './pages/hub/Learn'
-import Overview from './pages/hub/Overview'
+import Forecast from './pages/hub/Forecast'
 import AgentLocator from './pages/hub/AgentLocator'
 import CashOut from './pages/flows/CashOut'
 import FundTransfer from './pages/flows/FundTransfer'
@@ -66,8 +66,8 @@ export default function App() {
         <Route path="more" element={<More />} />
         <Route path="payments" element={<Payments />} />
         <Route path="hishab" element={<HubLayout />}>
-          <Route index element={<Ask />} />
-          <Route path="overview" element={<Overview />} />
+          <Route index element={<Forecast />} />
+          <Route path="ask" element={<Ask />} />
           <Route path="calendar" element={<Calendar />} />
           <Route path="learn" element={<Learn />} />
         </Route>

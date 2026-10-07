@@ -1,9 +1,7 @@
-import { useShell } from '../../components/AppShell'
 import { useLang } from '../../i18n'
 import Flow from './Flow'
 
 export default function Npsb() {
-  const { uid } = useShell()
   const { L } = useLang()
   const contacts = [
     { id: 'NPSB-BKASH', name: L('বিকাশ-এ ট্রান্সফার', 'Transfer to bKash'), sub: L('bKash (demo)', 'bKash (demo)'), destination: 'other_mfs_wallet' },

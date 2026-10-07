@@ -1,7 +1,7 @@
 """Train all models on backend/data/full/ and write artifacts to backend/artifacts/ (spec §6.4).
 
 Splits: 15% of users held out; months 1–9 train, month 10 validation, months 11–12 test (evaluate.py).
-Usage: python scripts/train_all.py
+Usage: python scripts/train_all.py [--bandit-only]
 """
 
 from __future__ import annotations
@@ -51,9 +51,24 @@ def main() -> None:
     risk.save(ART)
     print(f"risk model saved ({time.time() - t0:.0f}s)")
 
-    Bandit.from_truth(data.acceptance_truth).save(ART / "bandit_priors.json")
-    print("bandit priors saved")
+    train_bandit(data, train_ids)
+
+
+def train_bandit(data, train_ids) -> None:
+    """Priors from logged responses of TRAIN users only — never from the generator's acceptance table."""
+    from bandit_logs import logged_responses
+    from hishab.rules import load_rules
+
+    items = [a["id"] for a in load_rules("actions")["actions"]]
+    Bandit.from_logs(logged_responses(data, train_ids, items)).save(ART / "bandit_priors.json")
+    print("bandit priors saved (from train-user logs)")
 
 
 if __name__ == "__main__":
-    main()
+    import sys
+
+    if "--bandit-only" in sys.argv:
+        _data = load_full()
+        train_bandit(_data, split_users(list(_data.users.user_id))[0])
+    else:
+        main()

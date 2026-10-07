@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from datetime import date, timedelta
 
 import pandas as pd
@@ -125,19 +125,35 @@ def evaluate_triggers(ctx, risk, recurring, level, history: list, last_active: d
 def message_strip(ctx, risk, safe_today: float, budget_daily: float, shortcuts: list, lesson, level,
                   next_income: date | None) -> list[StripMessage]:
     msgs: list[StripMessage] = []
-    
+    days_left = max(1, (risk.shortfall_date - ctx.today).days) if risk.shortfall_date else None
+    to_income = (next_income - ctx.today).days if next_income else None
+    if risk.level == "red":
+        bn = f"এই মাসে একটু সাবধান থাকো — আর প্রায় {bn_num(days_left or 3)} দিন সামলে চলো"
+        en = f"Stay careful this month — manage spending for about {days_left or 3} more days"
+        msgs.append(StripMessage(1, bn, en, "/app/hishab"))
     for s in shortcuts:
         if s.due_in_days:
             msgs.append(StripMessage(2, f"{s.name} {bn_num(s.due_in_days)} দিনের মধ্যে দিতে হবে",
                                      f"{s.name} due in {s.due_in_days} days", "/app/home"))
             break
-            
+    if risk.level == "amber":
+        bn = f"মাসের শেষ দিকে একটু পরিকল্পনা করো — {bn_num(days_left)} দিন সামলে চলো" if days_left else "মাসের শেষে একটু সাশ্রয়ী থাকলে ভালো হবে"
+        en = f"Plan ahead — manage spending for {days_left} more days" if days_left else "Some planning this month-end will help"
+        if to_income:
+            bn += f" · নতুন আয় {bn_num(to_income)} দিন পরে"
+            en += f" · income in {to_income} days"
+        msgs.append(StripMessage(3, bn, en, "/app/hishab"))
+    if safe_today > 0:
+        msgs.append(StripMessage(4, f"আজ নিরাপদ খরচ ৳{bn_num(safe_today)}", f"Safe to spend today ৳{round(safe_today):,}",
+                                 "/app/hishab"))
+    elif budget_daily > 0:
+        msgs.append(StripMessage(4, f"আজ দিনে ৳{bn_num(budget_daily)}-এর মধ্যে খরচ রাখো",
+                                 f"Keep today's spending under ৳{round(budget_daily):,}", "/app/hishab"))
     if level is not None and level.next_level == 1 and level.projection_days:
         msgs.append(StripMessage(5, f"সঞ্চয় লেভেল ১ আর {bn_num(level.projection_days)} দিন দূরে",
                                  f"Savings level 1 is {level.projection_days} days away", "/app/savings/levels"))
     elif lesson is not None:
         msgs.append(StripMessage(5, lesson.title_bn, lesson.title_bn, "/app/hishab/learn"))
-        
     msgs.sort(key=lambda m: m.priority)
     return msgs
 

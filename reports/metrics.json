@@ -37,11 +37,11 @@
   },
   "E16": {
     "n_dps_holders": 153,
-    "smart_missed_rate": 0.144,
+    "smart_missed_rate": 0.14,
     "naive_10pct_missed_rate": 0.127,
-    "smart_avg_monthly": 4411.0,
+    "smart_avg_monthly": 4347.0,
     "naive_avg_monthly": 2474.0,
-    "not_now_share": 0.523
+    "not_now_share": 0.51
   },
   "E8": {
     "n_users": 273,
@@ -51,10 +51,10 @@
   },
   "E9": {
     "actions_acceptance_bandit": 0.5812,
-    "actions_acceptance_static": 0.3408,
+    "actions_acceptance_static": 0.5959,
     "actions_acceptance_random": 0.3585,
     "lessons_acceptance_bandit": 0.5039,
-    "lessons_acceptance_static": 0.4637,
+    "lessons_acceptance_static": 0.5126,
     "lessons_acceptance_random": 0.3896
   }
 }

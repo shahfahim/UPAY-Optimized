@@ -3,20 +3,18 @@
 from __future__ import annotations
 
 import hashlib
-import json
 import re
 import secrets
 import threading
-from datetime import date, datetime, timedelta
+from datetime import timedelta
 
 import numpy as np
-import pandas as pd
 
 from hishab.config import Settings
 from hishab.data.loader import DataRepo
 from hishab.engine.actions import rank_actions, simulate_action
 from hishab.engine.bandit import Bandit
-from hishab.engine.context import UserCtx, UserNotFound, build_ctx
+from hishab.engine.context import UserCtx, build_ctx
 from hishab.engine.forecast import band_from_flows, future_flows
 from hishab.engine.health import indicators
 from hishab.engine.lessons import rank_lessons

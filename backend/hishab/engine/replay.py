@@ -6,7 +6,6 @@ from dataclasses import dataclass
 from datetime import date, timedelta
 from types import SimpleNamespace
 
-import numpy as np
 import pandas as pd
 
 from hishab.engine.forecast import FLOW_COLS

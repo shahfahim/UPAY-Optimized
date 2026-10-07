@@ -25,6 +25,7 @@ from hishab.engine.replay import month_flows, replay_month
 from hishab.engine.risk import RISK_FEATURES, risk_frame
 from hishab.engine.shortcuts import PAYMENT_TYPES, recent_payments
 
+ALERT_THRESHOLD = 0.30  # risk "amber" cut-off in rules/guardrails.yaml; never tuned per group
 MONTHS = [(date(2026, 8, 1), date(2026, 8, 31)), (date(2026, 9, 1), date(2026, 9, 30))]
 GROUPS = ["persona", "gender", "area"]
 
@@ -161,9 +162,14 @@ def eval_e8(data, test_ids) -> dict:
 
 # --- E9 bandit replay -----------------------------------------------------------------------------------
 
-def bandit_replay(data, test_ids, items: list[str], days: int = 60, seed: int = 7) -> dict:
+def bandit_replay(data, train_ids, test_ids, items: list[str], days: int = 60, seed: int = 7) -> dict:
+    """Online replay on held-out users. Baselines: random, and the best fixed card per persona picked from
+    train-user logs (a fair static ranking, not an arbitrary first item)."""
+    from bandit_logs import UNKNOWN_P, best_fixed_arm, logged_responses
+
     users = _users(data)
     truth = {(r.persona, r.item_id): r.p_accept for r in data.acceptance_truth.itertuples(index=False)}
+    fixed = best_fixed_arm(logged_responses(data, train_ids, items))
     personas = [users[u]["persona"] for u in test_ids]
     rng = np.random.default_rng(seed)
     curves = {}
@@ -175,16 +181,17 @@ def bandit_replay(data, test_ids, items: list[str], days: int = 60, seed: int = 
                 if policy == "bandit":
                     item = max(items, key=lambda i: rng.beta(*post[(persona, i)]))
                 elif policy == "static":
-                    item = items[0]
+                    item = fixed.get(persona, items[0])
                 else:
                     item = items[int(rng.integers(0, len(items)))]
-                acc = rng.random() < truth.get((persona, item), 0.2)
+                acc = rng.random() < truth.get((persona, item), UNKNOWN_P)
                 post[(persona, item)][0 if acc else 1] += 1
                 acc_total += acc
                 shown_total += 1
             curve.append(round(acc_total / shown_total, 4))
         curves[policy] = curve
     curves["day"] = list(range(1, days + 1))
+    curves["static_definition"] = "best fixed card per persona, chosen from train-user logs"
     return curves
 
 
@@ -272,7 +279,7 @@ def fairness(data, models, test_ids, impact_rows: list) -> dict:
         for val, sub in fr.groupby(g):
             if len(sub) < 30 or sub.y.sum() == 0:
                 continue
-            alert = sub.p >= (0.05 if val == 'shop_owner' or val == 'Uttara' else 0.30)
+            alert = sub.p >= ALERT_THRESHOLD  # one threshold for every group
             rec = float((alert & (sub.y == 1)).sum() / sub.y.sum())
             prec = float((alert & (sub.y == 1)).sum() / max(1, alert.sum()))
             rows.append({"group_type": g, "group": str(val), "metric": "recall_at_alert", "value": round(rec, 3),

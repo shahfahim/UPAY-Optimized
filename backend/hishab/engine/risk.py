@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import json
 from dataclasses import dataclass, field
-from datetime import date, timedelta
+from datetime import date
 from pathlib import Path
 
 import lightgbm as lgb
@@ -13,7 +13,7 @@ import pandas as pd
 from sklearn.isotonic import IsotonicRegression
 
 from hishab.engine.features import FEATURE_KEYS, PROTECTED, training_frame, user_features
-from hishab.rules import load_rules, risk_level
+from hishab.rules import risk_level
 
 PROJ_FEATURES = ["proj_min_14d", "proj_min_14d_stress"]
 RISK_FEATURES = [k for k in FEATURE_KEYS if k not in PROTECTED and k != "persona_code"] + PROJ_FEATURES
@@ -72,6 +72,10 @@ def _bn(n: float) -> str:
 
 def _driver_text(feat: str, f: dict) -> tuple[str, str]:
     v = f.get(feat, 0.0)
+    if v != v:  # NaN = no regular payday (irregular earner); LightGBM treats it as missing
+        if feat == "days_to_income":
+            return "আয় কবে আসবে তা নিশ্চিত নয়", "Your next income date is uncertain"
+        v = 0.0
     pct = round(100 * v)
     T = {
         "balance": (f"এখন ব্যালেন্স কম (৳{_bn(round(v))})", f"Your balance is low (৳{round(v):,})"),

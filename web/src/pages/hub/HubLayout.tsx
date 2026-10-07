@@ -1,14 +1,14 @@
-﻿import { NavLink, Outlet } from 'react-router-dom'
+import { NavLink, Outlet } from 'react-router-dom'
 import { AiBadge } from '../../components/ui'
 import { useLang } from '../../i18n'
 
 export default function HubLayout() {
   const { L } = useLang()
   const tabs = [
-    { to: '/app/hishab', end: true, bn: 'হিসাব', en: 'Hishab', isAi: true },
-    { to: '/app/hishab/overview', bn: 'ওভারভিউ', en: 'Overview' },
-    { to: '/app/hishab/learn', bn: 'শেখো', en: 'Learn' },
-    { to: '/app/savings', bn: 'সঞ্চয়', en: 'Savings' },
+    { to: '/app/hishab', end: true, bn: 'পূর্বাভাস', en: 'Forecast', isAi: true },
+    { to: '/app/hishab/calendar', bn: 'ক্যালেন্ডার', en: 'Calendar' },
+    { to: '/app/hishab/ask', bn: 'জিজ্ঞাসা', en: 'Ask', isAi: true },
+    { to: '/app/savings', bn: 'সঞ্চয়', en: 'Savings' },
   ]
   return (
     <div className="flex flex-col h-full flex-1">

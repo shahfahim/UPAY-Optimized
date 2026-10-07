@@ -12,7 +12,7 @@ CHIPS = ["মাসের শেষে টাকা কম পড়ে কে�
          "এই লেনদেনগুলো বুঝিয়ে বলো"]
 TOOL_NAMES = ["get_home_summary", "get_shortfall_drivers", "list_actions", "simulate_action", "plan_goal", "plan_eid",
               "get_budget_status", "find_route", "get_transactions_summary", "get_health", "get_readiness",
-              "get_lessons", "get_levels", "emergency_options"]
+              "get_lessons", "get_levels", "emergency_options", "find_agents_near_me"]
 
 
 @pytest.fixture
