@@ -8,6 +8,8 @@ services:
         value: "2026-09-18"
       - key: HISHAB_DEMO_MODE
         value: "1"
+      - key: HISHAB_PEPPER
+        generateValue: true   # random secret for PIN/OTP hashes
       - key: LLM_ENABLED
         value: "auto"
       - key: LLM_MODEL

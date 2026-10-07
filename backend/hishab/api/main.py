@@ -13,7 +13,7 @@ from fastapi.responses import FileResponse, JSONResponse
 
 from hishab.config import Settings, get_settings
 from hishab.engine.context import UserNotFound
-from hishab.errors import UserError
+from hishab.errors import LockedOut, UserError
 
 log = logging.getLogger(__name__)
 
@@ -68,6 +68,10 @@ def create_app(settings: Settings | None = None, svc=None, web_dist: Path | None
     @app.exception_handler(UserNotFound)
     async def _not_found(_: Request, exc: UserNotFound):
         return JSONResponse(status_code=404, content={"detail": "ব্যবহারকারী পাওয়া যায়নি"})
+
+    @app.exception_handler(LockedOut)
+    async def _locked(_: Request, exc: LockedOut):
+        return JSONResponse(status_code=429, content={"detail": str(exc)})
 
     @app.exception_handler(UserError)
     async def _user_error(_: Request, exc: UserError):

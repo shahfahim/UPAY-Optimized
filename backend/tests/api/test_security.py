@@ -19,8 +19,8 @@ def _token(c):
     return c.post("/api/auth/login", json={"mobile": "01700000001", "pin": "123456"}).json()["token"]
 
 
-def test_demo_routes_hidden_when_demo_mode_off(prod):
-    h = {"Authorization": f"Bearer {_token(prod)}"}
+def test_demo_routes_hidden_when_demo_mode_off(prod, svc):
+    h = {"Authorization": f"Bearer {svc.store.create_session('U0001')}"}
     assert prod.get("/api/users").status_code == 404
     assert prod.post("/api/demo/reset", headers=h).status_code == 404
     assert prod.post("/api/demo/time-travel", json={"days": 7}, headers=h).status_code == 404
@@ -71,3 +71,8 @@ def test_predict_needs_session_and_hides_errors(anon, monkeypatch):
 ])
 def test_pii_stripper(text, expected):
     assert PII_Stripper(text) == expected
+
+
+def test_shared_demo_pin_only_works_in_demo_mode(prod):
+    r = prod.post("/api/auth/login", json={"mobile": "01700000001", "pin": "123456"})
+    assert r.status_code == 401

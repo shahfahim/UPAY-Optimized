@@ -72,7 +72,7 @@ export default function More() {
         {row('shield', 'গোপনীয়তা নীতিমালা', 'Privacy policy', () => demo(L('গোপনীয়তা নীতিমালা', 'Privacy policy')))}
       </div>
       <div className="mx-3 mt-4 overflow-hidden rounded-2xl bg-white">
-        {row('back', 'লগ আউট', 'Log out', () => { clearSession(); navigate('/welcome', { replace: true }) }, 'text-bad')}
+        {row('back', 'লগ আউট', 'Log out', () => { void api.logout().catch(() => undefined).finally(() => { clearSession(); navigate('/welcome', { replace: true }) }) }, 'text-bad')}
       </div>
       <p className="mt-4 px-4 text-center text-[11px] text-muted">
         <Link to="/impact" className="underline">Impact</Link> · {L('সব তথ্য synthetic', 'All data is synthetic')}

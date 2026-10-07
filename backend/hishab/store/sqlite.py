@@ -2,10 +2,12 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import secrets
 import sqlite3
 import threading
+import time
 from dataclasses import asdict, dataclass, field
 from datetime import date, datetime
 from pathlib import Path
@@ -22,7 +24,9 @@ CREATE TABLE IF NOT EXISTS categories (user_id TEXT, counterparty_id TEXT, categ
     PRIMARY KEY (user_id, counterparty_id));
 CREATE TABLE IF NOT EXISTS notifications (rowid_ INTEGER PRIMARY KEY AUTOINCREMENT, user_id TEXT, body TEXT);
 CREATE TABLE IF NOT EXISTS meta (key TEXT PRIMARY KEY, value TEXT);
-CREATE TABLE IF NOT EXISTS sessions (token TEXT PRIMARY KEY, user_id TEXT);
+CREATE TABLE IF NOT EXISTS auth_sessions (token_hash TEXT PRIMARY KEY, user_id TEXT NOT NULL,
+    created_at REAL NOT NULL, last_seen REAL NOT NULL, expires_at REAL NOT NULL, revoked_at REAL);
+CREATE TABLE IF NOT EXISTS auth_failures (key TEXT PRIMARY KEY, count INTEGER NOT NULL, locked_until REAL);
 CREATE TABLE IF NOT EXISTS extra_users (user_id TEXT PRIMARY KEY, body TEXT);
 CREATE TABLE IF NOT EXISTS extra_tx (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id TEXT, body TEXT);
 """
@@ -62,8 +66,19 @@ def _default(o):
     raise TypeError(type(o))
 
 
+SESSION_TTL_S = 12 * 3600   # absolute lifetime of a login
+SESSION_IDLE_S = 30 * 60    # sign out after 30 minutes without a request
+MAX_FAILURES = 5            # wrong PINs before a lockout
+LOCKOUT_S = 15 * 60
+
+
+def _token_hash(token: str) -> str:
+    return hashlib.sha256(token.encode()).hexdigest()
+
+
 class Store:
-    def __init__(self, path: Path):
+    def __init__(self, path: Path, clock: Callable[[], float] = time.time):
+        self.clock = clock  # wall clock for sessions and lockouts (not the demo calendar)
         self.path = Path(path)
         self.path.parent.mkdir(parents=True, exist_ok=True)
         self._lock = threading.Lock()
@@ -88,9 +103,10 @@ class Store:
         removed, so their sessions go too (their ids are handed out again)."""
         with self._lock:
             if keep_sessions:
-                self._conn.execute("DELETE FROM sessions WHERE user_id IN (SELECT user_id FROM extra_users)")
-            tables = ["state", "sim_tx", "responses", "categories", "notifications", "meta", "extra_users", "extra_tx"]
-            for t in tables + ([] if keep_sessions else ["sessions"]):
+                self._conn.execute("DELETE FROM auth_sessions WHERE user_id IN (SELECT user_id FROM extra_users)")
+            tables = ["state", "sim_tx", "responses", "categories", "notifications", "meta", "extra_users", "extra_tx",
+                      "auth_failures"]
+            for t in tables + ([] if keep_sessions else ["auth_sessions"]):
                 self._conn.execute(f"DELETE FROM {t}")
             self._conn.commit()
 
@@ -168,14 +184,57 @@ class Store:
         self._exec("INSERT OR REPLACE INTO meta (key, value) VALUES ('clock_offset', ?)", (str(int(days)),))
 
     # sessions and registered users ------------------------------------------------------------------
+    # Only a SHA-256 of each bearer token is stored, so a copied database cannot be replayed as logins.
     def create_session(self, user_id: str) -> str:
-        token = secrets.token_urlsafe(24)
-        self._exec("INSERT INTO sessions (token, user_id) VALUES (?, ?)", (token, user_id))
+        token = secrets.token_urlsafe(32)
+        now = self.clock()
+        self._exec("INSERT INTO auth_sessions (token_hash, user_id, created_at, last_seen, expires_at) "
+                   "VALUES (?, ?, ?, ?, ?)", (_token_hash(token), user_id, now, now, now + SESSION_TTL_S))
         return token
 
     def session_user(self, token: str) -> str | None:
-        rows = self._exec("SELECT user_id FROM sessions WHERE token=?", (token,))
-        return rows[0][0] if rows else None
+        """The user behind a live token; touches last_seen. Expired, idle or revoked tokens return None."""
+        if not token:
+            return None
+        h, now = _token_hash(token), self.clock()
+        rows = self._exec("SELECT user_id, last_seen, expires_at, revoked_at FROM auth_sessions WHERE token_hash=?",
+                          (h,))
+        if not rows:
+            return None
+        uid, last_seen, expires_at, revoked_at = rows[0]
+        if revoked_at is not None or now >= expires_at or now - last_seen >= SESSION_IDLE_S:
+            return None
+        self._exec("UPDATE auth_sessions SET last_seen=? WHERE token_hash=?", (now, h))
+        return uid
+
+    def revoke_session(self, token: str) -> None:
+        self._exec("UPDATE auth_sessions SET revoked_at=? WHERE token_hash=? AND revoked_at IS NULL",
+                   (self.clock(), _token_hash(token)))
+
+    def revoke_user_sessions(self, user_id: str) -> int:
+        with self._lock:
+            cur = self._conn.execute("UPDATE auth_sessions SET revoked_at=? WHERE user_id=? AND revoked_at IS NULL",
+                                     (self.clock(), user_id))
+            self._conn.commit()
+            return cur.rowcount
+
+    # login lockout ----------------------------------------------------------------------------------
+    def locked_until(self, key: str) -> float | None:
+        rows = self._exec("SELECT locked_until FROM auth_failures WHERE key=?", (key,))
+        until = rows[0][0] if rows else None
+        return until if until is not None and until > self.clock() else None
+
+    def record_failure(self, key: str) -> None:
+        with self._lock:
+            row = self._conn.execute("SELECT count FROM auth_failures WHERE key=?", (key,)).fetchone()
+            count = (row[0] if row else 0) + 1
+            until = self.clock() + LOCKOUT_S if count >= MAX_FAILURES else None
+            self._conn.execute("INSERT OR REPLACE INTO auth_failures (key, count, locked_until) VALUES (?, ?, ?)",
+                               (key, 0 if until else count, until))
+            self._conn.commit()
+
+    def clear_failures(self, key: str) -> None:
+        self._exec("DELETE FROM auth_failures WHERE key=?", (key,))
 
     def add_user(self, row: dict, tx: list[dict]) -> None:
         self._exec("INSERT OR REPLACE INTO extra_users (user_id, body) VALUES (?, ?)",
