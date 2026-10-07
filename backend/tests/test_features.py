@@ -1,5 +1,4 @@
 import math
-from datetime import date
 
 from hishab.engine.context import build_ctx
 from hishab.engine.features import FEATURE_KEYS, PROTECTED, training_frame, user_features
@@ -10,7 +9,9 @@ def test_user_features_numeric_and_complete(repo, store, settings):
         f = user_features(build_ctx(uid, repo, store, settings))
         assert set(FEATURE_KEYS) <= set(f)
         for k, v in f.items():
-            assert isinstance(v, float) and math.isfinite(v), (uid, k, v)
+            # days_to_income is NaN (a LightGBM "missing" value) for earners with no regular payday
+            ok = math.isfinite(v) or (k == "days_to_income" and math.isnan(v))
+            assert isinstance(v, float) and ok, (uid, k, v)
 
 
 def test_features_do_not_include_protected_names():

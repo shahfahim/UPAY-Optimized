@@ -48,3 +48,9 @@ def test_protected_not_in_risk_features(repo, store, settings, tiny_models):
 def test_rule_baseline_binary(repo, store, settings, tiny_models):
     ctx = build_ctx("U0001", repo, store, settings)
     assert rule_baseline(risk_features(ctx, forecast(ctx, tiny_models))) in (0.0, 1.0)
+
+
+def test_driver_text_handles_missing_payday():
+    from hishab.engine.risk import _driver_text
+    bn, en = _driver_text("days_to_income", {"days_to_income": float("nan")})
+    assert bn and "uncertain" in en
